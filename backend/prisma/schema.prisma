@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  role         Role
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  teacher Teacher?
+  student Student?
+}
+
+model Teacher {
+  id        Int    @id @default(autoincrement())
+  firstName String
+  lastName  String
+  userId    Int    @unique
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  classes Class[]
+  grades  Grade[]
+}
+
+model Class {
+  id        Int    @id @default(autoincrement())
+  name      String @unique
+  teacherId Int?
+
+  teacher  Teacher?  @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  students Student[]
+}
+
+model Student {
+  id          Int      @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  dateOfBirth DateTime @db.Date
+  userId      Int      @unique
+  classId     Int?
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  class  Class?  @relation(fields: [classId], references: [id], onDelete: SetNull)
+  grades Grade[]
+}
+
+model Grade {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  teacherId Int?
+  subject   String
+  value     Int
+  date      DateTime @default(now())
+
+  student Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  teacher Teacher? @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+
+  @@index([studentId])
+}

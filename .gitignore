@@ -7,3 +7,5 @@ dist/
 .idea/
 private-docs/
 CLAUDE_CODE_HANDOFF.md
+backend/src/generated/
+*.tsbuildinfo
