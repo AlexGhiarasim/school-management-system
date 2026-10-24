@@ -2,6 +2,7 @@ import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import { PrismaClient } from '../generated/prisma/client.js';
+import { parseDatabaseUrl } from './database-url.js';
 
 @Injectable()
 export class PrismaService
@@ -9,16 +10,10 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   constructor(configService: ConfigService) {
-    const url = new URL(configService.getOrThrow<string>('DATABASE_URL'));
-
     super({
-      adapter: new PrismaMariaDb({
-        host: url.hostname,
-        port: Number(url.port) || 3306,
-        user: decodeURIComponent(url.username),
-        password: decodeURIComponent(url.password),
-        database: url.pathname.slice(1),
-      }),
+      adapter: new PrismaMariaDb(
+        parseDatabaseUrl(configService.getOrThrow<string>('DATABASE_URL')),
+      ),
     });
   }
 
