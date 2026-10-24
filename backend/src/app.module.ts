@@ -7,6 +7,9 @@ import { validateEnv } from './config/env.validation.js';
 import { DatabaseModule } from './database/database.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard.js';
+import { SubjectsModule } from './modules/subjects/subjects.module.js';
+import { TeachersModule } from './modules/teachers/teachers.module.js';
+import { ClassesModule } from './modules/classes/classes.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 
 @Module({
@@ -20,6 +23,9 @@ import { HealthModule } from './modules/health/health.module.js';
     DatabaseModule,
     AuthModule,
     HealthModule,
+    SubjectsModule,
+    TeachersModule,
+    ClassesModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

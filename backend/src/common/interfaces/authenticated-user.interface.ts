@@ -4,4 +4,6 @@ export interface AuthenticatedUser {
   id: number;
   email: string;
   role: Role;
+  teacherId: number | null;
+  studentId: number | null;
 }
