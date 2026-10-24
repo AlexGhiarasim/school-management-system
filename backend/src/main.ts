@@ -1,26 +1,14 @@
-import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import helmet from 'helmet';
 import { AppModule } from './app.module.js';
-import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter.js';
+import { configureApp } from './app.setup.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
 
-  app.use(helmet());
-  app.enableCors({ origin: config.getOrThrow<string>('CORS_ORIGIN') });
-  app.setGlobalPrefix('api');
-  app.useGlobalFilters(new PrismaExceptionFilter());
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
+  configureApp(app);
 
   const document = SwaggerModule.createDocument(
     app,
