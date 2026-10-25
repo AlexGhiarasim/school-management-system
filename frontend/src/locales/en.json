@@ -3,7 +3,19 @@
     "appName": "School Management System",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
-    "language": "Language"
+    "language": "Language",
+    "loading": "Loading"
+  },
+  "dashboard": {
+    "greeting": "Hello, {{name}}",
+    "signedInAs": "You are signed in as {{role}}.",
+    "placeholder": "Your account content will appear here.",
+    "signOut": "Sign out",
+    "roles": {
+      "ADMIN": "an administrator",
+      "TEACHER": "a teacher",
+      "STUDENT": "a student"
+    }
   },
   "landing": {
     "badge": "Classes, grades and people",
@@ -32,8 +44,7 @@
       "prompt": "Don't have an account?",
       "action": "Create one",
       "submit": "Sign in",
-      "submitting": "Signing in",
-      "notice": "Sign in is not connected to the API yet."
+      "submitting": "Signing in"
     },
     "register": {
       "title": "Create your account",
@@ -41,8 +52,7 @@
       "prompt": "Already have an account?",
       "action": "Sign in",
       "submit": "Create account",
-      "submitting": "Creating account",
-      "notice": "Registration is not connected to the API yet."
+      "submitting": "Creating account"
     },
     "fields": {
       "email": "Email",
@@ -71,7 +81,13 @@
       "passwordTooLong": "At most {{max}} characters.",
       "passwordWeak": "Add a letter and a digit.",
       "confirmRequired": "Confirm your password.",
-      "passwordsMismatch": "Passwords do not match."
+      "passwordsMismatch": "Passwords do not match.",
+      "invalidCredentials": "Incorrect email or password.",
+      "network": "We cannot reach the server. Please try again.",
+      "tooManyRequests": "Too many attempts. Please try again in a minute.",
+      "emailTaken": "An account with this email already exists.",
+      "serverInvalid": "The data is not valid. Please check the fields.",
+      "unexpected": "Something went wrong. Please try again."
     },
     "strength": {
       "label": "Password strength: {{level}}",

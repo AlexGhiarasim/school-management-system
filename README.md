@@ -6,7 +6,7 @@ authentication and role-based access control.
 ## Tech stack
 
 - Backend: NestJS 12 (TypeScript), Prisma 7, MySQL 8.4
-- Frontend: React 19, Vite, Tailwind CSS (project scaffold, not connected to the API yet)
+- Frontend: React 19, Vite, Tailwind CSS, i18next (Romanian and English)
 - Auth: JWT, bcrypt, role-based access control (Admin, Teacher, Student)
 - API docs: Swagger
 - Tooling: Docker Compose, GitHub Actions, Vitest, oxlint, Prettier
@@ -41,8 +41,16 @@ The API runs on `http://localhost:3000/api` and the Swagger documentation is
 available at `http://localhost:3000/api/docs`. Use the **Authorize** button there
 with the token returned by `POST /api/auth/login`.
 
-The frontend scaffold can be started with `npm install` and `npm run dev` inside
-`frontend/`.
+Start the frontend in a second terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The application is then available at `http://localhost:5173`. Set `VITE_API_URL`
+(see `frontend/.env.example`) if the API runs somewhere else.
 
 ## Test accounts
 
@@ -68,6 +76,7 @@ All endpoints are under `/api`. Lists accept `page` and `limit` and return
 | Endpoint | Admin | Teacher | Student |
 |---|---|---|---|
 | `POST /auth/login` | public | public | public |
+| `POST /auth/register` (creates a student account) | public | public | public |
 | `GET /auth/me` | yes | yes | yes |
 | `GET /health` | public | public | public |
 | `/subjects` (read) | yes | yes | yes |
@@ -149,6 +158,7 @@ backend.
 
 ## Status
 
-The backend is complete and covered by tests. The frontend has its structure and
-tooling in place, and the screens for each role are the next step. The plan is
-tracked in [docs/PLAN.md](docs/PLAN.md).
+The backend is complete and covered by tests. The frontend has the start page
+with sign in and sign up connected to the API, and a signed-in page that restores
+the session after a reload. The screens for each role are the next step. The plan
+is tracked in [docs/PLAN.md](docs/PLAN.md).

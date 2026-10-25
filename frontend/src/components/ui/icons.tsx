@@ -52,12 +52,12 @@ export function SpinnerIcon() {
   );
 }
 
-export function InfoIcon() {
+export function AlertIcon() {
   return (
     <Icon>
       <circle cx="12" cy="12" r="9" />
-      <path d="M12 11v5" />
-      <path d="M12 8h.01" />
+      <path d="M12 7.5v5" />
+      <path d="M12 16h.01" />
     </Icon>
   );
 }

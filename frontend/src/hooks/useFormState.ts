@@ -25,6 +25,10 @@ export function useFormState<T extends object>(
     });
   }
 
+  function setFieldError(name: keyof T, error: FormError) {
+    setErrors((current) => ({ ...current, [name]: error }));
+  }
+
   function field(name: keyof T & string) {
     const error = errors[name];
 
@@ -58,5 +62,5 @@ export function useFormState<T extends object>(
     onValid(values);
   }
 
-  return { values, setValues, field, handleSubmit };
+  return { values, setValues, field, setFieldError, handleSubmit };
 }

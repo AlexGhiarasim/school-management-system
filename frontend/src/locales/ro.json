@@ -3,7 +3,19 @@
     "appName": "Sistem de management școlar",
     "showPassword": "Arată parola",
     "hidePassword": "Ascunde parola",
-    "language": "Limba"
+    "language": "Limba",
+    "loading": "Se încarcă"
+  },
+  "dashboard": {
+    "greeting": "Bună, {{name}}",
+    "signedInAs": "Ești autentificat ca {{role}}.",
+    "placeholder": "Conținutul contului tău va apărea aici.",
+    "signOut": "Deconectare",
+    "roles": {
+      "ADMIN": "administrator",
+      "TEACHER": "profesor",
+      "STUDENT": "elev"
+    }
   },
   "landing": {
     "badge": "Clase, note și oameni",
@@ -32,8 +44,7 @@
       "prompt": "Nu ai cont?",
       "action": "Creează unul",
       "submit": "Autentificare",
-      "submitting": "Se autentifică",
-      "notice": "Autentificarea nu este conectată încă la API."
+      "submitting": "Se autentifică"
     },
     "register": {
       "title": "Creează-ți contul",
@@ -41,8 +52,7 @@
       "prompt": "Ai deja cont?",
       "action": "Autentifică-te",
       "submit": "Creează cont",
-      "submitting": "Se creează contul",
-      "notice": "Înregistrarea nu este conectată încă la API."
+      "submitting": "Se creează contul"
     },
     "fields": {
       "email": "Email",
@@ -71,7 +81,13 @@
       "passwordTooLong": "Maxim {{max}} de caractere.",
       "passwordWeak": "Adaugă o literă și o cifră.",
       "confirmRequired": "Confirmă parola.",
-      "passwordsMismatch": "Parolele nu coincid."
+      "passwordsMismatch": "Parolele nu coincid.",
+      "invalidCredentials": "Email sau parolă incorecte.",
+      "network": "Nu ne putem conecta la server. Încearcă din nou.",
+      "tooManyRequests": "Prea multe încercări. Încearcă din nou peste un minut.",
+      "emailTaken": "Există deja un cont cu acest email.",
+      "serverInvalid": "Datele nu sunt valide. Verifică câmpurile.",
+      "unexpected": "A apărut o eroare. Încearcă din nou."
     },
     "strength": {
       "label": "Puterea parolei: {{level}}",

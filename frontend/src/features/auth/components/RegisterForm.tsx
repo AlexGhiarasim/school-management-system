@@ -2,7 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '../../../components/ui/Button.tsx';
 import { TextField } from '../../../components/ui/TextField.tsx';
 import { useFormState, type FormError } from '../../../hooks/useFormState.ts';
-import { usePendingAction } from '../../../hooks/usePendingAction.ts';
+import { useAuth } from '../../../hooks/useAuth.ts';
+import { useRequestState } from '../../../hooks/useRequestState.ts';
 import {
   EMAIL_MAX_LENGTH,
   hasLetterAndDigit,
@@ -17,7 +18,8 @@ import {
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
 } from '../../../utils/validators.ts';
-import { FormNotice } from './FormNotice.tsx';
+import { getAuthErrorKey, isEmailTaken } from '../errors.ts';
+import { FormAlert } from './FormAlert.tsx';
 import { PasswordStrengthMeter } from './PasswordStrengthMeter.tsx';
 
 const TODAY = new Date().toISOString().slice(0, 10);
@@ -111,16 +113,33 @@ function validate(values: RegisterValues) {
 
 export function RegisterForm() {
   const { t } = useTranslation();
-  const { values, field, handleSubmit } = useFormState(
+  const { values, field, setFieldError, handleSubmit } = useFormState(
     INITIAL_VALUES,
     validate,
     t,
   );
-  const { loading, done, run } = usePendingAction();
+  const { register } = useAuth();
+  const { loading, error, run } = useRequestState();
+
+  async function submit(form: RegisterValues) {
+    const failure = await run(() =>
+      register({
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        email: form.email.trim(),
+        dateOfBirth: form.dateOfBirth,
+        password: form.password,
+      }),
+    );
+
+    if (isEmailTaken(failure)) {
+      setFieldError('email', { key: 'auth.errors.emailTaken' });
+    }
+  }
 
   return (
     <form
-      onSubmit={(event) => handleSubmit(event, run)}
+      onSubmit={(event) => handleSubmit(event, submit)}
       noValidate
       className="space-y-4"
     >
@@ -186,7 +205,9 @@ export function RegisterForm() {
       <Button type="submit" loading={loading}>
         {loading ? t('auth.register.submitting') : t('auth.register.submit')}
       </Button>
-      {done && <FormNotice>{t('auth.register.notice')}</FormNotice>}
+      {error != null && !isEmailTaken(error) && (
+        <FormAlert>{t(getAuthErrorKey(error))}</FormAlert>
+      )}
     </form>
   );
 }
