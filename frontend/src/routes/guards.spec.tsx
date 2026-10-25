@@ -64,6 +64,7 @@ describe('route guards', () => {
 
   it.each([
     ['STUDENT', '/admin/students', 'My profile'],
+    ['STUDENT', '/teacher/classes/3/students/7', 'My profile'],
     ['TEACHER', '/student/grades', 'My classes'],
     ['ADMIN', '/teacher/classes', 'Students'],
   ] as const)('keeps a %s out of %s', (role, path, expected) => {
