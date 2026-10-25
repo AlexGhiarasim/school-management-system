@@ -46,6 +46,53 @@
       "grades": "Note"
     }
   },
+  "student": {
+    "profile": {
+      "description": "Datele tale personale și clasa din care faci parte.",
+      "fields": {
+        "firstName": "Prenume",
+        "lastName": "Nume",
+        "email": "Email",
+        "dateOfBirth": "Data nașterii",
+        "class": "Clasa"
+      },
+      "noClass": {
+        "title": "Nu ești încă într-o clasă",
+        "description": "Un administrator te va adăuga într-o clasă. Până atunci nu vei avea note."
+      }
+    },
+    "grades": {
+      "description": "Toate notele tale, mediile pe materii și media generală.",
+      "summary": {
+        "average": "Media generală",
+        "grades": "Numărul de note",
+        "subjects": "Materii"
+      },
+      "bySubject": {
+        "title": "Media pe materii",
+        "gradesCount_one": "{{count}} notă",
+        "gradesCount_few": "{{count}} note",
+        "gradesCount_other": "{{count}} de note"
+      },
+      "filter": {
+        "label": "Materia",
+        "all": "Toate materiile"
+      },
+      "table": {
+        "title": "Toate notele",
+        "caption": "Notele tale, de la cea mai recentă",
+        "subject": "Materia",
+        "grade": "Nota",
+        "date": "Data",
+        "teacher": "Profesor",
+        "noTeacher": "Administrator"
+      },
+      "empty": {
+        "title": "Nu ai încă nicio notă",
+        "description": "Notele vor apărea aici imediat ce un profesor ți le adaugă."
+      }
+    }
+  },
   "pages": {
     "comingSoon": "Această secțiune va fi disponibilă în curând.",
     "notFound": {

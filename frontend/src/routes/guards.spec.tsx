@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
@@ -8,6 +9,13 @@ import {
 } from '../features/auth/authContext.ts';
 import type { CurrentUser, Role } from '../features/auth/types.ts';
 import { AppRoutes } from './AppRoutes.tsx';
+
+vi.mock('../services/studentService.ts', () => ({
+  studentService: {
+    getProfile: () => new Promise(() => undefined),
+    getGrades: () => new Promise(() => undefined),
+  },
+}));
 
 function userWith(role: Role): CurrentUser {
   return {
@@ -27,12 +35,18 @@ function renderAt(path: string, user: CurrentUser | null) {
     logout: vi.fn(),
   };
 
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
   return render(
-    <AuthContext.Provider value={value}>
-      <MemoryRouter initialEntries={[path]}>
-        <AppRoutes />
-      </MemoryRouter>
-    </AuthContext.Provider>,
+    <QueryClientProvider client={client}>
+      <AuthContext.Provider value={value}>
+        <MemoryRouter initialEntries={[path]}>
+          <AppRoutes />
+        </MemoryRouter>
+      </AuthContext.Provider>
+    </QueryClientProvider>,
   );
 }
 

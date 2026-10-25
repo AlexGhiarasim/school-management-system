@@ -45,6 +45,52 @@
       "grades": "Grades"
     }
   },
+  "student": {
+    "profile": {
+      "description": "Your personal details and the class you belong to.",
+      "fields": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "dateOfBirth": "Date of birth",
+        "class": "Class"
+      },
+      "noClass": {
+        "title": "You are not in a class yet",
+        "description": "An administrator will add you to a class. Until then you will have no grades."
+      }
+    },
+    "grades": {
+      "description": "All your grades, your average per subject and your overall average.",
+      "summary": {
+        "average": "Overall average",
+        "grades": "Number of grades",
+        "subjects": "Subjects"
+      },
+      "bySubject": {
+        "title": "Average per subject",
+        "gradesCount_one": "{{count}} grade",
+        "gradesCount_other": "{{count}} grades"
+      },
+      "filter": {
+        "label": "Subject",
+        "all": "All subjects"
+      },
+      "table": {
+        "title": "All grades",
+        "caption": "Your grades, most recent first",
+        "subject": "Subject",
+        "grade": "Grade",
+        "date": "Date",
+        "teacher": "Teacher",
+        "noTeacher": "Administrator"
+      },
+      "empty": {
+        "title": "You have no grades yet",
+        "description": "Grades will appear here as soon as a teacher adds them."
+      }
+    }
+  },
   "pages": {
     "comingSoon": "This section will be available soon.",
     "notFound": {
