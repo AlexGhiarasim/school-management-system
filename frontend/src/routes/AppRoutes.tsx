@@ -3,6 +3,8 @@ import { AppLayout } from '../layouts/AppLayout.tsx';
 import HomePage from '../pages/HomePage.tsx';
 import NotFoundPage from '../pages/NotFoundPage.tsx';
 import PlaceholderPage from '../pages/PlaceholderPage.tsx';
+import ClassStudentsPage from '../pages/teacher/ClassStudentsPage.tsx';
+import TeacherClassesPage from '../pages/teacher/TeacherClassesPage.tsx';
 import StudentGradesPage from '../pages/student/StudentGradesPage.tsx';
 import StudentProfilePage from '../pages/student/StudentProfilePage.tsx';
 import { PublicOnly, RequireAuth, RequireRole } from './guards.tsx';
@@ -29,9 +31,10 @@ export function AppRoutes() {
           </Route>
 
           <Route element={<RequireRole role="TEACHER" />}>
+            <Route path={paths.teacher.classes} element={<TeacherClassesPage />} />
             <Route
-              path={paths.teacher.classes}
-              element={<PlaceholderPage titleKey="nav.teacher.classes" />}
+              path={paths.teacher.classStudents(':classId')}
+              element={<ClassStudentsPage />}
             />
           </Route>
 

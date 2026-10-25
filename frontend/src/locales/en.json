@@ -91,6 +91,37 @@
       }
     }
   },
+  "teacher": {
+    "classes": {
+      "description": "The classes you teach. Open a class to see its students.",
+      "students_one": "{{count}} student",
+      "students_other": "{{count}} students",
+      "open": "View students",
+      "empty": {
+        "title": "You have no classes yet",
+        "description": "An administrator will assign your classes. They will appear here."
+      }
+    },
+    "classStudents": {
+      "back": "Back to my classes",
+      "title": "Class {{name}}",
+      "description": "The students of this class, in alphabetical order.",
+      "table": {
+        "caption": "Students of the class",
+        "name": "Student",
+        "email": "Email",
+        "dateOfBirth": "Date of birth"
+      },
+      "empty": {
+        "title": "The class has no students yet",
+        "description": "Students will appear here once they are added to the class."
+      },
+      "notFound": {
+        "title": "Class not found",
+        "description": "The class does not exist or is not assigned to your account."
+      }
+    }
+  },
   "pages": {
     "comingSoon": "This section will be available soon.",
     "notFound": {

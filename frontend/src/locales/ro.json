@@ -93,6 +93,38 @@
       }
     }
   },
+  "teacher": {
+    "classes": {
+      "description": "Clasele pe care le predai. Deschide o clasă ca să îi vezi elevii.",
+      "students_one": "{{count}} elev",
+      "students_few": "{{count}} elevi",
+      "students_other": "{{count}} de elevi",
+      "open": "Vezi elevii",
+      "empty": {
+        "title": "Nu ai încă nicio clasă",
+        "description": "Un administrator îți va aloca clasele. Ele vor apărea aici."
+      }
+    },
+    "classStudents": {
+      "back": "Înapoi la clasele mele",
+      "title": "Clasa {{name}}",
+      "description": "Elevii din această clasă, în ordine alfabetică.",
+      "table": {
+        "caption": "Elevii clasei",
+        "name": "Elev",
+        "email": "Email",
+        "dateOfBirth": "Data nașterii"
+      },
+      "empty": {
+        "title": "Clasa nu are încă elevi",
+        "description": "Elevii vor apărea aici după ce sunt adăugați în clasă."
+      },
+      "notFound": {
+        "title": "Clasa nu a fost găsită",
+        "description": "Clasa nu există sau nu este alocată contului tău."
+      }
+    }
+  },
   "pages": {
     "comingSoon": "Această secțiune va fi disponibilă în curând.",
     "notFound": {

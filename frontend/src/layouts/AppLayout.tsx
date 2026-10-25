@@ -35,7 +35,7 @@ export function AppLayout() {
               <NavLink
                 key={item.to}
                 to={item.to}
-                end
+                end={item.end ?? true}
                 className={({ isActive }) =>
                   `whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100 ${
                     isActive
