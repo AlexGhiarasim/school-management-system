@@ -195,11 +195,11 @@ describe('Access control and grading (e2e)', () => {
 
     it('accepts a valid student and names with accents or hyphens', async () => {
       const response = await create({
-        firstName: '??tefan-Ionu??',
+        firstName: 'Ștefan-Ionuț',
         lastName: "O'Neill",
       }).expect(201);
 
-      expect(response.body.firstName).toBe('??tefan-Ionu??');
+      expect(response.body.firstName).toBe('Ștefan-Ionuț');
     });
 
     it('lists only the students that are not in a class on request', async () => {
@@ -237,7 +237,7 @@ describe('Access control and grading (e2e)', () => {
     it('rejects a password longer than 72 bytes', async () => {
       await create({
         email: 'h@e2e-access.test',
-        password: `${'??'.repeat(37)}1`,
+        password: `${'ă'.repeat(37)}1`,
       }).expect(400);
     });
 
