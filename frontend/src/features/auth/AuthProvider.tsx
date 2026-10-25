@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { ApiError } from '../../lib/api.ts';
+import { ApiError, setUnauthorizedHandler } from '../../lib/api.ts';
 import { clearToken, getToken, saveToken } from '../../lib/tokenStorage.ts';
 import { authService } from '../../services/authService.ts';
 import { AuthContext, type AuthStatus } from './authContext.ts';
@@ -22,6 +22,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setStatus('anonymous');
   }, []);
+
+  useEffect(() => {
+    setUnauthorizedHandler(logout);
+    return () => setUnauthorizedHandler(null);
+  }, [logout]);
 
   const startSession = useCallback(async (token: string) => {
     saveToken(token);

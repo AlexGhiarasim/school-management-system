@@ -149,9 +149,11 @@ backend.
   Deleting a profile deletes its account in the same operation.
 - **Subjects as a table.** Grades reference a subject, which keeps names
   consistent and makes averages per subject reliable.
-- **Short-lived access tokens, no refresh tokens.** This keeps the scope small. A
-  deactivated account loses access immediately, because the token is checked
-  against the database on every request.
+- **Long-lived access tokens, no refresh tokens.** A token is valid for two
+  years (`JWT_EXPIRES_IN`), so users stay signed in until they sign out. The
+  browser keeps it in local storage and the app signs out by itself when the
+  server rejects it. A deactivated account loses access immediately, because the
+  token is checked against the database on every request.
 - **Input validation.** Names accept letters, spaces, hyphens and apostrophes (2-100 characters). Passwords need 8-72 characters with at least one letter and one digit, birth dates must be between 1900 and today, and unknown fields are rejected. The frontend applies the same rules before sending a form.
 - **Rate limiting.** Login is limited to 5 attempts per minute, the rest of the
   API to 100 requests per minute.
