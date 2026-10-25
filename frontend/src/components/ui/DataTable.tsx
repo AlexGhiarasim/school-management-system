@@ -1,0 +1,83 @@
+import type { ReactNode } from 'react';
+import { EmptyState } from './EmptyState.tsx';
+import { Skeleton } from './Skeleton.tsx';
+
+export interface Column<T> {
+  key: string;
+  header: string;
+  render: (row: T) => ReactNode;
+  className?: string;
+}
+
+interface DataTableProps<T> {
+  caption: string;
+  columns: Column<T>[];
+  rows: T[];
+  rowKey: (row: T) => string | number;
+  loading?: boolean;
+  skeletonRows?: number;
+  empty?: ReactNode;
+}
+
+export function DataTable<T>({
+  caption,
+  columns,
+  rows,
+  rowKey,
+  loading = false,
+  skeletonRows = 5,
+  empty,
+}: DataTableProps<T>) {
+  const showEmpty = !loading && rows.length === 0;
+
+  return (
+    <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+      <table className="w-full text-left text-sm">
+        <caption className="sr-only">{caption}</caption>
+        <thead className="border-b border-slate-200 bg-slate-50 text-xs font-semibold tracking-wide text-slate-500 uppercase">
+          <tr>
+            {columns.map((column) => (
+              <th
+                key={column.key}
+                scope="col"
+                className={`px-4 py-3 ${column.className ?? ''}`}
+              >
+                {column.header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-100">
+          {loading &&
+            Array.from({ length: skeletonRows }, (_, index) => (
+              <tr key={index}>
+                {columns.map((column) => (
+                  <td key={column.key} className="px-4 py-3.5">
+                    <Skeleton className="h-4 w-3/4" />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          {showEmpty && (
+            <tr>
+              <td colSpan={columns.length}>{empty ?? <EmptyState />}</td>
+            </tr>
+          )}
+          {!loading &&
+            rows.map((row) => (
+              <tr key={rowKey(row)} className="transition hover:bg-slate-50">
+                {columns.map((column) => (
+                  <td
+                    key={column.key}
+                    className={`px-4 py-3.5 text-slate-700 ${column.className ?? ''}`}
+                  >
+                    {column.render(row)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}

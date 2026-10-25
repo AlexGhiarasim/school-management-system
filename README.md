@@ -126,7 +126,8 @@ npm test
 npm run test:e2e
 ```
 
-Frontend tests check the form validation rules, which mirror the backend ones: 
+Frontend tests check the form validation rules (which mirror the backend ones), the
+role guards on every route, the API client and the shared components: 
 ```bash
 cd frontend
 npm test

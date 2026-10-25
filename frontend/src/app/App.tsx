@@ -1,21 +1,28 @@
+import { QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter } from 'react-router';
 import { LoadingScreen } from '../components/layout/LoadingScreen.tsx';
+import { ToastProvider } from '../components/ui/ToastProvider.tsx';
 import { AuthProvider } from '../features/auth/AuthProvider.tsx';
 import { useAuth } from '../hooks/useAuth.ts';
-import DashboardPage from '../pages/DashboardPage.tsx';
-import HomePage from '../pages/HomePage.tsx';
+import { queryClient } from '../lib/queryClient.ts';
+import { AppRoutes } from '../routes/AppRoutes.tsx';
 
 function Screens() {
   const { status } = useAuth();
 
-  if (status === 'loading') return <LoadingScreen />;
-
-  return status === 'authenticated' ? <DashboardPage /> : <HomePage />;
+  return status === 'loading' ? <LoadingScreen /> : <AppRoutes />;
 }
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Screens />
-    </AuthProvider>
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <ToastProvider>
+          <AuthProvider>
+            <Screens />
+          </AuthProvider>
+        </ToastProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
   );
 }

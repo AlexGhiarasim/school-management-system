@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { ApiError, setUnauthorizedHandler } from '../../lib/api.ts';
 import { clearToken, getToken, saveToken } from '../../lib/tokenStorage.ts';
 import { authService } from '../../services/authService.ts';
@@ -17,11 +18,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     getToken() ? 'loading' : 'anonymous',
   );
 
+  const queryClient = useQueryClient();
+
   const logout = useCallback(() => {
     clearToken();
+    queryClient.clear();
     setUser(null);
     setStatus('anonymous');
-  }, []);
+  }, [queryClient]);
 
   useEffect(() => {
     setUnauthorizedHandler(logout);

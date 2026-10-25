@@ -61,3 +61,21 @@ export function AlertIcon() {
     </Icon>
   );
 }
+
+export function CloseIcon() {
+  return (
+    <Icon>
+      <path d="M6 6l12 12" />
+      <path d="M18 6L6 18" />
+    </Icon>
+  );
+}
+
+export function InboxIcon() {
+  return (
+    <Icon>
+      <path d="M4 13l2.5-7h11L20 13" />
+      <path d="M4 13v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5h-5a3 3 0 0 1-6 0H4Z" />
+    </Icon>
+  );
+}
