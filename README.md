@@ -1,4 +1,4 @@
-# School Management System
+﻿# School Management System
 
 Web application for managing students, teachers, classes and grades, with JWT
 authentication and role-based access control.
@@ -117,6 +117,12 @@ npm test
 npm run test:e2e
 ```
 
+Frontend tests check the form validation rules, which mirror the backend ones: 
+```bash
+cd frontend
+npm test
+```
+
 Unit tests cover the authorization and grading rules. End-to-end tests start the
 real application against MySQL and check authentication, role restrictions and
 the grading flow. They create their own data and remove it afterwards, so the
@@ -137,6 +143,7 @@ backend.
 - **Short-lived access tokens, no refresh tokens.** This keeps the scope small. A
   deactivated account loses access immediately, because the token is checked
   against the database on every request.
+- **Input validation.** Names accept letters, spaces, hyphens and apostrophes (2-100 characters). Passwords need 8-72 characters with at least one letter and one digit, birth dates must be between 1900 and today, and unknown fields are rejected. The frontend applies the same rules before sending a form.
 - **Rate limiting.** Login is limited to 5 attempts per minute, the rest of the
   API to 100 requests per minute.
 

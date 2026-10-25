@@ -1,85 +1,107 @@
-import { useState } from 'react';
+import { useRef, useState, type KeyboardEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { AuthMode } from '../types.ts';
 import { LoginForm } from './LoginForm.tsx';
 import { RegisterForm } from './RegisterForm.tsx';
 
-const TABS: { mode: AuthMode; label: string }[] = [
-  { mode: 'login', label: 'Sign in' },
-  { mode: 'register', label: 'Create account' },
-];
+const MODES: AuthMode[] = ['login', 'register'];
 
-const COPY: Record<
-  AuthMode,
-  {
-    title: string;
-    subtitle: string;
-    prompt: string;
-    action: string;
-    target: AuthMode;
-  }
-> = {
-  login: {
-    title: 'Welcome back',
-    subtitle: 'Sign in to continue.',
-    prompt: "Don't have an account?",
-    action: 'Create one',
-    target: 'register',
-  },
-  register: {
-    title: 'Create your account',
-    subtitle: 'Fill in your details to get started.',
-    prompt: 'Already have an account?',
-    action: 'Sign in',
-    target: 'login',
-  },
+const FORMS: Record<AuthMode, () => React.JSX.Element> = {
+  login: LoginForm,
+  register: RegisterForm,
 };
 
+const tabId = (mode: AuthMode) => `auth-tab-${mode}`;
+const panelId = (mode: AuthMode) => `auth-panel-${mode}`;
+
 export function AuthCard() {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<AuthMode>('login');
-  const copy = COPY[mode];
+  const tabs = useRef<Partial<Record<AuthMode, HTMLButtonElement | null>>>({});
+
+  function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+
+    event.preventDefault();
+    const next = mode === 'login' ? 'register' : 'login';
+    setMode(next);
+    tabs.current[next]?.focus();
+  }
 
   return (
-    <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl shadow-slate-200/70 ring-1 ring-slate-200">
+    <div className="w-full max-w-lg rounded-3xl bg-white/90 p-7 shadow-2xl shadow-indigo-900/10 ring-1 ring-slate-200/80 backdrop-blur">
       <div
         role="tablist"
-        aria-label="Authentication"
-        className="mb-8 grid grid-cols-2 rounded-lg bg-slate-100 p-1"
+        aria-label={t('auth.tabsLabel')}
+        className="relative mb-6 grid grid-cols-2 rounded-xl bg-slate-100 p-1"
       >
-        {TABS.map((tab) => (
+        <span
+          aria-hidden="true"
+          className={`absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-lg bg-white shadow transition-transform duration-300 ease-out ${
+            mode === 'register' ? 'translate-x-full' : ''
+          }`}
+        />
+        {MODES.map((tabMode) => (
           <button
-            key={tab.mode}
+            key={tabMode}
+            ref={(element) => {
+              tabs.current[tabMode] = element;
+            }}
+            id={tabId(tabMode)}
             type="button"
             role="tab"
-            aria-selected={mode === tab.mode}
-            onClick={() => setMode(tab.mode)}
-            className={`rounded-md px-3 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
-              mode === tab.mode
-                ? 'bg-white text-slate-900 shadow-sm'
+            aria-selected={mode === tabMode}
+            aria-controls={panelId(tabMode)}
+            tabIndex={mode === tabMode ? 0 : -1}
+            onClick={() => setMode(tabMode)}
+            onKeyDown={handleTabKeyDown}
+            className={`relative rounded-lg px-3 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100 ${
+              mode === tabMode
+                ? 'text-slate-900'
                 : 'text-slate-500 hover:text-slate-700'
             }`}
           >
-            {tab.label}
+            {t(`auth.tabs.${tabMode}`)}
           </button>
         ))}
       </div>
 
-      <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
-        {copy.title}
-      </h2>
-      <p className="mt-1 mb-6 text-sm text-slate-500">{copy.subtitle}</p>
+      <div className="flex min-h-[28rem] flex-col justify-center">
+        {MODES.map((panelMode) => {
+          const Form = FORMS[panelMode];
+          const active = mode === panelMode;
 
-      {mode === 'login' ? <LoginForm /> : <RegisterForm />}
-
-      <p className="mt-6 text-center text-sm text-slate-500">
-        {copy.prompt}{' '}
-        <button
-          type="button"
-          onClick={() => setMode(copy.target)}
-          className="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
-        >
-          {copy.action}
-        </button>
-      </p>
+          return (
+            <div
+              key={panelMode}
+              id={panelId(panelMode)}
+              role="tabpanel"
+              aria-labelledby={tabId(panelMode)}
+              className={active ? 'animate-fade-in' : 'hidden'}
+            >
+              <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+                {t(`auth.${panelMode}.title`)}
+              </h2>
+              <p className="mt-1 mb-5 text-sm text-slate-500">
+                {t(`auth.${panelMode}.subtitle`)}
+              </p>
+              <Form />
+              <p className="mt-5 text-center text-sm text-slate-500">
+                {t(`auth.${panelMode}.prompt`)}{' '}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMode(panelMode === 'login' ? 'register' : 'login')
+                  }
+                  className="font-semibold text-indigo-600 transition hover:text-indigo-500 hover:underline focus:outline-none focus-visible:underline"
+                >
+                  {t(`auth.${panelMode}.action`)}
+                </button>
+              </p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -1,50 +1,71 @@
-import { useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../../../components/ui/Button.tsx';
 import { TextField } from '../../../components/ui/TextField.tsx';
-import { isValidEmail } from '../../../utils/validators.ts';
+import { useFormState, type FormError } from '../../../hooks/useFormState.ts';
+import { usePendingAction } from '../../../hooks/usePendingAction.ts';
+import {
+  EMAIL_MAX_LENGTH,
+  isValidEmail,
+  PASSWORD_MAX_LENGTH,
+} from '../../../utils/validators.ts';
+import { FormNotice } from './FormNotice.tsx';
 
-interface LoginErrors {
-  email?: string;
-  password?: string;
+interface LoginValues {
+  email: string;
+  password: string;
+}
+
+function validate(values: LoginValues) {
+  const errors: Partial<Record<keyof LoginValues, FormError>> = {};
+
+  if (!isValidEmail(values.email)) {
+    errors.email = { key: 'auth.errors.emailInvalid' };
+  }
+  if (!values.password) {
+    errors.password = { key: 'auth.errors.passwordRequired' };
+  }
+
+  return errors;
 }
 
 export function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<LoginErrors>({});
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const nextErrors: LoginErrors = {};
-    if (!isValidEmail(email)) nextErrors.email = 'Enter a valid email address.';
-    if (!password) nextErrors.password = 'Enter your password.';
-
-    setErrors(nextErrors);
-  }
+  const { t } = useTranslation();
+  const { field, handleSubmit } = useFormState<LoginValues>(
+    { email: '', password: '' },
+    validate,
+    t,
+  );
+  const { loading, done, run } = usePendingAction();
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5">
+    <form
+      onSubmit={(event) => handleSubmit(event, run)}
+      noValidate
+      className="space-y-4"
+    >
       <TextField
-        label="Email"
+        label={t('auth.fields.email')}
         type="email"
-        name="email"
-        autoComplete="email"
-        placeholder="you@school.test"
-        value={email}
-        onChange={(event) => setEmail(event.target.value)}
-        error={errors.email}
+        autoComplete="username"
+        inputMode="email"
+        autoCapitalize="none"
+        spellCheck={false}
+        maxLength={EMAIL_MAX_LENGTH}
+        placeholder={t('auth.fields.emailPlaceholder')}
+        {...field('email')}
       />
       <TextField
-        label="Password"
+        label={t('auth.fields.password')}
         type="password"
-        name="password"
         autoComplete="current-password"
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-        error={errors.password}
+        maxLength={PASSWORD_MAX_LENGTH}
+        placeholder={t('auth.fields.passwordPlaceholder')}
+        {...field('password')}
       />
-      <Button type="submit">Sign in</Button>
+      <Button type="submit" loading={loading}>
+        {loading ? t('auth.login.submitting') : t('auth.login.submit')}
+      </Button>
+      {done && <FormNotice>{t('auth.login.notice')}</FormNotice>}
     </form>
   );
 }

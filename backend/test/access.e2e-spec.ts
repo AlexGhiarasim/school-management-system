@@ -178,4 +178,72 @@ describe('Access control and grading (e2e)', () => {
         .expect(403);
     });
   });
+
+  describe('account input validation', () => {
+    const student = {
+      firstName: 'Maria',
+      lastName: 'Popescu',
+      email: 'validation@e2e-access.test',
+      password: 'Password123',
+      dateOfBirth: '2010-05-17',
+    };
+    const create = (changes: Record<string, unknown>) =>
+      http()
+        .post('/api/students')
+        .set('Authorization', as('admin'))
+        .send({ ...student, ...changes });
+
+    it('accepts a valid student and names with accents or hyphens', async () => {
+      const response = await create({
+        firstName: 'Ștefan-Ionuț',
+        lastName: "O'Neill",
+      }).expect(201);
+
+      expect(response.body.firstName).toBe('Ștefan-Ionuț');
+    });
+
+    it('rejects names with digits, symbols or a single character', async () => {
+      await create({ email: 'a@e2e-access.test', firstName: 'Maria1' }).expect(
+        400,
+      );
+      await create({ email: 'b@e2e-access.test', lastName: '<script>' }).expect(
+        400,
+      );
+      await create({ email: 'c@e2e-access.test', firstName: 'M' }).expect(400);
+    });
+
+    it('rejects passwords without a letter or a digit', async () => {
+      await create({
+        email: 'd@e2e-access.test',
+        password: 'onlyletters',
+      }).expect(400);
+      await create({ email: 'e@e2e-access.test', password: '12345678' }).expect(
+        400,
+      );
+    });
+
+    it('rejects a password longer than 72 bytes', async () => {
+      await create({
+        email: 'h@e2e-access.test',
+        password: `${'ă'.repeat(37)}1`,
+      }).expect(400);
+    });
+
+    it('rejects an email that is too long', async () => {
+      const email = `${'a'.repeat(250)}@e2e-access.test`;
+
+      await create({ email }).expect(400);
+    });
+
+    it('rejects a birth date in the future or before 1900', async () => {
+      await create({
+        email: 'f@e2e-access.test',
+        dateOfBirth: '2999-01-01',
+      }).expect(400);
+      await create({
+        email: 'g@e2e-access.test',
+        dateOfBirth: '1800-01-01',
+      }).expect(400);
+    });
+  });
 });

@@ -1,0 +1,85 @@
+{
+  "common": {
+    "appName": "Sistem de management școlar",
+    "showPassword": "Arată parola",
+    "hidePassword": "Ascunde parola",
+    "language": "Limba"
+  },
+  "landing": {
+    "badge": "Clase, note și oameni",
+    "headline": "Tot ce are nevoie școala ta, într-un singur loc.",
+    "subtitle": "O singură autentificare pentru toți. Ce poți face depinde de rolul contului tău.",
+    "roles": {
+      "teacher": {
+        "name": "Profesori",
+        "description": "Urmărește clasele tale și introdu note pentru elevii tăi."
+      },
+      "student": {
+        "name": "Elevi",
+        "description": "Vezi clasa, notele și media ta."
+      }
+    }
+  },
+  "auth": {
+    "tabsLabel": "Autentificare",
+    "tabs": {
+      "login": "Autentificare",
+      "register": "Creează cont"
+    },
+    "login": {
+      "title": "Bine ai revenit",
+      "subtitle": "Autentifică-te pentru a continua către contul tău.",
+      "prompt": "Nu ai cont?",
+      "action": "Creează unul",
+      "submit": "Autentificare",
+      "submitting": "Se autentifică",
+      "notice": "Autentificarea nu este conectată încă la API."
+    },
+    "register": {
+      "title": "Creează-ți contul",
+      "subtitle": "Înscrie-te ca elev.",
+      "prompt": "Ai deja cont?",
+      "action": "Autentifică-te",
+      "submit": "Creează cont",
+      "submitting": "Se creează contul",
+      "notice": "Înregistrarea nu este conectată încă la API."
+    },
+    "fields": {
+      "email": "Email",
+      "emailPlaceholder": "ex. maria.popescu@scoala.test",
+      "password": "Parolă",
+      "passwordPlaceholder": "Parola ta",
+      "newPasswordPlaceholder": "Cel puțin 8 caractere",
+      "confirmPassword": "Confirmă parola",
+      "confirmPasswordPlaceholder": "Repetă parola",
+      "firstName": "Prenume",
+      "firstNamePlaceholder": "ex. Maria",
+      "lastName": "Nume",
+      "lastNamePlaceholder": "ex. Popescu",
+      "dateOfBirth": "Data nașterii"
+    },
+    "errors": {
+      "emailInvalid": "Introdu un email valid.",
+      "passwordRequired": "Introdu parola.",
+      "firstNameRequired": "Introdu prenumele.",
+      "lastNameRequired": "Introdu numele.",
+      "nameTooShort": "Minim {{min}} caractere.",
+      "nameTooLong": "Maxim {{max}} de caractere.",
+      "nameInvalid": "Caractere nepermise.",
+      "dateOfBirthInvalid": "Introdu o dată validă.",
+      "passwordTooShort": "Minim {{min}} caractere.",
+      "passwordTooLong": "Maxim {{max}} de caractere.",
+      "passwordWeak": "Adaugă o literă și o cifră.",
+      "confirmRequired": "Confirmă parola.",
+      "passwordsMismatch": "Parolele nu coincid."
+    },
+    "strength": {
+      "label": "Puterea parolei: {{level}}",
+      "tooShort": "prea scurtă",
+      "weak": "slabă",
+      "fair": "medie",
+      "good": "bună",
+      "strong": "puternică"
+    }
+  }
+}
