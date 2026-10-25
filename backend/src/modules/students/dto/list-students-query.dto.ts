@@ -1,5 +1,5 @@
-import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsBoolean, IsInt, IsOptional, IsString } from 'class-validator';
 import { PaginationQueryDto } from '../../../common/dto/pagination-query.dto.js';
 
 export class ListStudentsQueryDto extends PaginationQueryDto {
@@ -11,4 +11,11 @@ export class ListStudentsQueryDto extends PaginationQueryDto {
   @Type(() => Number)
   @IsInt()
   classId?: number;
+
+  @IsOptional()
+  @Transform(
+    ({ value }: { value: unknown }) => value === 'true' || value === true,
+  )
+  @IsBoolean()
+  unassigned?: boolean;
 }

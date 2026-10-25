@@ -41,6 +41,7 @@ export class StudentsService {
   async findAll(query: ListStudentsQueryDto) {
     const where: Prisma.StudentWhereInput = {
       ...(query.classId !== undefined && { classId: query.classId }),
+      ...(query.unassigned && { classId: null }),
       ...(query.search && {
         OR: [
           { firstName: { contains: query.search } },

@@ -17,6 +17,13 @@ export const teacherUser: CurrentUser = {
   profile: { id: 5, firstName: 'Laura', lastName: 'Marin' },
 };
 
+export const adminUser: CurrentUser = {
+  id: 1,
+  email: 'admin@school.test',
+  role: 'ADMIN',
+  profile: null,
+};
+
 interface RenderPageOptions {
   path: string;
   route: string;

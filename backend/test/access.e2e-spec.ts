@@ -202,6 +202,18 @@ describe('Access control and grading (e2e)', () => {
       expect(response.body.firstName).toBe('Ștefan-Ionuț');
     });
 
+    it('lists only the students that are not in a class on request', async () => {
+      await create({ email: 'unassigned@e2e-access.test' }).expect(201);
+
+      const response = await http()
+        .get('/api/students?unassigned=true&search=unassigned@e2e-access')
+        .set('Authorization', as('admin'))
+        .expect(200);
+
+      expect(response.body.meta.total).toBe(1);
+      expect(response.body.data[0].class).toBeNull();
+    });
+
     it('rejects names with digits, symbols or a single character', async () => {
       await create({ email: 'a@e2e-access.test', firstName: 'Maria1' }).expect(
         400,
