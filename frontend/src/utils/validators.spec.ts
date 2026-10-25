@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   hasLetterAndDigit,
+  isValidGradeDate,
+  isValidGradeValue,
   isNameTooLong,
   isPasswordTooLong,
   isValidBirthDate,
@@ -79,4 +81,20 @@ describe('isValidBirthDate', () => {
       expect(isValidBirthDate(value)).toBe(false);
     },
   );
+});
+
+describe('grade rules', () => {
+  it.each(['1', '5', '10'])('accepts a grade of %s', (value) => {
+    expect(isValidGradeValue(value)).toBe(true);
+  });
+
+  it.each(['', '0', '11', '7.5', 'abc', ' '])('rejects %j', (value) => {
+    expect(isValidGradeValue(value)).toBe(false);
+  });
+
+  it('accepts today and past dates but not future ones', () => {
+    expect(isValidGradeDate('2026-01-15')).toBe(true);
+    expect(isValidGradeDate('2999-01-01')).toBe(false);
+    expect(isValidGradeDate('')).toBe(false);
+  });
 });

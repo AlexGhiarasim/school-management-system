@@ -8,6 +8,9 @@ export const paths = {
   },
   teacher: {
     classes: '/teacher/classes',
+    classStudents: (classId: number | string) => `/teacher/classes/${classId}`,
+    studentGrades: (classId: number | string, studentId: number | string) =>
+      `/teacher/classes/${classId}/students/${studentId}`,
   },
   admin: {
     students: '/admin/students',
