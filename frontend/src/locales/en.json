@@ -1,0 +1,101 @@
+{
+  "common": {
+    "appName": "School Management System",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "language": "Language",
+    "loading": "Loading"
+  },
+  "dashboard": {
+    "greeting": "Hello, {{name}}",
+    "signedInAs": "You are signed in as {{role}}.",
+    "placeholder": "Your account content will appear here.",
+    "signOut": "Sign out",
+    "roles": {
+      "ADMIN": "an administrator",
+      "TEACHER": "a teacher",
+      "STUDENT": "a student"
+    }
+  },
+  "landing": {
+    "badge": "Classes, grades and people",
+    "headline": "Everything your school needs, in one place.",
+    "subtitle": "One sign in for everyone. What you can do depends on the role of your account.",
+    "roles": {
+      "teacher": {
+        "name": "Teachers",
+        "description": "Follow your classes and record grades for your students."
+      },
+      "student": {
+        "name": "Students",
+        "description": "See your class, your grades and your average."
+      }
+    }
+  },
+  "auth": {
+    "tabsLabel": "Authentication",
+    "tabs": {
+      "login": "Sign in",
+      "register": "Create account"
+    },
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to continue to your account.",
+      "prompt": "Don't have an account?",
+      "action": "Create one",
+      "submit": "Sign in",
+      "submitting": "Signing in"
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Sign up as a student.",
+      "prompt": "Already have an account?",
+      "action": "Sign in",
+      "submit": "Create account",
+      "submitting": "Creating account"
+    },
+    "fields": {
+      "email": "Email",
+      "emailPlaceholder": "e.g. mary.smith@school.test",
+      "password": "Password",
+      "passwordPlaceholder": "Your password",
+      "newPasswordPlaceholder": "At least 8 characters",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Repeat the password",
+      "firstName": "First name",
+      "firstNamePlaceholder": "e.g. Mary",
+      "lastName": "Last name",
+      "lastNamePlaceholder": "e.g. Smith",
+      "dateOfBirth": "Date of birth"
+    },
+    "errors": {
+      "emailInvalid": "Enter a valid email.",
+      "passwordRequired": "Enter your password.",
+      "firstNameRequired": "Enter your first name.",
+      "lastNameRequired": "Enter your last name.",
+      "nameTooShort": "At least {{min}} characters.",
+      "nameTooLong": "At most {{max}} characters.",
+      "nameInvalid": "Invalid characters.",
+      "dateOfBirthInvalid": "Enter a valid date.",
+      "passwordTooShort": "At least {{min}} characters.",
+      "passwordTooLong": "At most {{max}} characters.",
+      "passwordWeak": "Add a letter and a digit.",
+      "confirmRequired": "Confirm your password.",
+      "passwordsMismatch": "Passwords do not match.",
+      "invalidCredentials": "Incorrect email or password.",
+      "network": "We cannot reach the server. Please try again.",
+      "tooManyRequests": "Too many attempts. Please try again in a minute.",
+      "emailTaken": "An account with this email already exists.",
+      "serverInvalid": "The data is not valid. Please check the fields.",
+      "unexpected": "Something went wrong. Please try again."
+    },
+    "strength": {
+      "label": "Password strength: {{level}}",
+      "tooShort": "too short",
+      "weak": "weak",
+      "fair": "fair",
+      "good": "good",
+      "strong": "strong"
+    }
+  }
+}

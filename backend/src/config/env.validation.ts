@@ -36,7 +36,7 @@ class EnvironmentVariables {
 
   @IsString()
   @IsNotEmpty()
-  JWT_EXPIRES_IN: string = '1h';
+  JWT_EXPIRES_IN: string = '730d';
 
   @IsUrl({ require_tld: false })
   CORS_ORIGIN: string = 'http://localhost:5173';

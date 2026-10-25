@@ -8,12 +8,15 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "format": "prettier --write src/**/*.{ts,tsx,css}"
+    "format": "prettier --write src/**/*.{ts,tsx,css}",
+    "test": "vitest run"
   },
   "dependencies": {
     "@tailwindcss/vite": "4.3.3",
+    "i18next": "26.5.10",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
+    "react-i18next": "17.1.8",
     "tailwindcss": "4.3.3"
   },
   "devDependencies": {
@@ -24,6 +27,7 @@
     "oxlint": "^1.88.0",
     "prettier": "3.4.2",
     "typescript": "~6.0.3",
-    "vite": "^8.3.4"
+    "vite": "^8.3.4",
+    "vitest": "4.1.12"
   }
 }
