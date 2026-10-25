@@ -25,8 +25,10 @@ function getInitialLanguage(): Language {
 }
 
 function applyLanguage(language: string) {
-  document.documentElement.lang = language;
-  document.title = i18n.t('common.appName');
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = language;
+    document.title = i18n.t('common.appName');
+  }
 
   try {
     localStorage.setItem(STORAGE_KEY, language);
