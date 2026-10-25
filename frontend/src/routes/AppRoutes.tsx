@@ -22,7 +22,10 @@ export function AppRoutes() {
               path={paths.student.profile}
               element={<StudentProfilePage />}
             />
-            <Route path={paths.student.grades} element={<StudentGradesPage />} />
+            <Route
+              path={paths.student.grades}
+              element={<StudentGradesPage />}
+            />
           </Route>
 
           <Route element={<RequireRole role="TEACHER" />}>

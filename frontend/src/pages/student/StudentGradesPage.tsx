@@ -32,9 +32,7 @@ export default function StudentGradesPage() {
       key: 'subject',
       header: t('student.grades.table.subject'),
       render: (grade) => (
-        <span className="font-medium text-slate-900">
-          {grade.subject.name}
-        </span>
+        <span className="font-medium text-slate-900">{grade.subject.name}</span>
       ),
     },
     {
