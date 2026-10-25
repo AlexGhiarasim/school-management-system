@@ -45,3 +45,23 @@ export function isValidBirthDate(value: string): boolean {
     date <= new Date()
   );
 }
+
+export const GRADE_MIN = 1;
+export const GRADE_MAX = 10;
+
+export function isValidGradeValue(value: string): boolean {
+  const grade = Number(value);
+
+  return (
+    value.trim() !== '' &&
+    Number.isInteger(grade) &&
+    grade >= GRADE_MIN &&
+    grade <= GRADE_MAX
+  );
+}
+
+export function isValidGradeDate(value: string): boolean {
+  const date = new Date(value);
+
+  return !Number.isNaN(date.getTime()) && date <= new Date();
+}

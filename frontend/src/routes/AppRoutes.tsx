@@ -5,6 +5,7 @@ import NotFoundPage from '../pages/NotFoundPage.tsx';
 import PlaceholderPage from '../pages/PlaceholderPage.tsx';
 import ClassStudentsPage from '../pages/teacher/ClassStudentsPage.tsx';
 import TeacherClassesPage from '../pages/teacher/TeacherClassesPage.tsx';
+import TeacherStudentGradesPage from '../pages/teacher/TeacherStudentGradesPage.tsx';
 import StudentGradesPage from '../pages/student/StudentGradesPage.tsx';
 import StudentProfilePage from '../pages/student/StudentProfilePage.tsx';
 import { PublicOnly, RequireAuth, RequireRole } from './guards.tsx';
@@ -31,10 +32,17 @@ export function AppRoutes() {
           </Route>
 
           <Route element={<RequireRole role="TEACHER" />}>
-            <Route path={paths.teacher.classes} element={<TeacherClassesPage />} />
+            <Route
+              path={paths.teacher.classes}
+              element={<TeacherClassesPage />}
+            />
             <Route
               path={paths.teacher.classStudents(':classId')}
               element={<ClassStudentsPage />}
+            />
+            <Route
+              path={paths.teacher.studentGrades(':classId', ':studentId')}
+              element={<TeacherStudentGradesPage />}
             />
           </Route>
 

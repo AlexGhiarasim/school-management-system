@@ -36,7 +36,7 @@ export function useFormState<T extends object>(
       name,
       value: values[name] as string,
       error: error ? t(error.key, error.values) : undefined,
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setValues((current) => ({ ...current, [name]: event.target.value }));
         clearError(name);
       },

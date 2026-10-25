@@ -110,7 +110,9 @@
         "caption": "Students of the class",
         "name": "Student",
         "email": "Email",
-        "dateOfBirth": "Date of birth"
+        "dateOfBirth": "Date of birth",
+        "grades": "Grades",
+        "viewGrades": "View grades"
       },
       "empty": {
         "title": "The class has no students yet",
@@ -120,7 +122,61 @@
         "title": "Class not found",
         "description": "The class does not exist or is not assigned to your account."
       }
+    },
+    "studentGrades": {
+      "back": "Back to the class",
+      "title": "Student grades",
+      "description": "You can add grades and edit the ones you gave.",
+      "add": "Add grade",
+      "filter": {
+        "label": "Subject",
+        "all": "All subjects"
+      },
+      "table": {
+        "caption": "The grades of the student, most recent first",
+        "subject": "Subject",
+        "grade": "Grade",
+        "date": "Date",
+        "teacher": "Teacher",
+        "noTeacher": "Administrator",
+        "actions": "Actions",
+        "edit": "Edit"
+      },
+      "empty": {
+        "title": "The student has no grades yet",
+        "description": "Add the first grade with the button above."
+      },
+      "notFound": {
+        "title": "Student not found",
+        "description": "The student is not part of this class."
+      }
+    },
+    "gradeForm": {
+      "addTitle": "Add a grade",
+      "editTitle": "Edit the grade",
+      "subject": "Subject",
+      "subjectPlaceholder": "Choose the subject",
+      "grade": "Grade",
+      "gradePlaceholder": "Choose the grade",
+      "date": "Date",
+      "save": "Save",
+      "saving": "Saving",
+      "added": "The grade was added.",
+      "updated": "The grade was updated.",
+      "errors": {
+        "subjectRequired": "Choose the subject.",
+        "gradeInvalid": "Choose a grade from 1 to 10.",
+        "dateInvalid": "Enter a valid date."
+      }
     }
+  },
+  "errors": {
+    "network": "We cannot reach the server. Please try again.",
+    "invalid": "The data is not valid. Please check the fields.",
+    "forbidden": "You are not allowed to do this.",
+    "notFound": "The item was not found.",
+    "tooManyRequests": "Too many attempts. Please try again in a minute.",
+    "unexpected": "Something went wrong. Please try again."
   },
   "pages": {
     "comingSoon": "This section will be available soon.",

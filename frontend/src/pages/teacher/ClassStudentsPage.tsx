@@ -47,6 +47,19 @@ export default function ClassStudentsPage() {
       header: t('teacher.classStudents.table.dateOfBirth'),
       render: (student) => formatDate(student.dateOfBirth, language),
     },
+    {
+      key: 'grades',
+      header: t('teacher.classStudents.table.grades'),
+      className: 'text-right',
+      render: (student) => (
+        <Link
+          to={paths.teacher.studentGrades(classId, student.id)}
+          className="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
+        >
+          {t('teacher.classStudents.table.viewGrades')}
+        </Link>
+      ),
+    },
   ];
 
   const notFound =
