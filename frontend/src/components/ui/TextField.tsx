@@ -5,6 +5,7 @@ import {
   type ReactNode,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import { fieldClasses } from './fieldClasses.ts';
 import { EyeIcon, EyeOffIcon } from './icons.tsx';
 
 interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -41,13 +42,7 @@ export function TextField({
           type={isPassword && visible ? 'text' : type}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
-          className={`block w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:ring-4 ${
-            isPassword ? 'pr-11' : ''
-          } ${
-            error
-              ? 'border-red-400 focus:border-red-500 focus:ring-red-100'
-              : 'border-slate-300 focus:border-indigo-500 focus:ring-indigo-100'
-          } ${className}`}
+          className={`${fieldClasses(!!error)} ${isPassword ? 'pr-11' : ''} ${className}`}
           {...props}
         />
         {children}

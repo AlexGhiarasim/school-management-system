@@ -4,7 +4,23 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "language": "Language",
-    "loading": "Loading"
+    "loading": "Loading",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "retry": "Try again",
+    "errorTitle": "We could not load the data",
+    "errorDescription": "There was a problem talking to the server.",
+    "emptyTitle": "Nothing to show",
+    "emptyDescription": "There are no records yet.",
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "summary": "Page {{page}} of {{totalPages}}",
+      "total_one": "{{count}} record",
+      "total_other": "{{count}} records"
+    }
   },
   "roles": {
     "ADMIN": "Administrator",

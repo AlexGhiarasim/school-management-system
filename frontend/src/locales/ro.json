@@ -4,7 +4,24 @@
     "showPassword": "Arată parola",
     "hidePassword": "Ascunde parola",
     "language": "Limba",
-    "loading": "Se încarcă"
+    "loading": "Se încarcă",
+    "cancel": "Anulează",
+    "confirm": "Confirmă",
+    "close": "Închide",
+    "retry": "Încearcă din nou",
+    "errorTitle": "Nu am putut încărca datele",
+    "errorDescription": "A apărut o problemă la comunicarea cu serverul.",
+    "emptyTitle": "Nimic de afișat",
+    "emptyDescription": "Nu există încă nicio înregistrare.",
+    "pagination": {
+      "label": "Paginare",
+      "previous": "Înapoi",
+      "next": "Înainte",
+      "summary": "Pagina {{page}} din {{totalPages}}",
+      "total_one": "{{count}} înregistrare",
+      "total_few": "{{count}} înregistrări",
+      "total_other": "{{count}} de înregistrări"
+    }
   },
   "roles": {
     "ADMIN": "Administrator",

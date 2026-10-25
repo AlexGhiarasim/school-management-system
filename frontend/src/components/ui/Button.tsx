@@ -3,7 +3,7 @@ import { SpinnerIcon } from './icons.tsx';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'danger';
   fullWidth?: boolean;
 }
 
@@ -12,6 +12,8 @@ const VARIANTS = {
     'bg-indigo-600 text-white shadow-lg shadow-indigo-600/25 hover:bg-indigo-500 hover:shadow-indigo-600/40 focus-visible:ring-indigo-200',
   secondary:
     'bg-white text-slate-700 shadow-sm ring-1 ring-slate-300 hover:bg-slate-50 focus-visible:ring-indigo-200',
+  danger:
+    'bg-red-600 text-white shadow-lg shadow-red-600/25 hover:bg-red-500 focus-visible:ring-red-200',
 };
 
 export function Button({

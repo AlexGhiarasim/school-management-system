@@ -1,14 +1,12 @@
 import { useTranslation } from 'react-i18next';
+import { PageHeader } from '../components/layout/PageHeader.tsx';
 
 export default function PlaceholderPage({ titleKey }: { titleKey: string }) {
   const { t } = useTranslation();
 
   return (
     <section>
-      <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-        {t(titleKey)}
-      </h1>
-      <p className="mt-3 text-slate-600">{t('pages.comingSoon')}</p>
+      <PageHeader title={t(titleKey)} description={t('pages.comingSoon')} />
     </section>
   );
 }
