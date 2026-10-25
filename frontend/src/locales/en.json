@@ -45,6 +45,22 @@
       "grades": "Grades"
     }
   },
+  "student": {
+    "profile": {
+      "description": "Your personal details and the class you belong to.",
+      "fields": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "dateOfBirth": "Date of birth",
+        "class": "Class"
+      },
+      "noClass": {
+        "title": "You are not in a class yet",
+        "description": "An administrator will add you to a class. Until then you will have no grades."
+      }
+    }
+  },
   "pages": {
     "comingSoon": "This section will be available soon.",
     "notFound": {

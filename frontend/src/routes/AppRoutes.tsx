@@ -3,6 +3,7 @@ import { AppLayout } from '../layouts/AppLayout.tsx';
 import HomePage from '../pages/HomePage.tsx';
 import NotFoundPage from '../pages/NotFoundPage.tsx';
 import PlaceholderPage from '../pages/PlaceholderPage.tsx';
+import StudentProfilePage from '../pages/student/StudentProfilePage.tsx';
 import { PublicOnly, RequireAuth, RequireRole } from './guards.tsx';
 import { paths } from './paths.ts';
 
@@ -18,7 +19,7 @@ export function AppRoutes() {
           <Route element={<RequireRole role="STUDENT" />}>
             <Route
               path={paths.student.profile}
-              element={<PlaceholderPage titleKey="nav.student.profile" />}
+              element={<StudentProfilePage />}
             />
             <Route
               path={paths.student.grades}

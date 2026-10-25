@@ -46,6 +46,22 @@
       "grades": "Note"
     }
   },
+  "student": {
+    "profile": {
+      "description": "Datele tale personale și clasa din care faci parte.",
+      "fields": {
+        "firstName": "Prenume",
+        "lastName": "Nume",
+        "email": "Email",
+        "dateOfBirth": "Data nașterii",
+        "class": "Clasa"
+      },
+      "noClass": {
+        "title": "Nu ești încă într-o clasă",
+        "description": "Un administrator te va adăuga într-o clasă. Până atunci nu vei avea note."
+      }
+    }
+  },
   "pages": {
     "comingSoon": "Această secțiune va fi disponibilă în curând.",
     "notFound": {
