@@ -2,9 +2,15 @@ import {
   NO_CLASS_FILTER,
   type AdminClass,
   type AdminStudent,
+  type AdminSubject,
+  type AdminTeacher,
+  type ListFilters,
   type NewStudentInput,
-  type StudentInput,
+  type NewTeacherInput,
   type StudentFilters,
+  type StudentInput,
+  type SubjectInput,
+  type TeacherInput,
 } from '../features/admin/types.ts';
 import { authedRequest } from '../lib/authedRequest.ts';
 import type { Paginated } from '../types/api.ts';
@@ -12,14 +18,21 @@ import type { Paginated } from '../types/api.ts';
 const PAGE_SIZE = 20;
 const MAX_PAGE_SIZE = 100;
 
+function listQuery({ page, search }: ListFilters): string {
+  const query = new URLSearchParams({
+    page: String(page),
+    limit: String(PAGE_SIZE),
+  });
+
+  if (search.trim()) query.set('search', search.trim());
+
+  return query.toString();
+}
+
 export const adminService = {
   listStudents: ({ page, search, classFilter }: StudentFilters) => {
-    const query = new URLSearchParams({
-      page: String(page),
-      limit: String(PAGE_SIZE),
-    });
+    const query = new URLSearchParams(listQuery({ page, search }));
 
-    if (search.trim()) query.set('search', search.trim());
     if (classFilter === NO_CLASS_FILTER) query.set('unassigned', 'true');
     else if (classFilter) query.set('classId', classFilter);
 
@@ -46,4 +59,34 @@ export const adminService = {
 
   listClasses: () =>
     authedRequest<Paginated<AdminClass>>(`/classes?limit=${MAX_PAGE_SIZE}`),
+
+  listTeachers: (filters: ListFilters) =>
+    authedRequest<Paginated<AdminTeacher>>(`/teachers?${listQuery(filters)}`),
+
+  createTeacher: (input: NewTeacherInput) =>
+    authedRequest<AdminTeacher>('/teachers', { method: 'POST', body: input }),
+
+  updateTeacher: (id: number, input: TeacherInput) =>
+    authedRequest<AdminTeacher>(`/teachers/${id}`, {
+      method: 'PATCH',
+      body: input,
+    }),
+
+  deleteTeacher: (id: number) =>
+    authedRequest<null>(`/teachers/${id}`, { method: 'DELETE' }),
+
+  listSubjects: (filters: ListFilters) =>
+    authedRequest<Paginated<AdminSubject>>(`/subjects?${listQuery(filters)}`),
+
+  createSubject: (input: SubjectInput) =>
+    authedRequest<AdminSubject>('/subjects', { method: 'POST', body: input }),
+
+  updateSubject: (id: number, input: SubjectInput) =>
+    authedRequest<AdminSubject>(`/subjects/${id}`, {
+      method: 'PATCH',
+      body: input,
+    }),
+
+  deleteSubject: (id: number) =>
+    authedRequest<null>(`/subjects/${id}`, { method: 'DELETE' }),
 };

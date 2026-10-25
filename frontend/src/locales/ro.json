@@ -176,6 +176,80 @@
     }
   },
   "admin": {
+    "teachers": {
+      "description": "Toți profesorii școlii. Caută după nume sau email.",
+      "add": "Adaugă profesor",
+      "search": "Caută",
+      "searchPlaceholder": "Nume sau email",
+      "form": {
+        "createTitle": "Adaugă un profesor",
+        "editTitle": "Modifică profesorul",
+        "created": "Profesorul a fost adăugat.",
+        "updated": "Profesorul a fost modificat."
+      },
+      "delete": {
+        "title": "Șterge profesorul",
+        "message": "Ștergi profesorul {{name}}? Se șterge contul lui, clasele lui rămân fără profesor, iar notele date de el rămân. Acțiunea nu poate fi anulată.",
+        "confirm": "Șterge",
+        "deleted": "Profesorul a fost șters."
+      },
+      "table": {
+        "caption": "Profesorii școlii",
+        "name": "Profesor",
+        "email": "Email",
+        "actions": "Acțiuni",
+        "edit": "Modifică",
+        "delete": "Șterge"
+      },
+      "empty": {
+        "title": "Nu există încă niciun profesor",
+        "description": "Adaugă primul profesor cu butonul de mai sus."
+      },
+      "noResults": {
+        "title": "Niciun rezultat",
+        "description": "Nu am găsit profesori pentru căutarea aleasă."
+      }
+    },
+    "subjects": {
+      "description": "Materiile la care se pot da note.",
+      "add": "Adaugă materie",
+      "search": "Caută",
+      "searchPlaceholder": "Numele materiei",
+      "form": {
+        "createTitle": "Adaugă o materie",
+        "editTitle": "Modifică materia",
+        "name": "Numele materiei",
+        "namePlaceholder": "ex. Matematică",
+        "created": "Materia a fost adăugată.",
+        "updated": "Materia a fost modificată.",
+        "errors": {
+          "nameRequired": "Introdu numele materiei.",
+          "nameTaken": "Există deja o materie cu acest nume."
+        }
+      },
+      "delete": {
+        "title": "Șterge materia",
+        "message": "Ștergi materia {{name}}?",
+        "confirm": "Șterge",
+        "deleted": "Materia a fost ștearsă.",
+        "inUse": "Materia are note și nu poate fi ștearsă."
+      },
+      "table": {
+        "caption": "Materiile școlii",
+        "name": "Materia",
+        "actions": "Acțiuni",
+        "edit": "Modifică",
+        "delete": "Șterge"
+      },
+      "empty": {
+        "title": "Nu există încă nicio materie",
+        "description": "Adaugă prima materie cu butonul de mai sus."
+      },
+      "noResults": {
+        "title": "Niciun rezultat",
+        "description": "Nu am găsit materii pentru căutarea aleasă."
+      }
+    },
     "students": {
       "description": "Toți elevii școlii. Caută după nume sau email și filtrează după clasă.",
       "add": "Adaugă elev",

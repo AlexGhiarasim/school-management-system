@@ -7,9 +7,14 @@ import {
 import { adminService } from '../../services/adminService.ts';
 import type {
   AdminStudent,
+  AdminTeacher,
+  ListFilters,
   NewStudentInput,
+  NewTeacherInput,
   StudentFilters,
   StudentInput,
+  SubjectInput,
+  TeacherInput,
 } from './types.ts';
 
 export const adminKeys = {
@@ -17,7 +22,22 @@ export const adminKeys = {
   studentList: (filters: StudentFilters) =>
     ['admin', 'students', filters] as const,
   classes: ['admin', 'classes'] as const,
+  teachers: ['admin', 'teachers'] as const,
+  teacherList: (filters: ListFilters) =>
+    ['admin', 'teachers', filters] as const,
+  subjects: ['admin', 'subjects'] as const,
+  subjectList: (filters: ListFilters) =>
+    ['admin', 'subjects', filters] as const,
 };
+
+function useRefresh(...keys: (readonly unknown[])[]) {
+  const queryClient = useQueryClient();
+
+  return () =>
+    Promise.all(
+      keys.map((queryKey) => queryClient.invalidateQueries({ queryKey })),
+    );
+}
 
 export function useAdminStudents(filters: StudentFilters) {
   return useQuery({
@@ -35,23 +55,13 @@ export function useAdminClasses() {
   });
 }
 
-function useRefreshAdminData() {
-  const queryClient = useQueryClient();
-
-  return () =>
-    Promise.all([
-      queryClient.invalidateQueries({ queryKey: adminKeys.students }),
-      queryClient.invalidateQueries({ queryKey: adminKeys.classes }),
-    ]);
-}
-
 interface SaveStudentVariables {
   student: AdminStudent | null;
   input: NewStudentInput | (StudentInput & { classId?: number });
 }
 
 export function useSaveStudent() {
-  const refresh = useRefreshAdminData();
+  const refresh = useRefresh(adminKeys.students, adminKeys.classes);
 
   return useMutation({
     mutationFn: async ({ student, input }: SaveStudentVariables) => {
@@ -71,10 +81,78 @@ export function useSaveStudent() {
 }
 
 export function useDeleteStudent() {
-  const refresh = useRefreshAdminData();
+  const refresh = useRefresh(adminKeys.students, adminKeys.classes);
 
   return useMutation({
     mutationFn: (id: number) => adminService.deleteStudent(id),
+    onSuccess: refresh,
+  });
+}
+
+export function useAdminTeachers(filters: ListFilters) {
+  return useQuery({
+    queryKey: adminKeys.teacherList(filters),
+    queryFn: () => adminService.listTeachers(filters),
+    placeholderData: keepPreviousData,
+  });
+}
+
+interface SaveTeacherVariables {
+  teacher: AdminTeacher | null;
+  input: TeacherInput | NewTeacherInput;
+}
+
+export function useSaveTeacher() {
+  const refresh = useRefresh(adminKeys.teachers, adminKeys.classes);
+
+  return useMutation({
+    mutationFn: ({ teacher, input }: SaveTeacherVariables) =>
+      teacher
+        ? adminService.updateTeacher(teacher.id, input)
+        : adminService.createTeacher(input as NewTeacherInput),
+    onSuccess: refresh,
+  });
+}
+
+export function useDeleteTeacher() {
+  const refresh = useRefresh(adminKeys.teachers, adminKeys.classes);
+
+  return useMutation({
+    mutationFn: (id: number) => adminService.deleteTeacher(id),
+    onSuccess: refresh,
+  });
+}
+
+export function useAdminSubjects(filters: ListFilters) {
+  return useQuery({
+    queryKey: adminKeys.subjectList(filters),
+    queryFn: () => adminService.listSubjects(filters),
+    placeholderData: keepPreviousData,
+  });
+}
+
+interface SaveSubjectVariables {
+  subjectId: number | null;
+  input: SubjectInput;
+}
+
+export function useSaveSubject() {
+  const refresh = useRefresh(adminKeys.subjects);
+
+  return useMutation({
+    mutationFn: ({ subjectId, input }: SaveSubjectVariables) =>
+      subjectId
+        ? adminService.updateSubject(subjectId, input)
+        : adminService.createSubject(input),
+    onSuccess: refresh,
+  });
+}
+
+export function useDeleteSubject() {
+  const refresh = useRefresh(adminKeys.subjects);
+
+  return useMutation({
+    mutationFn: (id: number) => adminService.deleteSubject(id),
     onSuccess: refresh,
   });
 }

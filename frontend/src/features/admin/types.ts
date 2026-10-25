@@ -34,3 +34,35 @@ export interface NewStudentInput extends StudentInput {
   password: string;
   classId?: number;
 }
+
+export interface ListFilters {
+  page: number;
+  search: string;
+}
+
+export interface AdminTeacher {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  isActive: boolean;
+}
+
+export interface TeacherInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+export interface NewTeacherInput extends TeacherInput {
+  password: string;
+}
+
+export interface AdminSubject {
+  id: number;
+  name: string;
+}
+
+export interface SubjectInput {
+  name: string;
+}

@@ -4,6 +4,8 @@ import HomePage from '../pages/HomePage.tsx';
 import NotFoundPage from '../pages/NotFoundPage.tsx';
 import PlaceholderPage from '../pages/PlaceholderPage.tsx';
 import AdminStudentsPage from '../pages/admin/AdminStudentsPage.tsx';
+import AdminSubjectsPage from '../pages/admin/AdminSubjectsPage.tsx';
+import AdminTeachersPage from '../pages/admin/AdminTeachersPage.tsx';
 import ClassStudentsPage from '../pages/teacher/ClassStudentsPage.tsx';
 import TeacherClassesPage from '../pages/teacher/TeacherClassesPage.tsx';
 import TeacherStudentGradesPage from '../pages/teacher/TeacherStudentGradesPage.tsx';
@@ -54,7 +56,7 @@ export function AppRoutes() {
             />
             <Route
               path={paths.admin.teachers}
-              element={<PlaceholderPage titleKey="nav.admin.teachers" />}
+              element={<AdminTeachersPage />}
             />
             <Route
               path={paths.admin.classes}
@@ -62,7 +64,7 @@ export function AppRoutes() {
             />
             <Route
               path={paths.admin.subjects}
-              element={<PlaceholderPage titleKey="nav.admin.subjects" />}
+              element={<AdminSubjectsPage />}
             />
             <Route
               path={paths.admin.grades}

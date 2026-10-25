@@ -173,6 +173,80 @@
     }
   },
   "admin": {
+    "teachers": {
+      "description": "All the teachers of the school. Search by name or email.",
+      "add": "Add teacher",
+      "search": "Search",
+      "searchPlaceholder": "Name or email",
+      "form": {
+        "createTitle": "Add a teacher",
+        "editTitle": "Edit the teacher",
+        "created": "The teacher was added.",
+        "updated": "The teacher was updated."
+      },
+      "delete": {
+        "title": "Delete the teacher",
+        "message": "Delete the teacher {{name}}? Their account is deleted, their classes are left without a teacher and the grades they gave are kept. This cannot be undone.",
+        "confirm": "Delete",
+        "deleted": "The teacher was deleted."
+      },
+      "table": {
+        "caption": "The teachers of the school",
+        "name": "Teacher",
+        "email": "Email",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "empty": {
+        "title": "There are no teachers yet",
+        "description": "Add the first teacher with the button above."
+      },
+      "noResults": {
+        "title": "No results",
+        "description": "We found no teachers for the chosen search."
+      }
+    },
+    "subjects": {
+      "description": "The subjects grades can be given for.",
+      "add": "Add subject",
+      "search": "Search",
+      "searchPlaceholder": "Subject name",
+      "form": {
+        "createTitle": "Add a subject",
+        "editTitle": "Edit the subject",
+        "name": "Subject name",
+        "namePlaceholder": "e.g. Mathematics",
+        "created": "The subject was added.",
+        "updated": "The subject was updated.",
+        "errors": {
+          "nameRequired": "Enter the name of the subject.",
+          "nameTaken": "A subject with this name already exists."
+        }
+      },
+      "delete": {
+        "title": "Delete the subject",
+        "message": "Delete the subject {{name}}?",
+        "confirm": "Delete",
+        "deleted": "The subject was deleted.",
+        "inUse": "The subject has grades and cannot be deleted."
+      },
+      "table": {
+        "caption": "The subjects of the school",
+        "name": "Subject",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "empty": {
+        "title": "There are no subjects yet",
+        "description": "Add the first subject with the button above."
+      },
+      "noResults": {
+        "title": "No results",
+        "description": "We found no subjects for the chosen search."
+      }
+    },
     "students": {
       "description": "All the students of the school. Search by name or email and filter by class.",
       "add": "Add student",
