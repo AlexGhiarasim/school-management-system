@@ -27,7 +27,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
       onClick={(event) => {
         if (event.target === dialog.current) onClose();
       }}
-      className="m-auto w-full max-w-md rounded-2xl bg-white p-0 shadow-2xl ring-1 ring-slate-200 backdrop:bg-slate-900/40"
+      className="m-auto w-full max-w-lg rounded-2xl bg-white p-0 shadow-2xl ring-1 ring-slate-200 backdrop:bg-slate-900/40"
     >
       {open && (
         <div className="p-6">

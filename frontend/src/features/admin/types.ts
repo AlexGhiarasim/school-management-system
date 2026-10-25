@@ -22,3 +22,15 @@ export interface StudentFilters {
   search: string;
   classFilter: string;
 }
+
+export interface StudentInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  dateOfBirth: string;
+}
+
+export interface NewStudentInput extends StudentInput {
+  password: string;
+  classId?: number;
+}

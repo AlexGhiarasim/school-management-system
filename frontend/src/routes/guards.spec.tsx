@@ -3,12 +3,20 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
+import { ToastProvider } from '../components/ui/ToastProvider.tsx';
 import {
   AuthContext,
   type AuthContextValue,
 } from '../features/auth/authContext.ts';
 import type { CurrentUser, Role } from '../features/auth/types.ts';
 import { AppRoutes } from './AppRoutes.tsx';
+
+vi.mock('../services/adminService.ts', () => ({
+  adminService: {
+    listStudents: () => new Promise(() => undefined),
+    listClasses: () => new Promise(() => undefined),
+  },
+}));
 
 vi.mock('../services/studentService.ts', () => ({
   studentService: {
@@ -41,11 +49,13 @@ function renderAt(path: string, user: CurrentUser | null) {
 
   return render(
     <QueryClientProvider client={client}>
-      <AuthContext.Provider value={value}>
-        <MemoryRouter initialEntries={[path]}>
-          <AppRoutes />
-        </MemoryRouter>
-      </AuthContext.Provider>
+      <ToastProvider>
+        <AuthContext.Provider value={value}>
+          <MemoryRouter initialEntries={[path]}>
+            <AppRoutes />
+          </MemoryRouter>
+        </AuthContext.Provider>
+      </ToastProvider>
     </QueryClientProvider>,
   );
 }

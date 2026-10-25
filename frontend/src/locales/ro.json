@@ -6,6 +6,8 @@
     "language": "Limba",
     "loading": "Se încarcă",
     "cancel": "Anulează",
+    "save": "Salvează",
+    "saving": "Se salvează",
     "confirm": "Confirmă",
     "close": "Închide",
     "retry": "Încearcă din nou",
@@ -176,6 +178,20 @@
   "admin": {
     "students": {
       "description": "Toți elevii școlii. Caută după nume sau email și filtrează după clasă.",
+      "add": "Adaugă elev",
+      "form": {
+        "createTitle": "Adaugă un elev",
+        "editTitle": "Modifică elevul",
+        "noClass": "Fără clasă",
+        "created": "Elevul a fost adăugat.",
+        "updated": "Elevul a fost modificat."
+      },
+      "delete": {
+        "title": "Șterge elevul",
+        "message": "Ștergi elevul {{name}}? Se vor șterge și contul și toate notele lui. Acțiunea nu poate fi anulată.",
+        "confirm": "Șterge",
+        "deleted": "Elevul a fost șters."
+      },
       "search": "Caută",
       "searchPlaceholder": "Nume sau email",
       "filter": {
@@ -189,7 +205,10 @@
         "email": "Email",
         "dateOfBirth": "Data nașterii",
         "class": "Clasa",
-        "noClass": "Fără clasă"
+        "noClass": "Fără clasă",
+        "actions": "Acțiuni",
+        "edit": "Modifică",
+        "delete": "Șterge"
       },
       "empty": {
         "title": "Nu există încă niciun elev",

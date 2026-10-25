@@ -6,6 +6,8 @@
     "language": "Language",
     "loading": "Loading",
     "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving",
     "confirm": "Confirm",
     "close": "Close",
     "retry": "Try again",
@@ -173,6 +175,20 @@
   "admin": {
     "students": {
       "description": "All the students of the school. Search by name or email and filter by class.",
+      "add": "Add student",
+      "form": {
+        "createTitle": "Add a student",
+        "editTitle": "Edit the student",
+        "noClass": "Without a class",
+        "created": "The student was added.",
+        "updated": "The student was updated."
+      },
+      "delete": {
+        "title": "Delete the student",
+        "message": "Delete the student {{name}}? Their account and all their grades will be deleted too. This cannot be undone.",
+        "confirm": "Delete",
+        "deleted": "The student was deleted."
+      },
       "search": "Search",
       "searchPlaceholder": "Name or email",
       "filter": {
@@ -186,7 +202,10 @@
         "email": "Email",
         "dateOfBirth": "Date of birth",
         "class": "Class",
-        "noClass": "No class"
+        "noClass": "No class",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete"
       },
       "empty": {
         "title": "There are no students yet",
