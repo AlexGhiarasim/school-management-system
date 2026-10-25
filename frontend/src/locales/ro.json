@@ -6,15 +6,35 @@
     "language": "Limba",
     "loading": "Se încarcă"
   },
-  "dashboard": {
-    "greeting": "Bună, {{name}}",
-    "signedInAs": "Ești autentificat ca {{role}}.",
-    "placeholder": "Conținutul contului tău va apărea aici.",
+  "roles": {
+    "ADMIN": "Administrator",
+    "TEACHER": "Profesor",
+    "STUDENT": "Elev"
+  },
+  "nav": {
+    "main": "Navigare principală",
     "signOut": "Deconectare",
-    "roles": {
-      "ADMIN": "administrator",
-      "TEACHER": "profesor",
-      "STUDENT": "elev"
+    "student": {
+      "profile": "Profilul meu",
+      "grades": "Notele mele"
+    },
+    "teacher": {
+      "classes": "Clasele mele"
+    },
+    "admin": {
+      "students": "Elevi",
+      "teachers": "Profesori",
+      "classes": "Clase",
+      "subjects": "Materii",
+      "grades": "Note"
+    }
+  },
+  "pages": {
+    "comingSoon": "Această secțiune va fi disponibilă în curând.",
+    "notFound": {
+      "title": "Pagina nu a fost găsită",
+      "description": "Adresa pe care ai încercat să o deschizi nu există.",
+      "back": "Înapoi la pagina principală"
     }
   },
   "landing": {

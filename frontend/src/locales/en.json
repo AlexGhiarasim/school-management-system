@@ -6,15 +6,35 @@
     "language": "Language",
     "loading": "Loading"
   },
-  "dashboard": {
-    "greeting": "Hello, {{name}}",
-    "signedInAs": "You are signed in as {{role}}.",
-    "placeholder": "Your account content will appear here.",
+  "roles": {
+    "ADMIN": "Administrator",
+    "TEACHER": "Teacher",
+    "STUDENT": "Student"
+  },
+  "nav": {
+    "main": "Main navigation",
     "signOut": "Sign out",
-    "roles": {
-      "ADMIN": "an administrator",
-      "TEACHER": "a teacher",
-      "STUDENT": "a student"
+    "student": {
+      "profile": "My profile",
+      "grades": "My grades"
+    },
+    "teacher": {
+      "classes": "My classes"
+    },
+    "admin": {
+      "students": "Students",
+      "teachers": "Teachers",
+      "classes": "Classes",
+      "subjects": "Subjects",
+      "grades": "Grades"
+    }
+  },
+  "pages": {
+    "comingSoon": "This section will be available soon.",
+    "notFound": {
+      "title": "Page not found",
+      "description": "The address you tried to open does not exist.",
+      "back": "Back to the main page"
     }
   },
   "landing": {

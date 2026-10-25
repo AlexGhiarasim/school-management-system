@@ -1,21 +1,21 @@
+import { BrowserRouter } from 'react-router';
 import { LoadingScreen } from '../components/layout/LoadingScreen.tsx';
 import { AuthProvider } from '../features/auth/AuthProvider.tsx';
 import { useAuth } from '../hooks/useAuth.ts';
-import DashboardPage from '../pages/DashboardPage.tsx';
-import HomePage from '../pages/HomePage.tsx';
+import { AppRoutes } from '../routes/AppRoutes.tsx';
 
 function Screens() {
   const { status } = useAuth();
 
-  if (status === 'loading') return <LoadingScreen />;
-
-  return status === 'authenticated' ? <DashboardPage /> : <HomePage />;
+  return status === 'loading' ? <LoadingScreen /> : <AppRoutes />;
 }
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Screens />
-    </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <Screens />
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
