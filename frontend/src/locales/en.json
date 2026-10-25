@@ -170,6 +170,34 @@
       }
     }
   },
+  "admin": {
+    "students": {
+      "description": "All the students of the school. Search by name or email and filter by class.",
+      "search": "Search",
+      "searchPlaceholder": "Name or email",
+      "filter": {
+        "label": "Class",
+        "all": "All classes",
+        "noClass": "Without a class"
+      },
+      "table": {
+        "caption": "The students of the school",
+        "name": "Student",
+        "email": "Email",
+        "dateOfBirth": "Date of birth",
+        "class": "Class",
+        "noClass": "No class"
+      },
+      "empty": {
+        "title": "There are no students yet",
+        "description": "Students that are created or sign up will appear here."
+      },
+      "noResults": {
+        "title": "No results",
+        "description": "We found no students for the chosen search or filter."
+      }
+    }
+  },
   "errors": {
     "network": "We cannot reach the server. Please try again.",
     "invalid": "The data is not valid. Please check the fields.",

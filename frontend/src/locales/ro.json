@@ -173,6 +173,34 @@
       }
     }
   },
+  "admin": {
+    "students": {
+      "description": "Toți elevii școlii. Caută după nume sau email și filtrează după clasă.",
+      "search": "Caută",
+      "searchPlaceholder": "Nume sau email",
+      "filter": {
+        "label": "Clasa",
+        "all": "Toate clasele",
+        "noClass": "Fără clasă"
+      },
+      "table": {
+        "caption": "Elevii școlii",
+        "name": "Elev",
+        "email": "Email",
+        "dateOfBirth": "Data nașterii",
+        "class": "Clasa",
+        "noClass": "Fără clasă"
+      },
+      "empty": {
+        "title": "Nu există încă niciun elev",
+        "description": "Elevii creați sau înscriși vor apărea aici."
+      },
+      "noResults": {
+        "title": "Niciun rezultat",
+        "description": "Nu am găsit elevi pentru căutarea sau filtrul ales."
+      }
+    }
+  },
   "errors": {
     "network": "Nu ne putem conecta la server. Încearcă din nou.",
     "invalid": "Datele nu sunt valide. Verifică câmpurile.",
