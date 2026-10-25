@@ -10,3 +10,10 @@ export function formatDate(value: string, language: string): string {
     timeZone: 'UTC',
   }).format(date);
 }
+
+export function formatNumber(value: number, language: string): string {
+  return new Intl.NumberFormat(language, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
