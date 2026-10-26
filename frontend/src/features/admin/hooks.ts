@@ -10,6 +10,8 @@ import type {
   AdminStudent,
   AdminTeacher,
   ClassInput,
+  GradeEditInput,
+  GradeFilters,
   ListFilters,
   NewStudentInput,
   NewTeacherInput,
@@ -27,6 +29,11 @@ export const adminKeys = {
   classList: (filters: ListFilters) =>
     ['admin', 'classes', 'list', filters] as const,
   allTeachers: ['admin', 'teachers', 'all'] as const,
+  grades: ['admin', 'grades'] as const,
+  gradeList: (filters: GradeFilters) => ['admin', 'grades', filters] as const,
+  allSubjects: ['admin', 'subjects', 'all'] as const,
+  allClassStudents: (classId: number) =>
+    ['admin', 'classes', classId, 'students', 'all'] as const,
   classStudents: (classId: number, page: number) =>
     ['admin', 'classes', classId, 'students', page] as const,
   teachers: ['admin', 'teachers'] as const,
@@ -238,6 +245,49 @@ export function useAssignStudentClass() {
   return useMutation({
     mutationFn: ({ studentId, classId }: AssignClassVariables) =>
       adminService.assignStudentClass(studentId, classId),
+    onSuccess: refresh,
+  });
+}
+
+export function useAdminGrades(filters: GradeFilters) {
+  return useQuery({
+    queryKey: adminKeys.gradeList(filters),
+    queryFn: () => adminService.listGrades(filters),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useAllSubjects() {
+  return useQuery({
+    queryKey: adminKeys.allSubjects,
+    queryFn: adminService.listAllSubjects,
+    staleTime: 60_000,
+  });
+}
+
+export function useAllClassStudents(classId: number | null) {
+  return useQuery({
+    queryKey: adminKeys.allClassStudents(classId ?? 0),
+    queryFn: () => adminService.listAllClassStudents(classId ?? 0),
+    enabled: classId !== null,
+  });
+}
+
+export function useEditGrade() {
+  const refresh = useRefresh(adminKeys.grades);
+
+  return useMutation({
+    mutationFn: ({ id, input }: { id: number; input: GradeEditInput }) =>
+      adminService.updateGrade(id, input),
+    onSuccess: refresh,
+  });
+}
+
+export function useDeleteGrade() {
+  const refresh = useRefresh(adminKeys.grades);
+
+  return useMutation({
+    mutationFn: (id: number) => adminService.deleteGrade(id),
     onSuccess: refresh,
   });
 }

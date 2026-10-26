@@ -176,6 +176,44 @@
     }
   },
   "admin": {
+    "grades": {
+      "description": "Toate notele școlii. Filtrează după clasă, elev sau materie și modifică sau șterge orice notă.",
+      "editFor": "Nota elevului {{name}}",
+      "filter": {
+        "class": "Clasa",
+        "allClasses": "Toate clasele",
+        "student": "Elevul",
+        "allStudents": "Toți elevii",
+        "subject": "Materia",
+        "allSubjects": "Toate materiile"
+      },
+      "table": {
+        "caption": "Notele școlii, de la cea mai recentă",
+        "student": "Elev",
+        "subject": "Materia",
+        "grade": "Nota",
+        "date": "Data",
+        "teacher": "Profesor",
+        "noTeacher": "Administrator",
+        "actions": "Acțiuni",
+        "edit": "Modifică",
+        "delete": "Șterge"
+      },
+      "delete": {
+        "title": "Șterge nota",
+        "message": "Ștergi nota {{grade}} la {{subject}} a elevului {{name}}? Acțiunea nu poate fi anulată.",
+        "confirm": "Șterge",
+        "deleted": "Nota a fost ștearsă."
+      },
+      "empty": {
+        "title": "Nu există încă nicio notă",
+        "description": "Notele adăugate de profesori vor apărea aici."
+      },
+      "noResults": {
+        "title": "Nicio notă găsită",
+        "description": "Nu există note pentru filtrele alese."
+      }
+    },
     "classStudents": {
       "back": "Înapoi la clase",
       "title": "Clasa {{name}}",
@@ -395,7 +433,6 @@
     "unexpected": "A apărut o eroare. Încearcă din nou."
   },
   "pages": {
-    "comingSoon": "Această secțiune va fi disponibilă în curând.",
     "notFound": {
       "title": "Pagina nu a fost găsită",
       "description": "Adresa pe care ai încercat să o deschizi nu există.",

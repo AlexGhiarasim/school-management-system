@@ -173,6 +173,44 @@
     }
   },
   "admin": {
+    "grades": {
+      "description": "All the grades of the school. Filter by class, student or subject and edit or delete any grade.",
+      "editFor": "Grade of the student {{name}}",
+      "filter": {
+        "class": "Class",
+        "allClasses": "All classes",
+        "student": "Student",
+        "allStudents": "All students",
+        "subject": "Subject",
+        "allSubjects": "All subjects"
+      },
+      "table": {
+        "caption": "The grades of the school, most recent first",
+        "student": "Student",
+        "subject": "Subject",
+        "grade": "Grade",
+        "date": "Date",
+        "teacher": "Teacher",
+        "noTeacher": "Administrator",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "delete": {
+        "title": "Delete the grade",
+        "message": "Delete the grade {{grade}} in {{subject}} of the student {{name}}? This cannot be undone.",
+        "confirm": "Delete",
+        "deleted": "The grade was deleted."
+      },
+      "empty": {
+        "title": "There are no grades yet",
+        "description": "Grades added by teachers will appear here."
+      },
+      "noResults": {
+        "title": "No grades found",
+        "description": "There are no grades for the chosen filters."
+      }
+    },
     "classStudents": {
       "back": "Back to the classes",
       "title": "Class {{name}}",
@@ -391,7 +429,6 @@
     "unexpected": "Something went wrong. Please try again."
   },
   "pages": {
-    "comingSoon": "This section will be available soon.",
     "notFound": {
       "title": "Page not found",
       "description": "The address you tried to open does not exist.",

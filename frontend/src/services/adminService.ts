@@ -1,7 +1,10 @@
 import {
   NO_CLASS_FILTER,
   type AdminClass,
+  type AdminGrade,
   type ClassInput,
+  type GradeEditInput,
+  type GradeFilters,
   type AdminStudent,
   type AdminSubject,
   type AdminTeacher,
@@ -89,6 +92,36 @@ export const adminService = {
   listClassStudents: (classId: number, page: number) =>
     authedRequest<Paginated<ClassStudent>>(
       `/classes/${classId}/students?page=${page}&limit=${PAGE_SIZE}`,
+    ),
+
+  listGrades: ({ page, classId, studentId, subjectId }: GradeFilters) => {
+    const query = new URLSearchParams({
+      page: String(page),
+      limit: String(PAGE_SIZE),
+    });
+
+    if (classId) query.set('classId', classId);
+    if (studentId) query.set('studentId', studentId);
+    if (subjectId) query.set('subjectId', subjectId);
+
+    return authedRequest<Paginated<AdminGrade>>(`/grades?${query}`);
+  },
+
+  updateGrade: (id: number, input: GradeEditInput) =>
+    authedRequest<AdminGrade>(`/grades/${id}`, {
+      method: 'PATCH',
+      body: input,
+    }),
+
+  deleteGrade: (id: number) =>
+    authedRequest<null>(`/grades/${id}`, { method: 'DELETE' }),
+
+  listAllSubjects: () =>
+    authedRequest<Paginated<AdminSubject>>(`/subjects?limit=${MAX_PAGE_SIZE}`),
+
+  listAllClassStudents: (classId: number) =>
+    authedRequest<Paginated<ClassStudent>>(
+      `/classes/${classId}/students?limit=${MAX_PAGE_SIZE}`,
     ),
 
   listTeachers: (filters: ListFilters) =>
