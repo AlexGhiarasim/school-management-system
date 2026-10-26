@@ -173,6 +173,52 @@
     }
   },
   "admin": {
+    "classes": {
+      "description": "The classes of the school, with the teacher of each and the number of students.",
+      "add": "Add class",
+      "search": "Search",
+      "searchPlaceholder": "Class name",
+      "studentCount_one": "{{count}} student",
+      "studentCount_other": "{{count}} students",
+      "form": {
+        "createTitle": "Add a class",
+        "editTitle": "Edit the class",
+        "name": "Class name",
+        "namePlaceholder": "e.g. 9A",
+        "teacher": "Teacher",
+        "noTeacher": "No teacher",
+        "created": "The class was added.",
+        "updated": "The class was updated.",
+        "errors": {
+          "nameRequired": "Enter the name of the class.",
+          "nameTaken": "A class with this name already exists."
+        }
+      },
+      "delete": {
+        "title": "Delete the class",
+        "message": "Delete the class {{name}}? Its students are left without a class and their grades are kept.",
+        "confirm": "Delete",
+        "deleted": "The class was deleted."
+      },
+      "table": {
+        "caption": "The classes of the school",
+        "name": "Class",
+        "teacher": "Teacher",
+        "noTeacher": "No teacher",
+        "students": "Students",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "empty": {
+        "title": "There are no classes yet",
+        "description": "Add the first class with the button above."
+      },
+      "noResults": {
+        "title": "No results",
+        "description": "We found no classes for the chosen search."
+      }
+    },
     "teachers": {
       "description": "All the teachers of the school. Search by name or email.",
       "add": "Add teacher",

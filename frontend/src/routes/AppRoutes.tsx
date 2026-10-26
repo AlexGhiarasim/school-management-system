@@ -3,6 +3,7 @@ import { AppLayout } from '../layouts/AppLayout.tsx';
 import HomePage from '../pages/HomePage.tsx';
 import NotFoundPage from '../pages/NotFoundPage.tsx';
 import PlaceholderPage from '../pages/PlaceholderPage.tsx';
+import AdminClassesPage from '../pages/admin/AdminClassesPage.tsx';
 import AdminStudentsPage from '../pages/admin/AdminStudentsPage.tsx';
 import AdminSubjectsPage from '../pages/admin/AdminSubjectsPage.tsx';
 import AdminTeachersPage from '../pages/admin/AdminTeachersPage.tsx';
@@ -58,10 +59,7 @@ export function AppRoutes() {
               path={paths.admin.teachers}
               element={<AdminTeachersPage />}
             />
-            <Route
-              path={paths.admin.classes}
-              element={<PlaceholderPage titleKey="nav.admin.classes" />}
-            />
+            <Route path={paths.admin.classes} element={<AdminClassesPage />} />
             <Route
               path={paths.admin.subjects}
               element={<AdminSubjectsPage />}

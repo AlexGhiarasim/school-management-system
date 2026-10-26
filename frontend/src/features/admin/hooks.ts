@@ -6,8 +6,10 @@ import {
 } from '@tanstack/react-query';
 import { adminService } from '../../services/adminService.ts';
 import type {
+  AdminClass,
   AdminStudent,
   AdminTeacher,
+  ClassInput,
   ListFilters,
   NewStudentInput,
   NewTeacherInput,
@@ -22,6 +24,9 @@ export const adminKeys = {
   studentList: (filters: StudentFilters) =>
     ['admin', 'students', filters] as const,
   classes: ['admin', 'classes'] as const,
+  classList: (filters: ListFilters) =>
+    ['admin', 'classes', 'list', filters] as const,
+  allTeachers: ['admin', 'teachers', 'all'] as const,
   teachers: ['admin', 'teachers'] as const,
   teacherList: (filters: ListFilters) =>
     ['admin', 'teachers', filters] as const,
@@ -153,6 +158,60 @@ export function useDeleteSubject() {
 
   return useMutation({
     mutationFn: (id: number) => adminService.deleteSubject(id),
+    onSuccess: refresh,
+  });
+}
+
+export function useAdminClassPage(filters: ListFilters) {
+  return useQuery({
+    queryKey: adminKeys.classList(filters),
+    queryFn: () => adminService.listClassPage(filters),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useAllTeachers() {
+  return useQuery({
+    queryKey: adminKeys.allTeachers,
+    queryFn: adminService.listAllTeachers,
+    staleTime: 60_000,
+  });
+}
+
+interface SaveClassVariables {
+  schoolClass: AdminClass | null;
+  input: ClassInput;
+}
+
+export function useSaveClass() {
+  const refresh = useRefresh(adminKeys.classes, adminKeys.students);
+
+  return useMutation({
+    mutationFn: async ({ schoolClass, input }: SaveClassVariables) => {
+      if (!schoolClass) {
+        return adminService.createClass(input);
+      }
+
+      if (schoolClass.name !== input.name) {
+        await adminService.updateClass(schoolClass.id, input.name);
+      }
+
+      if ((schoolClass.teacher?.id ?? null) !== (input.teacherId ?? null)) {
+        await adminService.assignClassTeacher(
+          schoolClass.id,
+          input.teacherId ?? null,
+        );
+      }
+    },
+    onSuccess: refresh,
+  });
+}
+
+export function useDeleteClass() {
+  const refresh = useRefresh(adminKeys.classes, adminKeys.students);
+
+  return useMutation({
+    mutationFn: (id: number) => adminService.deleteClass(id),
     onSuccess: refresh,
   });
 }

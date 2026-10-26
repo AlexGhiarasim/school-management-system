@@ -66,3 +66,8 @@ export interface AdminSubject {
 export interface SubjectInput {
   name: string;
 }
+
+export interface ClassInput {
+  name: string;
+  teacherId?: number;
+}

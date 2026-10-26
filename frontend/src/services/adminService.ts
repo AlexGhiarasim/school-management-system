@@ -1,6 +1,7 @@
 import {
   NO_CLASS_FILTER,
   type AdminClass,
+  type ClassInput,
   type AdminStudent,
   type AdminSubject,
   type AdminTeacher,
@@ -59,6 +60,30 @@ export const adminService = {
 
   listClasses: () =>
     authedRequest<Paginated<AdminClass>>(`/classes?limit=${MAX_PAGE_SIZE}`),
+
+  listClassPage: (filters: ListFilters) =>
+    authedRequest<Paginated<AdminClass>>(`/classes?${listQuery(filters)}`),
+
+  createClass: (input: ClassInput) =>
+    authedRequest<AdminClass>('/classes', { method: 'POST', body: input }),
+
+  updateClass: (id: number, name: string) =>
+    authedRequest<AdminClass>(`/classes/${id}`, {
+      method: 'PATCH',
+      body: { name },
+    }),
+
+  assignClassTeacher: (id: number, teacherId: number | null) =>
+    authedRequest<AdminClass>(`/classes/${id}/teacher`, {
+      method: 'PATCH',
+      body: { teacherId },
+    }),
+
+  deleteClass: (id: number) =>
+    authedRequest<null>(`/classes/${id}`, { method: 'DELETE' }),
+
+  listAllTeachers: () =>
+    authedRequest<Paginated<AdminTeacher>>(`/teachers?limit=${MAX_PAGE_SIZE}`),
 
   listTeachers: (filters: ListFilters) =>
     authedRequest<Paginated<AdminTeacher>>(`/teachers?${listQuery(filters)}`),

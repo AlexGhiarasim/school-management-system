@@ -176,6 +176,53 @@
     }
   },
   "admin": {
+    "classes": {
+      "description": "Clasele școlii, cu profesorul fiecăreia și numărul de elevi.",
+      "add": "Adaugă clasă",
+      "search": "Caută",
+      "searchPlaceholder": "Numele clasei",
+      "studentCount_one": "{{count}} elev",
+      "studentCount_few": "{{count}} elevi",
+      "studentCount_other": "{{count}} de elevi",
+      "form": {
+        "createTitle": "Adaugă o clasă",
+        "editTitle": "Modifică clasa",
+        "name": "Numele clasei",
+        "namePlaceholder": "ex. 9A",
+        "teacher": "Profesor",
+        "noTeacher": "Fără profesor",
+        "created": "Clasa a fost adăugată.",
+        "updated": "Clasa a fost modificată.",
+        "errors": {
+          "nameRequired": "Introdu numele clasei.",
+          "nameTaken": "Există deja o clasă cu acest nume."
+        }
+      },
+      "delete": {
+        "title": "Șterge clasa",
+        "message": "Ștergi clasa {{name}}? Elevii ei rămân fără clasă, iar notele lor nu se șterg.",
+        "confirm": "Șterge",
+        "deleted": "Clasa a fost ștearsă."
+      },
+      "table": {
+        "caption": "Clasele școlii",
+        "name": "Clasa",
+        "teacher": "Profesor",
+        "noTeacher": "Fără profesor",
+        "students": "Elevi",
+        "actions": "Acțiuni",
+        "edit": "Modifică",
+        "delete": "Șterge"
+      },
+      "empty": {
+        "title": "Nu există încă nicio clasă",
+        "description": "Adaugă prima clasă cu butonul de mai sus."
+      },
+      "noResults": {
+        "title": "Niciun rezultat",
+        "description": "Nu am găsit clase pentru căutarea aleasă."
+      }
+    },
     "teachers": {
       "description": "Toți profesorii școlii. Caută după nume sau email.",
       "add": "Adaugă profesor",
