@@ -40,6 +40,10 @@ class EnvironmentVariables {
 
   @IsUrl({ require_tld: false })
   CORS_ORIGIN: string = 'http://localhost:5173';
+
+  @IsInt()
+  @Min(0)
+  TRUST_PROXY: number = 0;
 }
 
 export function validateEnv(config: Record<string, unknown>) {

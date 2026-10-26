@@ -13,6 +13,24 @@ authentication and role-based access control.
 
 ## Getting started
 
+### Run everything with Docker
+
+Prerequisite: Docker.
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+The first start builds the images, creates the database tables and loads the
+sample data. When the containers are healthy, open `http://localhost:8080`. The
+API documentation is at `http://localhost:8080/api/docs`. Run
+`docker compose down` to stop and `docker compose down -v` to also delete the
+database. Change `JWT_SECRET` in `.env` before using the stack for anything
+other than a demo.
+
+### Run for development
+
 Prerequisites: Node.js 24, npm and Docker.
 
 1. Create the environment file:
@@ -24,7 +42,7 @@ Prerequisites: Node.js 24, npm and Docker.
 2. Start MySQL:
 
    ```bash
-   docker compose up -d
+   docker compose up -d mysql
    ```
 
 3. Install, migrate, seed and start the backend:
@@ -138,7 +156,8 @@ real application against MySQL and check authentication, role restrictions and
 the grading flow. They create their own data and remove it afterwards, so the
 database must be running and migrated. GitHub Actions runs lint, build, unit
 tests, migrations and end-to-end tests on every pull request that touches the
-backend.
+backend, and the checks and tests of the frontend on every pull request that
+touches the frontend. Another workflow builds the Docker images.
 
 ## Design decisions
 
