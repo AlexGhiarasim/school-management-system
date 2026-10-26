@@ -2,7 +2,9 @@ import { Route, Routes } from 'react-router';
 import { AppLayout } from '../layouts/AppLayout.tsx';
 import HomePage from '../pages/HomePage.tsx';
 import NotFoundPage from '../pages/NotFoundPage.tsx';
-import PlaceholderPage from '../pages/PlaceholderPage.tsx';
+import AdminClassesPage from '../pages/admin/AdminClassesPage.tsx';
+import AdminClassStudentsPage from '../pages/admin/AdminClassStudentsPage.tsx';
+import AdminGradesPage from '../pages/admin/AdminGradesPage.tsx';
 import AdminStudentsPage from '../pages/admin/AdminStudentsPage.tsx';
 import AdminSubjectsPage from '../pages/admin/AdminSubjectsPage.tsx';
 import AdminTeachersPage from '../pages/admin/AdminTeachersPage.tsx';
@@ -58,18 +60,16 @@ export function AppRoutes() {
               path={paths.admin.teachers}
               element={<AdminTeachersPage />}
             />
+            <Route path={paths.admin.classes} element={<AdminClassesPage />} />
             <Route
-              path={paths.admin.classes}
-              element={<PlaceholderPage titleKey="nav.admin.classes" />}
+              path={paths.admin.classStudents(':classId')}
+              element={<AdminClassStudentsPage />}
             />
             <Route
               path={paths.admin.subjects}
               element={<AdminSubjectsPage />}
             />
-            <Route
-              path={paths.admin.grades}
-              element={<PlaceholderPage titleKey="nav.admin.grades" />}
-            />
+            <Route path={paths.admin.grades} element={<AdminGradesPage />} />
           </Route>
         </Route>
       </Route>

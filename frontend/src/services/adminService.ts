@@ -1,6 +1,10 @@
 import {
   NO_CLASS_FILTER,
   type AdminClass,
+  type AdminGrade,
+  type ClassInput,
+  type GradeEditInput,
+  type GradeFilters,
   type AdminStudent,
   type AdminSubject,
   type AdminTeacher,
@@ -12,6 +16,7 @@ import {
   type SubjectInput,
   type TeacherInput,
 } from '../features/admin/types.ts';
+import type { ClassStudent } from '../features/teacher/types.ts';
 import { authedRequest } from '../lib/authedRequest.ts';
 import type { Paginated } from '../types/api.ts';
 
@@ -59,6 +64,65 @@ export const adminService = {
 
   listClasses: () =>
     authedRequest<Paginated<AdminClass>>(`/classes?limit=${MAX_PAGE_SIZE}`),
+
+  listClassPage: (filters: ListFilters) =>
+    authedRequest<Paginated<AdminClass>>(`/classes?${listQuery(filters)}`),
+
+  createClass: (input: ClassInput) =>
+    authedRequest<AdminClass>('/classes', { method: 'POST', body: input }),
+
+  updateClass: (id: number, name: string) =>
+    authedRequest<AdminClass>(`/classes/${id}`, {
+      method: 'PATCH',
+      body: { name },
+    }),
+
+  assignClassTeacher: (id: number, teacherId: number | null) =>
+    authedRequest<AdminClass>(`/classes/${id}/teacher`, {
+      method: 'PATCH',
+      body: { teacherId },
+    }),
+
+  deleteClass: (id: number) =>
+    authedRequest<null>(`/classes/${id}`, { method: 'DELETE' }),
+
+  listAllTeachers: () =>
+    authedRequest<Paginated<AdminTeacher>>(`/teachers?limit=${MAX_PAGE_SIZE}`),
+
+  listClassStudents: (classId: number, page: number) =>
+    authedRequest<Paginated<ClassStudent>>(
+      `/classes/${classId}/students?page=${page}&limit=${PAGE_SIZE}`,
+    ),
+
+  listGrades: ({ page, classId, studentId, subjectId }: GradeFilters) => {
+    const query = new URLSearchParams({
+      page: String(page),
+      limit: String(PAGE_SIZE),
+    });
+
+    if (classId) query.set('classId', classId);
+    if (studentId) query.set('studentId', studentId);
+    if (subjectId) query.set('subjectId', subjectId);
+
+    return authedRequest<Paginated<AdminGrade>>(`/grades?${query}`);
+  },
+
+  updateGrade: (id: number, input: GradeEditInput) =>
+    authedRequest<AdminGrade>(`/grades/${id}`, {
+      method: 'PATCH',
+      body: input,
+    }),
+
+  deleteGrade: (id: number) =>
+    authedRequest<null>(`/grades/${id}`, { method: 'DELETE' }),
+
+  listAllSubjects: () =>
+    authedRequest<Paginated<AdminSubject>>(`/subjects?limit=${MAX_PAGE_SIZE}`),
+
+  listAllClassStudents: (classId: number) =>
+    authedRequest<Paginated<ClassStudent>>(
+      `/classes/${classId}/students?limit=${MAX_PAGE_SIZE}`,
+    ),
 
   listTeachers: (filters: ListFilters) =>
     authedRequest<Paginated<AdminTeacher>>(`/teachers?${listQuery(filters)}`),

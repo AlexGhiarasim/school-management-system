@@ -173,6 +173,135 @@
     }
   },
   "admin": {
+    "grades": {
+      "description": "All the grades of the school. Filter by class, student or subject and edit or delete any grade.",
+      "editFor": "Grade of the student {{name}}",
+      "filter": {
+        "class": "Class",
+        "allClasses": "All classes",
+        "student": "Student",
+        "allStudents": "All students",
+        "subject": "Subject",
+        "allSubjects": "All subjects"
+      },
+      "table": {
+        "caption": "The grades of the school, most recent first",
+        "student": "Student",
+        "subject": "Subject",
+        "grade": "Grade",
+        "date": "Date",
+        "teacher": "Teacher",
+        "noTeacher": "Administrator",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "delete": {
+        "title": "Delete the grade",
+        "message": "Delete the grade {{grade}} in {{subject}} of the student {{name}}? This cannot be undone.",
+        "confirm": "Delete",
+        "deleted": "The grade was deleted."
+      },
+      "empty": {
+        "title": "There are no grades yet",
+        "description": "Grades added by teachers will appear here."
+      },
+      "noResults": {
+        "title": "No grades found",
+        "description": "There are no grades for the chosen filters."
+      }
+    },
+    "classStudents": {
+      "back": "Back to the classes",
+      "title": "Class {{name}}",
+      "teacher": "Teacher: {{name}}",
+      "noTeacher": "The class has no teacher yet.",
+      "add": "Add students",
+      "table": {
+        "caption": "Students of the class",
+        "name": "Student",
+        "email": "Email",
+        "dateOfBirth": "Date of birth",
+        "actions": "Actions",
+        "remove": "Remove from class"
+      },
+      "empty": {
+        "title": "The class has no students yet",
+        "description": "Add students with the button above."
+      },
+      "notFound": {
+        "title": "Class not found",
+        "description": "The class does not exist or was deleted."
+      },
+      "remove": {
+        "title": "Remove the student from the class",
+        "message": "Remove the student {{name}} from the class? The student and their grades are not deleted.",
+        "confirm": "Remove",
+        "removed": "The student was removed from the class."
+      },
+      "addModal": {
+        "title": "Add students to class {{name}}",
+        "search": "Search",
+        "searchPlaceholder": "Name or email",
+        "add": "Add",
+        "added": "The student was added to the class.",
+        "done": "Done",
+        "empty": {
+          "title": "There are no students without a class",
+          "description": "All the students are already in a class."
+        },
+        "noResults": {
+          "title": "No results",
+          "description": "We found no students without a class for the chosen search."
+        }
+      }
+    },
+    "classes": {
+      "description": "The classes of the school, with the teacher of each and the number of students.",
+      "add": "Add class",
+      "search": "Search",
+      "searchPlaceholder": "Class name",
+      "studentCount_one": "{{count}} student",
+      "studentCount_other": "{{count}} students",
+      "form": {
+        "createTitle": "Add a class",
+        "editTitle": "Edit the class",
+        "name": "Class name",
+        "namePlaceholder": "e.g. 9A",
+        "teacher": "Teacher",
+        "noTeacher": "No teacher",
+        "created": "The class was added.",
+        "updated": "The class was updated.",
+        "errors": {
+          "nameRequired": "Enter the name of the class.",
+          "nameTaken": "A class with this name already exists."
+        }
+      },
+      "delete": {
+        "title": "Delete the class",
+        "message": "Delete the class {{name}}? Its students are left without a class and their grades are kept.",
+        "confirm": "Delete",
+        "deleted": "The class was deleted."
+      },
+      "table": {
+        "caption": "The classes of the school",
+        "name": "Class",
+        "teacher": "Teacher",
+        "noTeacher": "No teacher",
+        "students": "Students",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "empty": {
+        "title": "There are no classes yet",
+        "description": "Add the first class with the button above."
+      },
+      "noResults": {
+        "title": "No results",
+        "description": "We found no classes for the chosen search."
+      }
+    },
     "teachers": {
       "description": "All the teachers of the school. Search by name or email.",
       "add": "Add teacher",
@@ -300,7 +429,6 @@
     "unexpected": "Something went wrong. Please try again."
   },
   "pages": {
-    "comingSoon": "This section will be available soon.",
     "notFound": {
       "title": "Page not found",
       "description": "The address you tried to open does not exist.",

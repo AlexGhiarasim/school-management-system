@@ -16,6 +16,12 @@ vi.mock('../services/adminService.ts', () => ({
     listStudents: () => new Promise(() => undefined),
     listClasses: () => new Promise(() => undefined),
     listTeachers: () => new Promise(() => undefined),
+    listClassPage: () => new Promise(() => undefined),
+    listAllTeachers: () => new Promise(() => undefined),
+    listClassStudents: () => new Promise(() => undefined),
+    listGrades: () => new Promise(() => undefined),
+    listAllSubjects: () => new Promise(() => undefined),
+    listAllClassStudents: () => new Promise(() => undefined),
     listSubjects: () => new Promise(() => undefined),
   },
 }));
@@ -77,6 +83,8 @@ describe('route guards', () => {
   it.each([
     ['STUDENT', '/admin/students', 'My profile'],
     ['TEACHER', '/admin/teachers', 'My classes'],
+    ['TEACHER', '/admin/grades', 'My classes'],
+    ['STUDENT', '/admin/classes/3', 'My profile'],
     ['STUDENT', '/admin/subjects', 'My profile'],
     ['STUDENT', '/teacher/classes/3/students/7', 'My profile'],
     ['TEACHER', '/student/grades', 'My classes'],
@@ -104,16 +112,13 @@ describe('route guards', () => {
     ['/admin/students', 'Students'],
     ['/admin/teachers', 'Teachers'],
     ['/admin/subjects', 'Subjects'],
+    ['/admin/classes', 'Classes'],
+    ['/admin/classes/3', 'Classes'],
+    ['/admin/grades', 'Grades'],
   ])('lets an admin open %s', (path, expected) => {
     renderAt(path, userWith('ADMIN'));
 
     expect(heading(expected)).toBeVisible();
-  });
-
-  it('lets an admin open an admin page', () => {
-    renderAt('/admin/classes', userWith('ADMIN'));
-
-    expect(heading('Classes')).toBeVisible();
   });
 
   it('shows the not found page for an unknown address', () => {

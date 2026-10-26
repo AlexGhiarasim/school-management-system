@@ -66,3 +66,30 @@ export interface AdminSubject {
 export interface SubjectInput {
   name: string;
 }
+
+export interface ClassInput {
+  name: string;
+  teacherId?: number;
+}
+
+export interface AdminGrade {
+  id: number;
+  value: number;
+  date: string;
+  subject: { id: number; name: string };
+  student: { id: number; firstName: string; lastName: string };
+  teacher: { id: number; firstName: string; lastName: string } | null;
+}
+
+export interface GradeFilters {
+  page: number;
+  classId: string;
+  studentId: string;
+  subjectId: string;
+}
+
+export interface GradeEditInput {
+  subjectId: number;
+  value: number;
+  date: string;
+}

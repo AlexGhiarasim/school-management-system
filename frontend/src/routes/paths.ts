@@ -16,6 +16,7 @@ export const paths = {
     students: '/admin/students',
     teachers: '/admin/teachers',
     classes: '/admin/classes',
+    classStudents: (classId: number | string) => `/admin/classes/${classId}`,
     subjects: '/admin/subjects',
     grades: '/admin/grades',
   },

@@ -6,8 +6,12 @@ import {
 } from '@tanstack/react-query';
 import { adminService } from '../../services/adminService.ts';
 import type {
+  AdminClass,
   AdminStudent,
   AdminTeacher,
+  ClassInput,
+  GradeEditInput,
+  GradeFilters,
   ListFilters,
   NewStudentInput,
   NewTeacherInput,
@@ -22,6 +26,16 @@ export const adminKeys = {
   studentList: (filters: StudentFilters) =>
     ['admin', 'students', filters] as const,
   classes: ['admin', 'classes'] as const,
+  classList: (filters: ListFilters) =>
+    ['admin', 'classes', 'list', filters] as const,
+  allTeachers: ['admin', 'teachers', 'all'] as const,
+  grades: ['admin', 'grades'] as const,
+  gradeList: (filters: GradeFilters) => ['admin', 'grades', filters] as const,
+  allSubjects: ['admin', 'subjects', 'all'] as const,
+  allClassStudents: (classId: number) =>
+    ['admin', 'classes', classId, 'students', 'all'] as const,
+  classStudents: (classId: number, page: number) =>
+    ['admin', 'classes', classId, 'students', page] as const,
   teachers: ['admin', 'teachers'] as const,
   teacherList: (filters: ListFilters) =>
     ['admin', 'teachers', filters] as const,
@@ -153,6 +167,127 @@ export function useDeleteSubject() {
 
   return useMutation({
     mutationFn: (id: number) => adminService.deleteSubject(id),
+    onSuccess: refresh,
+  });
+}
+
+export function useAdminClassPage(filters: ListFilters) {
+  return useQuery({
+    queryKey: adminKeys.classList(filters),
+    queryFn: () => adminService.listClassPage(filters),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useAllTeachers() {
+  return useQuery({
+    queryKey: adminKeys.allTeachers,
+    queryFn: adminService.listAllTeachers,
+    staleTime: 60_000,
+  });
+}
+
+interface SaveClassVariables {
+  schoolClass: AdminClass | null;
+  input: ClassInput;
+}
+
+export function useSaveClass() {
+  const refresh = useRefresh(adminKeys.classes, adminKeys.students);
+
+  return useMutation({
+    mutationFn: async ({ schoolClass, input }: SaveClassVariables) => {
+      if (!schoolClass) {
+        return adminService.createClass(input);
+      }
+
+      if (schoolClass.name !== input.name) {
+        await adminService.updateClass(schoolClass.id, input.name);
+      }
+
+      if ((schoolClass.teacher?.id ?? null) !== (input.teacherId ?? null)) {
+        await adminService.assignClassTeacher(
+          schoolClass.id,
+          input.teacherId ?? null,
+        );
+      }
+    },
+    onSuccess: refresh,
+  });
+}
+
+export function useDeleteClass() {
+  const refresh = useRefresh(adminKeys.classes, adminKeys.students);
+
+  return useMutation({
+    mutationFn: (id: number) => adminService.deleteClass(id),
+    onSuccess: refresh,
+  });
+}
+
+export function useAdminClassStudents(classId: number, page: number) {
+  return useQuery({
+    queryKey: adminKeys.classStudents(classId, page),
+    queryFn: () => adminService.listClassStudents(classId, page),
+    enabled: Number.isInteger(classId),
+    placeholderData: keepPreviousData,
+  });
+}
+
+interface AssignClassVariables {
+  studentId: number;
+  classId: number | null;
+}
+
+export function useAssignStudentClass() {
+  const refresh = useRefresh(adminKeys.classes, adminKeys.students);
+
+  return useMutation({
+    mutationFn: ({ studentId, classId }: AssignClassVariables) =>
+      adminService.assignStudentClass(studentId, classId),
+    onSuccess: refresh,
+  });
+}
+
+export function useAdminGrades(filters: GradeFilters) {
+  return useQuery({
+    queryKey: adminKeys.gradeList(filters),
+    queryFn: () => adminService.listGrades(filters),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useAllSubjects() {
+  return useQuery({
+    queryKey: adminKeys.allSubjects,
+    queryFn: adminService.listAllSubjects,
+    staleTime: 60_000,
+  });
+}
+
+export function useAllClassStudents(classId: number | null) {
+  return useQuery({
+    queryKey: adminKeys.allClassStudents(classId ?? 0),
+    queryFn: () => adminService.listAllClassStudents(classId ?? 0),
+    enabled: classId !== null,
+  });
+}
+
+export function useEditGrade() {
+  const refresh = useRefresh(adminKeys.grades);
+
+  return useMutation({
+    mutationFn: ({ id, input }: { id: number; input: GradeEditInput }) =>
+      adminService.updateGrade(id, input),
+    onSuccess: refresh,
+  });
+}
+
+export function useDeleteGrade() {
+  const refresh = useRefresh(adminKeys.grades);
+
+  return useMutation({
+    mutationFn: (id: number) => adminService.deleteGrade(id),
     onSuccess: refresh,
   });
 }
