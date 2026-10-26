@@ -1,0 +1,39 @@
+name: Docker
+
+on:
+  pull_request:
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'docker/**'
+      - 'docker-compose.yml'
+      - '.github/workflows/docker.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'docker/**'
+      - 'docker-compose.yml'
+      - '.github/workflows/docker.yml'
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    env:
+      MYSQL_ROOT_PASSWORD: ci-root
+      MYSQL_DATABASE: school_management
+      MYSQL_USER: school
+      MYSQL_PASSWORD: ci_password
+      JWT_SECRET: ci-only-secret-with-at-least-32-characters
+
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker compose build

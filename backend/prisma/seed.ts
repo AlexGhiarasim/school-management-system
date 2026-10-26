@@ -91,6 +91,11 @@ async function clearDatabase() {
 }
 
 async function main() {
+  if (process.argv.includes('--if-empty') && (await prisma.user.count()) > 0) {
+    console.log('The database already has data, the seed was skipped');
+    return;
+  }
+
   const hashes = {
     admin: await bcrypt.hash(PASSWORDS.admin, 10),
     teacher: await bcrypt.hash(PASSWORDS.teacher, 10),
