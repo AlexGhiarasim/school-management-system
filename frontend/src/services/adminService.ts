@@ -13,6 +13,7 @@ import {
   type SubjectInput,
   type TeacherInput,
 } from '../features/admin/types.ts';
+import type { ClassStudent } from '../features/teacher/types.ts';
 import { authedRequest } from '../lib/authedRequest.ts';
 import type { Paginated } from '../types/api.ts';
 
@@ -84,6 +85,11 @@ export const adminService = {
 
   listAllTeachers: () =>
     authedRequest<Paginated<AdminTeacher>>(`/teachers?limit=${MAX_PAGE_SIZE}`),
+
+  listClassStudents: (classId: number, page: number) =>
+    authedRequest<Paginated<ClassStudent>>(
+      `/classes/${classId}/students?page=${page}&limit=${PAGE_SIZE}`,
+    ),
 
   listTeachers: (filters: ListFilters) =>
     authedRequest<Paginated<AdminTeacher>>(`/teachers?${listQuery(filters)}`),

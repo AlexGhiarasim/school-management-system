@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../components/layout/PageHeader.tsx';
 import { Button } from '../../components/ui/Button.tsx';
@@ -18,6 +19,7 @@ import type { AdminClass } from '../../features/admin/types.ts';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
+import { paths } from '../../routes/paths.ts';
 
 const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
 
@@ -56,9 +58,12 @@ export default function AdminClassesPage() {
       key: 'name',
       header: t('admin.classes.table.name'),
       render: (schoolClass) => (
-        <span className="text-base font-semibold text-slate-900">
+        <Link
+          to={paths.admin.classStudents(schoolClass.id)}
+          className="text-base font-semibold text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
+        >
           {schoolClass.name}
-        </span>
+        </Link>
       ),
     },
     {

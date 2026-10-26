@@ -173,6 +173,51 @@
     }
   },
   "admin": {
+    "classStudents": {
+      "back": "Back to the classes",
+      "title": "Class {{name}}",
+      "teacher": "Teacher: {{name}}",
+      "noTeacher": "The class has no teacher yet.",
+      "add": "Add students",
+      "table": {
+        "caption": "Students of the class",
+        "name": "Student",
+        "email": "Email",
+        "dateOfBirth": "Date of birth",
+        "actions": "Actions",
+        "remove": "Remove from class"
+      },
+      "empty": {
+        "title": "The class has no students yet",
+        "description": "Add students with the button above."
+      },
+      "notFound": {
+        "title": "Class not found",
+        "description": "The class does not exist or was deleted."
+      },
+      "remove": {
+        "title": "Remove the student from the class",
+        "message": "Remove the student {{name}} from the class? The student and their grades are not deleted.",
+        "confirm": "Remove",
+        "removed": "The student was removed from the class."
+      },
+      "addModal": {
+        "title": "Add students to class {{name}}",
+        "search": "Search",
+        "searchPlaceholder": "Name or email",
+        "add": "Add",
+        "added": "The student was added to the class.",
+        "done": "Done",
+        "empty": {
+          "title": "There are no students without a class",
+          "description": "All the students are already in a class."
+        },
+        "noResults": {
+          "title": "No results",
+          "description": "We found no students without a class for the chosen search."
+        }
+      }
+    },
     "classes": {
       "description": "The classes of the school, with the teacher of each and the number of students.",
       "add": "Add class",

@@ -27,6 +27,8 @@ export const adminKeys = {
   classList: (filters: ListFilters) =>
     ['admin', 'classes', 'list', filters] as const,
   allTeachers: ['admin', 'teachers', 'all'] as const,
+  classStudents: (classId: number, page: number) =>
+    ['admin', 'classes', classId, 'students', page] as const,
   teachers: ['admin', 'teachers'] as const,
   teacherList: (filters: ListFilters) =>
     ['admin', 'teachers', filters] as const,
@@ -212,6 +214,30 @@ export function useDeleteClass() {
 
   return useMutation({
     mutationFn: (id: number) => adminService.deleteClass(id),
+    onSuccess: refresh,
+  });
+}
+
+export function useAdminClassStudents(classId: number, page: number) {
+  return useQuery({
+    queryKey: adminKeys.classStudents(classId, page),
+    queryFn: () => adminService.listClassStudents(classId, page),
+    enabled: Number.isInteger(classId),
+    placeholderData: keepPreviousData,
+  });
+}
+
+interface AssignClassVariables {
+  studentId: number;
+  classId: number | null;
+}
+
+export function useAssignStudentClass() {
+  const refresh = useRefresh(adminKeys.classes, adminKeys.students);
+
+  return useMutation({
+    mutationFn: ({ studentId, classId }: AssignClassVariables) =>
+      adminService.assignStudentClass(studentId, classId),
     onSuccess: refresh,
   });
 }

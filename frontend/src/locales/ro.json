@@ -176,6 +176,51 @@
     }
   },
   "admin": {
+    "classStudents": {
+      "back": "Înapoi la clase",
+      "title": "Clasa {{name}}",
+      "teacher": "Profesor: {{name}}",
+      "noTeacher": "Clasa nu are încă un profesor.",
+      "add": "Adaugă elevi",
+      "table": {
+        "caption": "Elevii clasei",
+        "name": "Elev",
+        "email": "Email",
+        "dateOfBirth": "Data nașterii",
+        "actions": "Acțiuni",
+        "remove": "Scoate din clasă"
+      },
+      "empty": {
+        "title": "Clasa nu are încă elevi",
+        "description": "Adaugă elevi cu butonul de mai sus."
+      },
+      "notFound": {
+        "title": "Clasa nu a fost găsită",
+        "description": "Clasa nu există sau a fost ștearsă."
+      },
+      "remove": {
+        "title": "Scoate elevul din clasă",
+        "message": "Scoți elevul {{name}} din clasă? Elevul și notele lui nu se șterg.",
+        "confirm": "Scoate",
+        "removed": "Elevul a fost scos din clasă."
+      },
+      "addModal": {
+        "title": "Adaugă elevi în clasa {{name}}",
+        "search": "Caută",
+        "searchPlaceholder": "Nume sau email",
+        "add": "Adaugă",
+        "added": "Elevul a fost adăugat în clasă.",
+        "done": "Gata",
+        "empty": {
+          "title": "Nu există elevi fără clasă",
+          "description": "Toți elevii sunt deja într-o clasă."
+        },
+        "noResults": {
+          "title": "Niciun rezultat",
+          "description": "Nu am găsit elevi fără clasă pentru căutarea aleasă."
+        }
+      }
+    },
     "classes": {
       "description": "Clasele școlii, cu profesorul fiecăreia și numărul de elevi.",
       "add": "Adaugă clasă",

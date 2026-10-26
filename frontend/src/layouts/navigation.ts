@@ -18,7 +18,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
   ADMIN: [
     { to: paths.admin.students, labelKey: 'nav.admin.students' },
     { to: paths.admin.teachers, labelKey: 'nav.admin.teachers' },
-    { to: paths.admin.classes, labelKey: 'nav.admin.classes' },
+    { to: paths.admin.classes, labelKey: 'nav.admin.classes', end: false },
     { to: paths.admin.subjects, labelKey: 'nav.admin.subjects' },
     { to: paths.admin.grades, labelKey: 'nav.admin.grades' },
   ],
