@@ -5,6 +5,7 @@ import { PageHeader } from '../../components/layout/PageHeader.tsx';
 import { ErrorState } from '../../components/ui/ErrorState.tsx';
 import { Modal } from '../../components/ui/Modal.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
+import { ChangePasswordButton } from '../../features/auth/components/ChangePasswordCard.tsx';
 import { GradeBadge } from '../../features/student/components/GradeBadge.tsx';
 import {
   useClassOverview,
@@ -108,6 +109,7 @@ export default function StudentProfilePage() {
                 </dd>
               </div>
             </dl>
+            <ChangePasswordButton />
           </div>
 
           <div className={CARD}>

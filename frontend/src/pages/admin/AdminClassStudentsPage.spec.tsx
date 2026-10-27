@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 import { fireEvent, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AdminClass, AdminStudent } from '../../features/admin/types.ts';
@@ -94,7 +94,7 @@ describe('AdminClassStudentsPage', () => {
     expect(
       await screen.findByRole('heading', { name: 'Class 9A' }),
     ).toBeVisible();
-    expect(screen.getByText('Teacher: Laura Marin')).toBeVisible();
+    expect(screen.getByText('Class teacher: Laura Marin')).toBeVisible();
     expect(await screen.findByText('Constantin Mihai')).toBeVisible();
     expect(screen.getByText('Dumitru Ion')).toBeVisible();
   });
@@ -107,7 +107,7 @@ describe('AdminClassStudentsPage', () => {
     renderPage(<AdminClassStudentsPage />, options);
 
     expect(
-      await screen.findByText('The class has no teacher yet.'),
+      await screen.findByText('The class has no class teacher yet.'),
     ).toBeVisible();
   });
 
@@ -161,6 +161,7 @@ describe('AdminClassStudentsPage', () => {
     const form = within(await dialog());
     await form.findByText('Popa Ana');
     fireEvent.click(form.getByRole('button', { name: 'Add' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Yes, add' }));
 
     expect(
       await screen.findByText('The student was added to the class.'),

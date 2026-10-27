@@ -1,14 +1,17 @@
+import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../components/layout/LanguageSwitcher.tsx';
 import { Logo } from '../components/layout/Logo.tsx';
 import { Button } from '../components/ui/Button.tsx';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog.tsx';
 import { useAuth } from '../hooks/useAuth.ts';
 import { NAV_ITEMS } from './navigation.ts';
 
 export function AppLayout() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
+  const [confirmingSignOut, setConfirmingSignOut] = useState(false);
 
   if (!user) return null;
 
@@ -57,12 +60,25 @@ export function AppLayout() {
                 {t(`roles.${user.role}`)}
               </p>
             </div>
-            <Button variant="secondary" fullWidth={false} onClick={logout}>
+            <Button
+              variant="secondary"
+              fullWidth={false}
+              onClick={() => setConfirmingSignOut(true)}
+            >
               {t('nav.signOut')}
             </Button>
           </div>
         </div>
       </header>
+
+      <ConfirmDialog
+        open={confirmingSignOut}
+        title={t('nav.signOutConfirm.title')}
+        message={t('nav.signOutConfirm.message')}
+        confirmLabel={t('nav.signOutConfirm.confirm')}
+        onConfirm={logout}
+        onCancel={() => setConfirmingSignOut(false)}
+      />
 
       <main className="mx-auto max-w-6xl px-6 py-10 sm:px-10">
         <Outlet />

@@ -1,8 +1,10 @@
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import type { ConfigService } from '@nestjs/config';
 import type { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcryptjs';
 import type { PrismaService } from '../../database/prisma.service.js';
 import { Prisma } from '../../generated/prisma/client.js';
+import type { MailService } from '../mail/mail.service.js';
 import { AuthService } from './auth.service.js';
 
 describe('AuthService', () => {
@@ -15,6 +17,8 @@ describe('AuthService', () => {
       student: { create: createStudent },
     } as unknown as PrismaService,
     { signAsync } as unknown as JwtService,
+    {} as unknown as ConfigService,
+    {} as unknown as MailService,
   );
 
   const baseUser = {
@@ -47,6 +51,7 @@ describe('AuthService', () => {
       sub: 1,
       email: baseUser.email,
       role: 'ADMIN',
+      iat: expect.any(Number),
     });
   });
 

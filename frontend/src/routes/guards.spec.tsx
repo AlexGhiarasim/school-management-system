@@ -75,9 +75,7 @@ describe('route guards', () => {
   it('sends a visitor to the start page from a protected route', () => {
     renderAt('/admin/students', null);
 
-    expect(
-      heading('Everything your school needs, in one place.'),
-    ).toBeVisible();
+    expect(heading('Your school, made simpler.')).toBeVisible();
   });
 
   it.each([

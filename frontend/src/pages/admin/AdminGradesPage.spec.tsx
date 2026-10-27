@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { confirmSave } from '../../test/confirmSave.ts';
 import type { AdminGrade } from '../../features/admin/types.ts';
 import { adminService } from '../../services/adminService.ts';
 import { adminUser, renderPage } from '../../test/renderPage.tsx';
@@ -175,6 +176,7 @@ describe('AdminGradesPage', () => {
 
     fireEvent.change(form.getByLabelText('Grade'), { target: { value: '8' } });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await screen.findByText('The grade was updated.')).toBeVisible();
     expect(service.updateGrade).toHaveBeenCalledWith(2, {
@@ -193,6 +195,7 @@ describe('AdminGradesPage', () => {
     const form = within(await dialog());
     fireEvent.change(form.getByLabelText('Grade'), { target: { value: '' } });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await form.findByText('Choose a grade from 1 to 10.')).toBeVisible();
     expect(service.updateGrade).not.toHaveBeenCalled();

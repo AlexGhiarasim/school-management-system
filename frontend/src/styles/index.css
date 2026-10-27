@@ -2,6 +2,17 @@
 
 @theme {
   --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-rise: fade-in 0.7s ease-out both;
+  --animate-drift: drift 20s ease-in-out infinite alternate;
+
+  @keyframes drift {
+    from {
+      transform: translate(0, 0);
+    }
+    to {
+      transform: translate(40px, 30px);
+    }
+  }
 
   @keyframes fade-in {
     from {

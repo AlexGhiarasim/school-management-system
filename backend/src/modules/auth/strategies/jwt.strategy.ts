@@ -27,12 +27,22 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         email: true,
         role: true,
         isActive: true,
+        passwordChangedAt: true,
         teacher: { select: { id: true } },
         student: { select: { id: true } },
       },
     });
 
     if (!user || !user.isActive) {
+      throw new UnauthorizedException();
+    }
+
+    // A password change signs out every session opened before it.
+    const changedAt = user.passwordChangedAt;
+    if (
+      changedAt &&
+      (payload.iat ?? 0) <= Math.floor(changedAt.getTime() / 1000)
+    ) {
       throw new UnauthorizedException();
     }
 

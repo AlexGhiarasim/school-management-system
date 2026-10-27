@@ -15,6 +15,7 @@ import {
 } from '../../features/admin/hooks.ts';
 import type { AdminSubject } from '../../features/admin/types.ts';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue.ts';
+import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { ApiError } from '../../lib/api.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
@@ -23,6 +24,7 @@ const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
 
 export default function AdminSubjectsPage() {
   const { t } = useTranslation();
+  const subjectName = useSubjectName();
   const { notify } = useToast();
 
   const [search, setSearch] = useState('');
@@ -59,7 +61,9 @@ export default function AdminSubjectsPage() {
       key: 'name',
       header: t('admin.subjects.table.name'),
       render: (subject) => (
-        <span className="font-medium text-slate-900">{subject.name}</span>
+        <span className="font-medium text-slate-900">
+          {subjectName(subject.name)}
+        </span>
       ),
     },
     {
@@ -160,7 +164,7 @@ export default function AdminSubjectsPage() {
         open={deleting !== null}
         title={t('admin.subjects.delete.title')}
         message={t('admin.subjects.delete.message', {
-          name: deleting?.name ?? '',
+          name: deleting ? subjectName(deleting.name) : '',
         })}
         confirmLabel={t('admin.subjects.delete.confirm')}
         danger

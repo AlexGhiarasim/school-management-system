@@ -1,14 +1,14 @@
 export const SUBJECTS = [
-  'Mathematics',
-  'Romanian Language',
-  'English',
-  'Physics',
-  'Chemistry',
-  'Biology',
-  'History',
-  'Geography',
-  'Computer Science',
-  'Physical Education',
+  'Matematică',
+  'Limba română',
+  'Limba engleză',
+  'Fizică',
+  'Chimie',
+  'Biologie',
+  'Istorie',
+  'Geografie',
+  'Informatică',
+  'Educație fizică',
 ];
 
 export const FIRST_NAMES = [
@@ -83,21 +83,21 @@ export const CLASS_PLANS = [
 
 // Index of the teacher who teaches each subject in every class.
 export const SUBJECT_TEACHERS: Record<string, number> = {
-  Mathematics: 0,
-  'Romanian Language': 1,
-  English: 2,
-  Physics: 3,
-  Chemistry: 4,
-  Biology: 5,
-  History: 6,
-  Geography: 7,
-  'Computer Science': 8,
-  'Physical Education': 9,
+  Matematică: 0,
+  'Limba română': 1,
+  'Limba engleză': 2,
+  Fizică: 3,
+  Chimie: 4,
+  Biologie: 5,
+  Istorie: 6,
+  Geografie: 7,
+  Informatică: 8,
+  'Educație fizică': 9,
 };
 
 // The one class where a teacher takes a second subject.
 export const SUBJECT_OVERRIDES = [
-  { className: '9A', subject: 'Physics', teacherIndex: 0 },
+  { className: '9A', subject: 'Fizică', teacherIndex: 0 },
 ];
 
 export const TEACHER_COUNT = 10;

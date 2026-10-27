@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { confirmSave } from '../../test/confirmSave.ts';
 import type { TeacherGrade } from '../../features/teacher/types.ts';
 import { ApiError } from '../../lib/api.ts';
 import { teacherService } from '../../services/teacherService.ts';
@@ -140,6 +141,7 @@ describe('TeacherStudentGradesPage', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Add grade' }));
     const form = within(await dialog());
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await form.findByText('Choose the subject.')).toBeVisible();
     expect(form.getByText('Choose a grade from 1 to 10.')).toBeVisible();
@@ -157,6 +159,7 @@ describe('TeacherStudentGradesPage', () => {
     });
     fireEvent.change(form.getByLabelText('Grade'), { target: { value: '9' } });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await screen.findByText('The grade was added.')).toBeVisible();
     expect(service.createGrade).toHaveBeenCalledWith(
@@ -180,6 +183,7 @@ describe('TeacherStudentGradesPage', () => {
 
     fireEvent.change(form.getByLabelText('Grade'), { target: { value: '8' } });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await screen.findByText('The grade was updated.')).toBeVisible();
     expect(service.updateGrade).toHaveBeenCalledWith(
@@ -199,6 +203,7 @@ describe('TeacherStudentGradesPage', () => {
     });
     fireEvent.change(form.getByLabelText('Grade'), { target: { value: '9' } });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await form.findByRole('alert')).toHaveTextContent(
       'You are not allowed to do this.',

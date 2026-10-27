@@ -1,4 +1,4 @@
-{
+﻿{
   "common": {
     "appName": "School Management System",
     "showPassword": "Show password",
@@ -29,34 +29,98 @@
     "TEACHER": "Teacher",
     "STUDENT": "Student"
   },
+  "account": {
+    "password": {
+      "title": "Change password",
+      "hint": "Your other open sessions will be signed out.",
+      "current": "Current password",
+      "new": "New password",
+      "submit": "Change password",
+      "submitting": "Saving",
+      "changed": "Your password was changed."
+    }
+  },
+  "confirm": {
+    "password": {
+      "title": "Change your password?",
+      "message": "You stay signed in here, and your other open sessions will be signed out.",
+      "confirm": "Yes, change"
+    },
+    "add": "Yes, add",
+    "save": "Yes, save",
+    "grade": {
+      "createTitle": "Add this grade?",
+      "createMessage": "The grade will be saved and the student will see it right away.",
+      "updateTitle": "Change this grade?",
+      "updateMessage": "The student will see the new value right away."
+    },
+    "class": {
+      "createTitle": "Create this class?",
+      "createMessage": "The class will be added to the school.",
+      "updateTitle": "Save the changes to this class?",
+      "updateMessage": "The class will be updated for everyone who sees it."
+    },
+    "student": {
+      "createTitle": "Add this student?",
+      "createMessage": "A student account will be created with these details.",
+      "updateTitle": "Save the changes to this student?",
+      "updateMessage": "The details of the student will be updated."
+    },
+    "teacher": {
+      "createTitle": "Add this teacher?",
+      "createMessage": "A teacher account will be created with these details.",
+      "updateTitle": "Save the changes to this teacher?",
+      "updateMessage": "The details of the teacher will be updated."
+    },
+    "subject": {
+      "createTitle": "Add this subject?",
+      "createMessage": "The subject will be available for grades and teaching.",
+      "updateTitle": "Rename this subject?",
+      "updateMessage": "The name will change everywhere the subject is shown."
+    },
+    "assign": {
+      "title": "Add this student to the class?",
+      "message": "The student will be moved into {{name}} and will see its grades and classmates.",
+      "student": "Student",
+      "class": "Class"
+    },
+    "none": "None"
+  },
   "subjectNames": {
-    "Mathematics": "Mathematics",
-    "Romanian Language": "Romanian Language",
-    "English": "English",
-    "Physics": "Physics",
-    "Chemistry": "Chemistry",
-    "Biology": "Biology",
-    "History": "History",
-    "Geography": "Geography",
-    "Computer Science": "Computer Science",
-    "Physical Education": "Physical Education"
+    "Matematică": "Mathematics",
+    "Limba română": "Romanian Language",
+    "Limba engleză": "English",
+    "Fizică": "Physics",
+    "Chimie": "Chemistry",
+    "Biologie": "Biology",
+    "Istorie": "History",
+    "Geografie": "Geography",
+    "Informatică": "Computer Science",
+    "Educație fizică": "Physical Education"
   },
   "nav": {
     "main": "Main navigation",
     "signOut": "Sign out",
+    "signOutConfirm": {
+      "title": "Sign out?",
+      "message": "You will have to sign in again to use the application.",
+      "confirm": "Yes, sign out"
+    },
     "student": {
       "profile": "My profile",
       "grades": "My grades"
     },
     "teacher": {
-      "classes": "My classes"
+      "classes": "My classes",
+      "profile": "My profile"
     },
     "admin": {
       "students": "Students",
       "teachers": "Teachers",
       "classes": "Classes",
       "subjects": "Subjects",
-      "grades": "Grades"
+      "grades": "Grades",
+      "profile": "My profile"
     }
   },
   "student": {
@@ -118,6 +182,10 @@
     }
   },
   "teacher": {
+    "profile": {
+      "description": "The details of your account and the classes you teach.",
+      "teaching": "What you teach"
+    },
     "classes": {
       "description": "The classes you teach. Open a class to see its students.",
       "students_one": "{{count}} student",
@@ -199,6 +267,9 @@
     }
   },
   "admin": {
+    "profile": {
+      "description": "The details of your administrator account."
+    },
     "grades": {
       "description": "All the grades of the school. Filter by class, student or subject and edit or delete any grade.",
       "editFor": "Grade of the student {{name}}",
@@ -240,8 +311,8 @@
     "classStudents": {
       "back": "Back to the classes",
       "title": "Class {{name}}",
-      "teacher": "Teacher: {{name}}",
-      "noTeacher": "The class has no teacher yet.",
+      "teacher": "Class teacher: {{name}}",
+      "noTeacher": "The class has no class teacher yet.",
       "add": "Add students",
       "table": {
         "caption": "Students of the class",
@@ -283,7 +354,7 @@
       }
     },
     "classes": {
-      "description": "The classes of the school, with the teacher of each and the number of students.",
+      "description": "The classes of the school, with the class teacher of each and the number of students.",
       "add": "Add class",
       "search": "Search",
       "searchPlaceholder": "Class name",
@@ -294,8 +365,8 @@
         "editTitle": "Edit the class",
         "name": "Class name",
         "namePlaceholder": "e.g. 9A",
-        "teacher": "Teacher",
-        "noTeacher": "No teacher",
+        "teacher": "Class teacher",
+        "noTeacher": "No class teacher",
         "created": "The class was added.",
         "updated": "The class was updated.",
         "errors": {
@@ -312,8 +383,8 @@
       "table": {
         "caption": "The classes of the school",
         "name": "Class",
-        "teacher": "Teacher",
-        "noTeacher": "No teacher",
+        "teacher": "Class teacher",
+        "noTeacher": "No class teacher",
         "students": "Students",
         "actions": "Actions",
         "edit": "Edit",
@@ -462,19 +533,11 @@
     }
   },
   "landing": {
-    "badge": "Classes, grades and people",
-    "headline": "Everything your school needs, in one place.",
-    "subtitle": "One sign in for everyone. What you can do depends on the role of your account.",
-    "roles": {
-      "teacher": {
-        "name": "Teachers",
-        "description": "Follow your classes and record grades for your students."
-      },
-      "student": {
-        "name": "Students",
-        "description": "See your class, your grades and your average."
-      }
-    }
+    "headline": "Your school, made",
+    "words": ["simpler", "clearer", "closer"],
+    "subtitle": "Sign in or create an account to continue.",
+    "description": "A simple space that keeps the school organized: the important information is in one place, clear and within reach.",
+    "copyright": "© {{year}} School management system"
   },
   "auth": {
     "tabsLabel": "Authentication",
@@ -487,8 +550,31 @@
       "subtitle": "Sign in to continue to your account.",
       "prompt": "Don't have an account?",
       "action": "Create one",
+      "forgot": "Forgot your password?",
       "submit": "Sign in",
       "submitting": "Signing in"
+    },
+    "forgot": {
+      "title": "Forgot your password?",
+      "subtitle": "Enter the email of your account and we will send you a reset link.",
+      "submit": "Send the link",
+      "submitting": "Sending",
+      "back": "Back to sign in",
+      "sentTitle": "Check your email",
+      "sentText": "If an account exists with this email, we sent you a reset link. It is valid for 60 minutes. Check your spam folder too."
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "subtitle": "Use a password you do not use anywhere else.",
+      "newPassword": "New password",
+      "submit": "Save the password",
+      "submitting": "Saving",
+      "doneTitle": "Your password was changed",
+      "doneText": "You can now sign in with your new password.",
+      "goLogin": "Go to sign in",
+      "invalidTitle": "Invalid or expired link",
+      "invalidText": "The reset link is no longer valid. You can ask for a new one.",
+      "requestNew": "Ask for a new link"
     },
     "register": {
       "title": "Create your account",
@@ -527,6 +613,7 @@
       "confirmRequired": "Confirm your password.",
       "passwordsMismatch": "Passwords do not match.",
       "invalidCredentials": "Incorrect email or password.",
+      "currentPasswordWrong": "The current password is incorrect.",
       "network": "We cannot reach the server. Please try again.",
       "tooManyRequests": "Too many attempts. Please try again in a minute.",
       "emailTaken": "An account with this email already exists.",

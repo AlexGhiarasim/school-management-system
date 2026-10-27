@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { fireEvent, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { confirmSave } from '../../test/confirmSave.ts';
 import type { AdminSubject } from '../../features/admin/types.ts';
 import { ApiError } from '../../lib/api.ts';
 import { adminService } from '../../services/adminService.ts';
@@ -51,6 +52,7 @@ describe('AdminSubjectsPage', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Add subject' }));
     const form = within(await dialog());
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(
       await form.findByText('Enter the name of the subject.'),
@@ -68,6 +70,7 @@ describe('AdminSubjectsPage', () => {
       target: { value: '  History  ' },
     });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await screen.findByText('The subject was added.')).toBeVisible();
     expect(service.createSubject).toHaveBeenCalledWith({ name: 'History' });
@@ -83,6 +86,7 @@ describe('AdminSubjectsPage', () => {
       target: { value: 'Mathematics' },
     });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(
       await form.findByText('A subject with this name already exists.'),
@@ -104,6 +108,7 @@ describe('AdminSubjectsPage', () => {
       target: { value: 'Algebra' },
     });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await screen.findByText('The subject was updated.')).toBeVisible();
     expect(service.updateSubject).toHaveBeenCalledWith(1, { name: 'Algebra' });

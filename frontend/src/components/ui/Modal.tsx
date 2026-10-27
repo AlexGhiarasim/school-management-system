@@ -24,7 +24,9 @@ export function Modal({ open, onClose, title, children, wide }: ModalProps) {
     <dialog
       ref={dialog}
       aria-labelledby={titleId}
-      onClose={onClose}
+      onClose={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
       onClick={(event) => {
         if (event.target === dialog.current) onClose();
       }}

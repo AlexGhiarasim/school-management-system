@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../../components/ui/Button.tsx';
+import { ConfirmSave } from '../../../components/ui/ConfirmSave.tsx';
 import { Modal } from '../../../components/ui/Modal.tsx';
 import { SelectField } from '../../../components/ui/SelectField.tsx';
 import { TextField } from '../../../components/ui/TextField.tsx';
+import { useConfirmedSubmit } from '../../../hooks/useConfirmedSubmit.ts';
 import { useFormState, type FormError } from '../../../hooks/useFormState.ts';
 import { useToast } from '../../../hooks/useToast.ts';
 import { ApiError } from '../../../lib/api.ts';
@@ -11,6 +13,7 @@ import {
   validateName,
   validatePassword,
 } from '../../../utils/accountValidation.ts';
+import { formatDate } from '../../../utils/format.ts';
 import {
   EMAIL_MAX_LENGTH,
   isValidBirthDate,
@@ -69,7 +72,8 @@ interface StudentFormProps {
 }
 
 function StudentForm({ student, classes, onDone }: StudentFormProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage ?? 'ro';
   const { notify } = useToast();
   const mutation = useSaveStudent();
   const editing = student !== null;
@@ -119,88 +123,129 @@ function StudentForm({ student, classes, onDone }: StudentFormProps) {
     }
   }
 
+  const confirm = useConfirmedSubmit(save);
+
   const showAlert =
     mutation.isError &&
     !(mutation.error instanceof ApiError && mutation.error.status === 409);
 
   return (
-    <form
-      onSubmit={(event) => handleSubmit(event, save)}
-      noValidate
-      className="space-y-4"
-    >
-      <div className="grid gap-4 sm:grid-cols-2">
+    <>
+      <form
+        onSubmit={(event) => handleSubmit(event, confirm.request)}
+        noValidate
+        className="space-y-4"
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <TextField
+            label={t('auth.fields.firstName')}
+            placeholder={t('auth.fields.firstNamePlaceholder')}
+            autoCapitalize="words"
+            maxLength={NAME_MAX_LENGTH}
+            {...field('firstName')}
+          />
+          <TextField
+            label={t('auth.fields.lastName')}
+            placeholder={t('auth.fields.lastNamePlaceholder')}
+            autoCapitalize="words"
+            maxLength={NAME_MAX_LENGTH}
+            {...field('lastName')}
+          />
+        </div>
         <TextField
-          label={t('auth.fields.firstName')}
-          autoCapitalize="words"
-          maxLength={NAME_MAX_LENGTH}
-          {...field('firstName')}
+          label={t('auth.fields.email')}
+          placeholder={t('auth.fields.emailPlaceholder')}
+          type="email"
+          inputMode="email"
+          autoCapitalize="none"
+          spellCheck={false}
+          maxLength={EMAIL_MAX_LENGTH}
+          {...field('email')}
         />
-        <TextField
-          label={t('auth.fields.lastName')}
-          autoCapitalize="words"
-          maxLength={NAME_MAX_LENGTH}
-          {...field('lastName')}
-        />
-      </div>
-      <TextField
-        label={t('auth.fields.email')}
-        type="email"
-        inputMode="email"
-        autoCapitalize="none"
-        spellCheck={false}
-        maxLength={EMAIL_MAX_LENGTH}
-        {...field('email')}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <TextField
+            label={t('auth.fields.dateOfBirth')}
+            type="date"
+            min={MIN_BIRTH_DATE_ISO}
+            max={TODAY}
+            {...field('dateOfBirth')}
+          />
+          <SelectField
+            label={t('admin.students.filter.label')}
+            {...field('classId')}
+          >
+            <option value="">{t('admin.students.form.noClass')}</option>
+            {classes.map((schoolClass) => (
+              <option key={schoolClass.id} value={schoolClass.id}>
+                {schoolClass.name}
+              </option>
+            ))}
+          </SelectField>
+        </div>
+        {!editing && (
+          <TextField
+            label={t('auth.fields.password')}
+            type="password"
+            autoComplete="new-password"
+            maxLength={PASSWORD_MAX_LENGTH}
+            placeholder={t('auth.fields.newPasswordPlaceholder')}
+            {...field('password')}
+          />
+        )}
+
+        {showAlert && (
+          <p
+            role="alert"
+            className="rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-700"
+          >
+            {t(getApiErrorKey(mutation.error))}
+          </p>
+        )}
+
+        <div className="flex justify-end gap-3 pt-2">
+          <Button variant="secondary" fullWidth={false} onClick={onDone}>
+            {t('common.cancel')}
+          </Button>
+          <Button type="submit" fullWidth={false} loading={mutation.isPending}>
+            {mutation.isPending ? t('common.saving') : t('common.save')}
+          </Button>
+        </div>
+      </form>
+      <ConfirmSave
+        entity="student"
+        editing={editing}
+        details={
+          confirm.values
+            ? [
+                {
+                  label: t('auth.fields.lastName'),
+                  value: confirm.values.lastName.trim(),
+                },
+                {
+                  label: t('auth.fields.firstName'),
+                  value: confirm.values.firstName.trim(),
+                },
+                {
+                  label: t('auth.fields.email'),
+                  value: confirm.values.email.trim(),
+                },
+                {
+                  label: t('auth.fields.dateOfBirth'),
+                  value: formatDate(confirm.values.dateOfBirth, language),
+                },
+                {
+                  label: t('admin.students.filter.label'),
+                  value:
+                    classes.find(
+                      (item) => String(item.id) === confirm.values?.classId,
+                    )?.name ?? t('confirm.none'),
+                },
+              ]
+            : []
+        }
+        confirm={confirm}
       />
-      <div className="grid gap-4 sm:grid-cols-2">
-        <TextField
-          label={t('auth.fields.dateOfBirth')}
-          type="date"
-          min={MIN_BIRTH_DATE_ISO}
-          max={TODAY}
-          {...field('dateOfBirth')}
-        />
-        <SelectField
-          label={t('admin.students.filter.label')}
-          {...field('classId')}
-        >
-          <option value="">{t('admin.students.form.noClass')}</option>
-          {classes.map((schoolClass) => (
-            <option key={schoolClass.id} value={schoolClass.id}>
-              {schoolClass.name}
-            </option>
-          ))}
-        </SelectField>
-      </div>
-      {!editing && (
-        <TextField
-          label={t('auth.fields.password')}
-          type="password"
-          autoComplete="new-password"
-          maxLength={PASSWORD_MAX_LENGTH}
-          placeholder={t('auth.fields.newPasswordPlaceholder')}
-          {...field('password')}
-        />
-      )}
-
-      {showAlert && (
-        <p
-          role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-700"
-        >
-          {t(getApiErrorKey(mutation.error))}
-        </p>
-      )}
-
-      <div className="flex justify-end gap-3 pt-2">
-        <Button variant="secondary" fullWidth={false} onClick={onDone}>
-          {t('common.cancel')}
-        </Button>
-        <Button type="submit" fullWidth={false} loading={mutation.isPending}>
-          {mutation.isPending ? t('common.saving') : t('common.save')}
-        </Button>
-      </div>
-    </form>
+    </>
   );
 }
 

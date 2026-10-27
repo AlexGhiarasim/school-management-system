@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../../components/ui/Button.tsx';
+import { ConfirmSave } from '../../../components/ui/ConfirmSave.tsx';
 import { Modal } from '../../../components/ui/Modal.tsx';
 import { TextField } from '../../../components/ui/TextField.tsx';
+import { useConfirmedSubmit } from '../../../hooks/useConfirmedSubmit.ts';
 import { useFormState, type FormError } from '../../../hooks/useFormState.ts';
 import { useToast } from '../../../hooks/useToast.ts';
 import { ApiError } from '../../../lib/api.ts';
@@ -64,41 +66,60 @@ function SubjectForm({
     }
   }
 
+  const confirm = useConfirmedSubmit(save);
+
   const showAlert =
     mutation.isError &&
     !(mutation.error instanceof ApiError && mutation.error.status === 409);
 
   return (
-    <form
-      onSubmit={(event) => handleSubmit(event, save)}
-      noValidate
-      className="space-y-4"
-    >
-      <TextField
-        label={t('admin.subjects.form.name')}
-        maxLength={SUBJECT_NAME_MAX_LENGTH}
-        placeholder={t('admin.subjects.form.namePlaceholder')}
-        {...field('name')}
+    <>
+      <form
+        onSubmit={(event) => handleSubmit(event, confirm.request)}
+        noValidate
+        className="space-y-4"
+      >
+        <TextField
+          label={t('admin.subjects.form.name')}
+          maxLength={SUBJECT_NAME_MAX_LENGTH}
+          placeholder={t('admin.subjects.form.namePlaceholder')}
+          {...field('name')}
+        />
+
+        {showAlert && (
+          <p
+            role="alert"
+            className="rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-700"
+          >
+            {t(getApiErrorKey(mutation.error))}
+          </p>
+        )}
+
+        <div className="flex justify-end gap-3 pt-2">
+          <Button variant="secondary" fullWidth={false} onClick={onDone}>
+            {t('common.cancel')}
+          </Button>
+          <Button type="submit" fullWidth={false} loading={mutation.isPending}>
+            {mutation.isPending ? t('common.saving') : t('common.save')}
+          </Button>
+        </div>
+      </form>
+      <ConfirmSave
+        entity="subject"
+        editing={subject !== null}
+        details={
+          confirm.values
+            ? [
+                {
+                  label: t('admin.subjects.form.name'),
+                  value: confirm.values.name.trim(),
+                },
+              ]
+            : []
+        }
+        confirm={confirm}
       />
-
-      {showAlert && (
-        <p
-          role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-700"
-        >
-          {t(getApiErrorKey(mutation.error))}
-        </p>
-      )}
-
-      <div className="flex justify-end gap-3 pt-2">
-        <Button variant="secondary" fullWidth={false} onClick={onDone}>
-          {t('common.cancel')}
-        </Button>
-        <Button type="submit" fullWidth={false} loading={mutation.isPending}>
-          {mutation.isPending ? t('common.saving') : t('common.save')}
-        </Button>
-      </div>
-    </form>
+    </>
   );
 }
 

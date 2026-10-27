@@ -29,6 +29,10 @@ API documentation is at `http://localhost:8080/api/docs`. Run
 database. Change `JWT_SECRET` in `.env` before using the stack for anything
 other than a demo.
 
+The application sends emails for password resets. In this stack they are caught
+by Mailpit, so nothing leaves your machine: open `http://localhost:8025` to read
+them.
+
 ### Run for development
 
 Prerequisites: Node.js 24, npm and Docker.
@@ -39,10 +43,11 @@ Prerequisites: Node.js 24, npm and Docker.
    cp .env.example .env
    ```
 
-2. Start MySQL:
+2. Start MySQL and Mailpit (the inbox for the emails sent by the application,
+   at `http://localhost:8025`):
 
    ```bash
-   docker compose up -d mysql
+   docker compose up -d mysql mailpit
    ```
 
 3. Install, migrate, seed and start the backend:
@@ -95,6 +100,9 @@ All endpoints are under `/api`. Lists accept `page` and `limit` and return
 |---|---|---|---|
 | `POST /auth/login` | public | public | public |
 | `POST /auth/register` (creates a student account) | public | public | public |
+| `POST /auth/forgot-password` (emails a reset link) | public | public | public |
+| `POST /auth/reset-password` (sets a new password with the link token) | public | public | public |
+| `POST /auth/change-password` | yes | yes | yes |
 | `GET /auth/me` | yes | yes | yes |
 | `GET /health` | public | public | public |
 | `/subjects` (read) | yes | yes | yes |
@@ -180,6 +188,12 @@ touches the frontend. Another workflow builds the Docker images.
   browser keeps it in local storage and the app signs out by itself when the
   server rejects it. A deactivated account loses access immediately, because the
   token is checked against the database on every request.
+- **Password reset.** "Forgot your password" emails a link with a random token.
+  Only its SHA-256 hash is stored, it expires after 60 minutes and works once.
+  The request always answers 204, so it does not reveal which emails have an
+  account. Changing or resetting a password signs out every other session, because
+  tokens issued before `passwordChangedAt` are rejected. Emails go through SMTP
+  (`SMTP_HOST`, `SMTP_PORT`, `MAIL_FROM`, `APP_URL`); Mailpit is the local inbox.
 - **Input validation.** Names accept letters, spaces, hyphens and apostrophes (2-100 characters). Passwords need 8-72 characters with at least one letter and one digit, birth dates must be between 1900 and today, and unknown fields are rejected. The frontend applies the same rules before sending a form.
 - **Rate limiting.** Login is limited to 5 attempts per minute, the rest of the
   API to 100 requests per minute.
