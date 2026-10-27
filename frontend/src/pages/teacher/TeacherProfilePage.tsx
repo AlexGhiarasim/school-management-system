@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../components/layout/PageHeader.tsx';
+import { ProfileBanner } from '../../components/ui/ProfileBanner.tsx';
+import { ProfileField } from '../../components/ui/ProfileField.tsx';
 import { ChangePasswordButton } from '../../features/auth/components/ChangePasswordCard.tsx';
 import { useTeacherClasses } from '../../features/teacher/hooks.ts';
 import { useAuth } from '../../hooks/useAuth.ts';
@@ -26,38 +28,35 @@ export default function TeacherProfilePage() {
 
       <div className="space-y-6">
         <div className="grid gap-6 lg:grid-cols-3">
-          <div className={`${CARD} lg:col-span-2`}>
-            {profile && (
-              <div className="flex items-center gap-4">
-                <span
-                  aria-hidden="true"
-                  className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100 text-lg font-semibold text-indigo-700"
-                >
-                  {profile.firstName[0]}
-                  {profile.lastName[0]}
-                </span>
-                <div>
-                  <p className="text-xl font-semibold text-slate-900">
-                    {profile.firstName} {profile.lastName}
-                  </p>
-                  <p className="text-sm text-slate-500">{t('roles.TEACHER')}</p>
-                </div>
-              </div>
-            )}
-            <dl className="mt-6 grid gap-x-6 gap-y-5 sm:grid-cols-2">
-              <div>
-                <dt className="text-sm text-slate-500">
-                  {t('auth.fields.email')}
-                </dt>
-                <dd className="mt-1 font-medium break-all text-slate-900">
-                  {user.email}
-                </dd>
-              </div>
-            </dl>
-            <ChangePasswordButton />
+          <div className="animate-rise lg:col-span-2">
+            <ProfileBanner
+              initials={
+                profile
+                  ? `${profile.firstName[0]}${profile.lastName[0]}`
+                  : user.email[0].toUpperCase()
+              }
+              name={
+                profile
+                  ? `${profile.firstName} ${profile.lastName}`
+                  : user.email
+              }
+              subtitle={t('roles.TEACHER')}
+            >
+              <dl className="mt-5">
+                <ProfileField
+                  label={t('auth.fields.email')}
+                  value={user.email}
+                  copyable
+                />
+              </dl>
+              <ChangePasswordButton />
+            </ProfileBanner>
           </div>
 
-          <div className={CARD}>
+          <div
+            className={`${CARD} animate-rise`}
+            style={{ animationDelay: '100ms' }}
+          >
             <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
               {t('teacher.profile.teaching')}
             </p>

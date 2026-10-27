@@ -152,7 +152,7 @@ export function ChangePasswordButton() {
   const [changed, setChanged] = useState(false);
 
   return (
-    <div className="mt-6 flex flex-wrap items-center gap-3">
+    <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
       <Button
         variant="secondary"
         fullWidth={false}

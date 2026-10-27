@@ -10,6 +10,8 @@
     "saving": "Se salvează",
     "confirm": "Confirmă",
     "close": "Închide",
+    "copy": "Copiază",
+    "copied": "Copiat",
     "retry": "Încearcă din nou",
     "errorTitle": "Nu am putut încărca datele",
     "errorDescription": "A apărut o problemă la comunicarea cu serverul.",

@@ -4,6 +4,8 @@ import { Link } from 'react-router';
 import { PageHeader } from '../../components/layout/PageHeader.tsx';
 import { ErrorState } from '../../components/ui/ErrorState.tsx';
 import { Modal } from '../../components/ui/Modal.tsx';
+import { ProfileBanner } from '../../components/ui/ProfileBanner.tsx';
+import { ProfileField } from '../../components/ui/ProfileField.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
 import { ChangePasswordButton } from '../../features/auth/components/ChangePasswordCard.tsx';
 import { GradeBadge } from '../../features/student/components/GradeBadge.tsx';
@@ -58,61 +60,40 @@ export default function StudentProfilePage() {
 
       {data && (
         <div className="grid gap-6 lg:grid-cols-3">
-          <div className={`${CARD} lg:col-span-2`}>
-            <div className="flex items-center gap-4">
-              <span
-                aria-hidden="true"
-                className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100 text-lg font-semibold text-indigo-700"
-              >
-                {data.firstName[0]}
-                {data.lastName[0]}
-              </span>
-              <div>
-                <p className="text-xl font-semibold text-slate-900">
-                  {data.firstName} {data.lastName}
-                </p>
-                <p className="text-sm text-slate-500">{t('roles.STUDENT')}</p>
-              </div>
-            </div>
-
-            <dl className="mt-6 grid gap-x-6 gap-y-5 sm:grid-cols-2">
-              <div>
-                <dt className="text-sm text-slate-500">
-                  {t('student.profile.fields.firstName')}
-                </dt>
-                <dd className="mt-1 font-medium text-slate-900">
-                  {data.firstName}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-sm text-slate-500">
-                  {t('student.profile.fields.lastName')}
-                </dt>
-                <dd className="mt-1 font-medium text-slate-900">
-                  {data.lastName}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-sm text-slate-500">
-                  {t('student.profile.fields.email')}
-                </dt>
-                <dd className="mt-1 font-medium break-all text-slate-900">
-                  {data.email}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-sm text-slate-500">
-                  {t('student.profile.fields.dateOfBirth')}
-                </dt>
-                <dd className="mt-1 font-medium text-slate-900">
-                  {formatDate(data.dateOfBirth, language)}
-                </dd>
-              </div>
-            </dl>
-            <ChangePasswordButton />
+          <div className="animate-rise lg:col-span-2">
+            <ProfileBanner
+              initials={`${data.firstName[0]}${data.lastName[0]}`}
+              name={`${data.firstName} ${data.lastName}`}
+              subtitle={t('roles.STUDENT')}
+            >
+              <dl className="mt-5 grid gap-x-6 gap-y-1 sm:grid-cols-2">
+                <ProfileField
+                  label={t('student.profile.fields.firstName')}
+                  value={data.firstName}
+                />
+                <ProfileField
+                  label={t('student.profile.fields.lastName')}
+                  value={data.lastName}
+                />
+                <ProfileField
+                  label={t('student.profile.fields.email')}
+                  value={data.email}
+                  copyable
+                  wide
+                />
+                <ProfileField
+                  label={t('student.profile.fields.dateOfBirth')}
+                  value={formatDate(data.dateOfBirth, language)}
+                />
+              </dl>
+              <ChangePasswordButton />
+            </ProfileBanner>
           </div>
 
-          <div className={CARD}>
+          <div
+            className={`${CARD} animate-rise flex flex-col`}
+            style={{ animationDelay: '100ms' }}
+          >
             <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
               {t('student.profile.fields.class')}
             </p>
@@ -151,7 +132,7 @@ export default function StudentProfilePage() {
             )}
 
             {grades && grades.grades.length > 0 && (
-              <dl className="mt-6 grid grid-cols-2 gap-4 border-t border-slate-100 pt-5">
+              <dl className="mt-auto grid grid-cols-2 gap-4 border-t border-slate-100 pt-5">
                 <div>
                   <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">
                     {t('student.grades.summary.average')}
@@ -161,6 +142,17 @@ export default function StudentProfilePage() {
                       ? '-'
                       : formatNumber(grades.average, language)}
                   </dd>
+                  {grades.average !== null && (
+                    <div
+                      aria-hidden="true"
+                      className="mt-2 h-1 overflow-hidden rounded-full bg-slate-100"
+                    >
+                      <div
+                        className="h-full rounded-full bg-slate-700 transition-all duration-700"
+                        style={{ width: `${(grades.average / 10) * 100}%` }}
+                      />
+                    </div>
+                  )}
                 </div>
                 <div>
                   <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">
@@ -208,33 +200,44 @@ export default function StudentProfilePage() {
           )}
 
           {grades && grades.grades.length > 0 && (
-            <div className={`${CARD} lg:col-span-3`}>
+            <div
+              className={`${CARD} animate-rise lg:col-span-3`}
+              style={{ animationDelay: '200ms' }}
+            >
               <div className="flex items-center justify-between gap-4">
                 <h2 className="text-lg font-semibold text-slate-900">
                   {t('student.profile.recent.title')}
                 </h2>
                 <Link
                   to={paths.student.grades}
-                  className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                  className="group text-sm font-medium text-indigo-600 hover:text-indigo-700"
                 >
                   {t('student.profile.recent.viewAll')}
+                  <span
+                    aria-hidden="true"
+                    className="ml-1 inline-block transition-transform group-hover:translate-x-0.5"
+                  >
+                    →
+                  </span>
                 </Link>
               </div>
-              <ul className="mt-4 divide-y divide-slate-100">
+              <ul className="mt-3 divide-y divide-slate-100">
                 {grades.grades.slice(0, RECENT_GRADES).map((grade) => (
-                  <li
-                    key={grade.id}
-                    className="flex items-center justify-between gap-4 py-3"
-                  >
-                    <span className="font-medium text-slate-900">
-                      {subjectName(grade.subject.name)}
-                    </span>
-                    <span className="flex items-center gap-4">
-                      <span className="text-sm text-slate-500">
-                        {formatDate(grade.date, language)}
+                  <li key={grade.id}>
+                    <Link
+                      to={paths.student.grades}
+                      className="-mx-3 flex items-center justify-between gap-4 rounded-xl px-3 py-3 transition-colors hover:bg-slate-50 focus:outline-none focus-visible:bg-slate-50"
+                    >
+                      <span className="font-medium text-slate-900">
+                        {subjectName(grade.subject.name)}
                       </span>
-                      <GradeBadge value={grade.value} />
-                    </span>
+                      <span className="flex items-center gap-4">
+                        <span className="text-sm text-slate-500">
+                          {formatDate(grade.date, language)}
+                        </span>
+                        <GradeBadge value={grade.value} />
+                      </span>
+                    </Link>
                   </li>
                 ))}
               </ul>

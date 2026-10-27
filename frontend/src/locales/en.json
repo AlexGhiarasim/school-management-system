@@ -10,6 +10,8 @@
     "saving": "Saving",
     "confirm": "Confirm",
     "close": "Close",
+    "copy": "Copy",
+    "copied": "Copied",
     "retry": "Try again",
     "errorTitle": "We could not load the data",
     "errorDescription": "There was a problem talking to the server.",
