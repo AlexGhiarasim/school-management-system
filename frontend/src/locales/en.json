@@ -29,6 +29,18 @@
     "TEACHER": "Teacher",
     "STUDENT": "Student"
   },
+  "subjectNames": {
+    "Mathematics": "Mathematics",
+    "Romanian Language": "Romanian Language",
+    "English": "English",
+    "Physics": "Physics",
+    "Chemistry": "Chemistry",
+    "Biology": "Biology",
+    "History": "History",
+    "Geography": "Geography",
+    "Computer Science": "Computer Science",
+    "Physical Education": "Physical Education"
+  },
   "nav": {
     "main": "Main navigation",
     "signOut": "Sign out",
@@ -111,6 +123,7 @@
       "students_one": "{{count}} student",
       "students_other": "{{count}} students",
       "open": "View students",
+      "homeroom": "Class teacher",
       "empty": {
         "title": "You have no classes yet",
         "description": "An administrator will assign your classes. They will appear here."
@@ -140,7 +153,8 @@
     "studentGrades": {
       "back": "Back to the class",
       "title": "Student grades",
-      "description": "You can add grades and edit the ones you gave.",
+      "description": "You can add grades for the subjects you teach and edit the ones you gave.",
+      "homeroomDescription": "As class teacher you see every grade of the student. You can change only the grades you gave.",
       "add": "Add grade",
       "filter": {
         "label": "Subject",

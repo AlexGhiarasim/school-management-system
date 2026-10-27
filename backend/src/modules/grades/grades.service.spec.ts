@@ -36,8 +36,16 @@ const storedGrade = {
 
 function createPrisma() {
   return {
-    student: { count: vi.fn() },
+    student: { findUnique: vi.fn().mockResolvedValue({ classId: 2 }) },
     subject: { count: vi.fn() },
+    class: {
+      findMany: vi.fn().mockResolvedValue([{ id: 2 }]),
+      count: vi.fn().mockResolvedValue(1),
+    },
+    teachingAssignment: {
+      count: vi.fn().mockResolvedValue(1),
+      findMany: vi.fn().mockResolvedValue([{ classId: 3, subjectId: 4 }]),
+    },
     grade: {
       create: vi.fn().mockResolvedValue(storedGrade),
       update: vi.fn().mockResolvedValue(storedGrade),
@@ -64,11 +72,12 @@ describe('GradesService', () => {
   describe('create', () => {
     const dto = { studentId: 7, subjectId: 3, value: 9 };
 
-    it('lets a teacher grade a student from their own class', async () => {
-      prisma.student.count.mockResolvedValue(1);
-
+    it('lets a teacher grade a subject they teach in the class', async () => {
       await service.create(dto, teacher);
 
+      expect(prisma.teachingAssignment.count).toHaveBeenCalledWith({
+        where: { teacherId: 5, classId: 2, subjectId: 3 },
+      });
       expect(prisma.grade.create).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({ studentId: 7, teacherId: 5 }),
@@ -76,18 +85,8 @@ describe('GradesService', () => {
       );
     });
 
-    it('checks the student against the classes of the teacher', async () => {
-      prisma.student.count.mockResolvedValue(1);
-
-      await service.create(dto, teacher);
-
-      expect(prisma.student.count).toHaveBeenLastCalledWith({
-        where: { id: 7, class: { teacherId: 5 } },
-      });
-    });
-
-    it('rejects a student outside the classes of the teacher', async () => {
-      prisma.student.count.mockResolvedValueOnce(1).mockResolvedValueOnce(0);
+    it('rejects a subject the teacher does not teach in the class', async () => {
+      prisma.teachingAssignment.count.mockResolvedValue(0);
 
       await expect(service.create(dto, teacher)).rejects.toBeInstanceOf(
         ForbiddenException,
@@ -95,8 +94,8 @@ describe('GradesService', () => {
       expect(prisma.grade.create).not.toHaveBeenCalled();
     });
 
-    it('reports an unknown student to a teacher as not found', async () => {
-      prisma.student.count.mockResolvedValue(0);
+    it('reports an unknown student as not found', async () => {
+      prisma.student.findUnique.mockResolvedValue(null);
 
       await expect(service.create(dto, teacher)).rejects.toBeInstanceOf(
         NotFoundException,
@@ -104,9 +103,9 @@ describe('GradesService', () => {
     });
 
     it('lets an admin grade any student without a teacher', async () => {
-      prisma.student.count.mockResolvedValue(1);
-
       await service.create(dto, admin);
+
+      expect(prisma.teachingAssignment.count).not.toHaveBeenCalled();
 
       expect(prisma.grade.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -125,8 +124,6 @@ describe('GradesService', () => {
     });
 
     it('formats the date as a plain date', async () => {
-      prisma.student.count.mockResolvedValue(1);
-
       const result = await service.create(dto, admin);
 
       expect(result.date).toBe('2026-10-01');
@@ -200,20 +197,23 @@ describe('GradesService', () => {
   describe('findAll', () => {
     const query = { page: 1, limit: 20 };
 
-    it('limits a teacher to students from their own classes', async () => {
+    it('shows a teacher the whole class they lead and the subjects they teach', async () => {
       await service.findAll(query, teacher);
 
       expect(prisma.grade.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: expect.objectContaining({
-            student: { class: { teacherId: 5 } },
-          }),
+          where: {
+            OR: [
+              { student: { classId: { in: [2] } } },
+              { subjectId: 4, student: { classId: 3 } },
+            ],
+          },
         }),
       );
     });
 
     it('rejects a teacher asking for a student of another class', async () => {
-      prisma.student.count.mockResolvedValueOnce(1).mockResolvedValueOnce(0);
+      prisma.class.count.mockResolvedValue(0);
 
       await expect(
         service.findAll({ ...query, studentId: 7 }, teacher),
@@ -225,7 +225,7 @@ describe('GradesService', () => {
       await service.findAll(query, admin);
 
       expect(prisma.grade.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { student: {} } }),
+        expect.objectContaining({ where: {} }),
       );
     });
 
@@ -234,7 +234,7 @@ describe('GradesService', () => {
 
       expect(prisma.grade.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { subjectId: 3, studentId: 7, student: {} },
+          where: { subjectId: 3, studentId: 7 },
         }),
       );
     });

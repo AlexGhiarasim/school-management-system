@@ -172,13 +172,14 @@ describe('Access control and grading (e2e)', () => {
         .set('Authorization', as('student'))
         .expect(200);
 
-      const values = response.body.grades.map(
-        (item: { value: number }) => item.value,
+      expect(response.body.grades.length).toBeGreaterThanOrEqual(2);
+      const averages = response.body.bySubject.map(
+        (item: { average: number }) => item.average,
       );
-      expect(values.length).toBeGreaterThanOrEqual(2);
       expect(response.body.average).toBe(
         Math.round(
-          (values.reduce((a: number, b: number) => a + b, 0) / values.length) *
+          (averages.reduce((a: number, b: number) => a + b, 0) /
+            averages.length) *
             100,
         ) / 100,
       );

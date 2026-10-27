@@ -34,9 +34,10 @@ model Teacher {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  classes Class[]
-  grades  Grade[]
+  user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  classes     Class[]
+  grades      Grade[]
+  assignments TeachingAssignment[]
 }
 
 model Class {
@@ -46,8 +47,9 @@ model Class {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  teacher  Teacher?  @relation(fields: [teacherId], references: [id], onDelete: SetNull)
-  students Student[]
+  teacher     Teacher?             @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  students    Student[]
+  assignments TeachingAssignment[]
 }
 
 model Student {
@@ -71,7 +73,25 @@ model Subject {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  grades Grade[]
+  grades      Grade[]
+  assignments TeachingAssignment[]
+}
+
+// A teacher teaches a subject in a class. Class.teacherId is the class teacher
+// (homeroom), who can see every grade of the class but only grades what they teach.
+model TeachingAssignment {
+  id        Int @id @default(autoincrement())
+  teacherId Int
+  classId   Int
+  subjectId Int
+
+  teacher Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  class   Class   @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([teacherId, classId, subjectId])
+  @@index([classId])
+  @@index([subjectId])
 }
 
 model Grade {

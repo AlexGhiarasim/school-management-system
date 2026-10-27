@@ -90,6 +90,14 @@ export async function createTestContext(scope: string): Promise<TestContext> {
     data: { name: `${scope}-subject` },
   });
 
+  await prisma.teachingAssignment.create({
+    data: {
+      teacherId: teacher.id,
+      classId: ownClass.id,
+      subjectId: subject.id,
+    },
+  });
+
   const sign = (user: { id: number; email: string; role: Role }) =>
     jwt.signAsync({ sub: user.id, email: user.email, role: user.role });
 

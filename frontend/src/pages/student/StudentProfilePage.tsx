@@ -11,6 +11,7 @@ import {
   useStudentGrades,
   useStudentProfile,
 } from '../../features/student/hooks.ts';
+import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { paths } from '../../routes/paths.ts';
 import { formatDate, formatNumber } from '../../utils/format.ts';
 
@@ -20,6 +21,7 @@ const RECENT_GRADES = 5;
 export default function StudentProfilePage() {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage ?? 'ro';
+  const subjectName = useSubjectName();
   const { data, isPending, isError, refetch } = useStudentProfile();
   const { data: grades } = useStudentGrades();
   const { data: classOverview } = useClassOverview(Boolean(data?.class));
@@ -223,7 +225,7 @@ export default function StudentProfilePage() {
                     className="flex items-center justify-between gap-4 py-3"
                   >
                     <span className="font-medium text-slate-900">
-                      {grade.subject.name}
+                      {subjectName(grade.subject.name)}
                     </span>
                     <span className="flex items-center gap-4">
                       <span className="text-sm text-slate-500">

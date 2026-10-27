@@ -4,6 +4,7 @@ import { Modal } from '../../../components/ui/Modal.tsx';
 import { SelectField } from '../../../components/ui/SelectField.tsx';
 import { TextField } from '../../../components/ui/TextField.tsx';
 import { useFormState, type FormError } from '../../../hooks/useFormState.ts';
+import { useSubjectName } from '../../../hooks/useSubjectName.ts';
 import { useToast } from '../../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../../lib/apiErrors.ts';
 import {
@@ -51,6 +52,7 @@ interface GradeEditFormProps {
 
 function GradeEditForm({ grade, subjects, onDone }: GradeEditFormProps) {
   const { t } = useTranslation();
+  const subjectName = useSubjectName();
   const { notify } = useToast();
   const mutation = useEditGrade();
   const { field, handleSubmit } = useFormState<GradeValues>(
@@ -98,7 +100,7 @@ function GradeEditForm({ grade, subjects, onDone }: GradeEditFormProps) {
         <option value="">{t('teacher.gradeForm.subjectPlaceholder')}</option>
         {subjects.map((subject) => (
           <option key={subject.id} value={subject.id}>
-            {subject.name}
+            {subjectName(subject.name)}
           </option>
         ))}
       </SelectField>

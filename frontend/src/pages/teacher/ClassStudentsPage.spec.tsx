@@ -46,7 +46,9 @@ describe('ClassStudentsPage', () => {
   beforeEach(() => {
     getClasses.mockReset();
     getClassStudents.mockReset();
-    getClasses.mockResolvedValue([{ id: 3, name: '9A', studentCount: 25 }]);
+    getClasses.mockResolvedValue([
+      { id: 3, name: '9A', studentCount: 25, isHomeroom: false, subjects: [] },
+    ]);
   });
 
   it('shows the class and its students', async () => {
@@ -90,7 +92,9 @@ describe('ClassStudentsPage', () => {
   });
 
   it('does not open a class that is not assigned to the teacher', async () => {
-    getClasses.mockResolvedValue([{ id: 99, name: '12B', studentCount: 3 }]);
+    getClasses.mockResolvedValue([
+      { id: 99, name: '12B', studentCount: 3, isHomeroom: false, subjects: [] },
+    ]);
     getClassStudents.mockResolvedValue(page(students));
     renderPage(<ClassStudentsPage />, options);
 

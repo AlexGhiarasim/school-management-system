@@ -78,7 +78,26 @@ export const CLASS_PLANS = [
   { name: '10A', birthYear: 2010, teacherIndex: 2 },
   { name: '10B', birthYear: 2010, teacherIndex: 3 },
   { name: '11A', birthYear: 2009, teacherIndex: 4 },
-  { name: '12A', birthYear: 2008, teacherIndex: 0 },
+  { name: '12A', birthYear: 2008, teacherIndex: 5 },
+];
+
+// Index of the teacher who teaches each subject in every class.
+export const SUBJECT_TEACHERS: Record<string, number> = {
+  Mathematics: 0,
+  'Romanian Language': 1,
+  English: 2,
+  Physics: 3,
+  Chemistry: 4,
+  Biology: 5,
+  History: 6,
+  Geography: 7,
+  'Computer Science': 8,
+  'Physical Education': 9,
+};
+
+// The one class where a teacher takes a second subject.
+export const SUBJECT_OVERRIDES = [
+  { className: '9A', subject: 'Physics', teacherIndex: 0 },
 ];
 
 export const TEACHER_COUNT = 10;

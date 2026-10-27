@@ -79,7 +79,7 @@ share another.
 | Role | Email | Password |
 |---|---|---|
 | Admin | `admin@school.test` | `Admin123!` |
-| Teacher | `laura.marin@school.test` (teaches 9A and 12A) | `Teacher123!` |
+| Teacher | `laura.marin@school.test` (class teacher of 9A, teaches Mathematics in every class and Physics in 9A) | `Teacher123!` |
 | Student | `mihai.constantin@student.school.test` | `Student123!` |
 
 Other accounts follow the same pattern: teachers use `@school.test` and students
@@ -116,7 +116,10 @@ All endpoints are under `/api`. Lists accept `page` and `limit` and return
 Authorization is enforced on the backend by a global JWT guard and a roles guard.
 Ownership rules live in the services:
 
-- A teacher can grade and view only students from the classes they teach.
+- A teacher teaches subjects in classes (`TeachingAssignment`). They can grade and
+  see only those subjects, for the students of those classes.
+- The class teacher (`Class.teacherId`) also sees every grade of the class, but can
+  change only the grades they gave.
 - A teacher can edit only the grades they gave.
 - The identity of a student or teacher always comes from the token, never from the URL.
 
@@ -169,6 +172,9 @@ touches the frontend. Another workflow builds the Docker images.
   Deleting a profile deletes its account in the same operation.
 - **Subjects as a table.** Grades reference a subject, which keeps names
   consistent and makes averages per subject reliable.
+- **Averages.** The average of a subject is rounded to a whole number (6.5
+  becomes 7), and the overall average is the mean of those rounded subject
+  averages, shown with two decimals.
 - **Long-lived access tokens, no refresh tokens.** A token is valid for two
   years (`JWT_EXPIRES_IN`), so users stay signed in until they sign out. The
   browser keeps it in local storage and the app signs out by itself when the

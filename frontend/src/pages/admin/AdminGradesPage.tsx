@@ -18,6 +18,7 @@ import {
 } from '../../features/admin/hooks.ts';
 import type { AdminGrade } from '../../features/admin/types.ts';
 import { GradeBadge } from '../../features/student/components/GradeBadge.tsx';
+import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
 import { formatDate } from '../../utils/format.ts';
@@ -28,6 +29,7 @@ export default function AdminGradesPage() {
   const { t, i18n } = useTranslation();
   const { notify } = useToast();
   const language = i18n.resolvedLanguage ?? 'ro';
+  const subjectName = useSubjectName();
 
   const [classId, setClassId] = useState('');
   const [studentId, setStudentId] = useState('');
@@ -71,7 +73,7 @@ export default function AdminGradesPage() {
     {
       key: 'subject',
       header: t('admin.grades.table.subject'),
-      render: (grade) => grade.subject.name,
+      render: (grade) => subjectName(grade.subject.name),
     },
     {
       key: 'value',
@@ -171,7 +173,7 @@ export default function AdminGradesPage() {
           <option value="">{t('admin.grades.filter.allSubjects')}</option>
           {subjects.data?.data.map((subject) => (
             <option key={subject.id} value={subject.id}>
-              {subject.name}
+              {subjectName(subject.name)}
             </option>
           ))}
         </SelectField>
@@ -220,7 +222,7 @@ export default function AdminGradesPage() {
         title={t('admin.grades.delete.title')}
         message={t('admin.grades.delete.message', {
           grade: deleting?.value ?? '',
-          subject: deleting?.subject.name ?? '',
+          subject: deleting ? subjectName(deleting.subject.name) : '',
           name: deleting
             ? `${deleting.student.firstName} ${deleting.student.lastName}`
             : '',

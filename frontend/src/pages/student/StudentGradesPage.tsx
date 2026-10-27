@@ -11,6 +11,7 @@ import { GradeBadge } from '../../features/student/components/GradeBadge.tsx';
 import { SubjectAverages } from '../../features/student/components/SubjectAverages.tsx';
 import { useStudentGrades } from '../../features/student/hooks.ts';
 import type { StudentGrade } from '../../features/student/types.ts';
+import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { formatDate, formatNumber } from '../../utils/format.ts';
 
 const PAGE_SIZE = 10;
@@ -19,6 +20,7 @@ const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
 export default function StudentGradesPage() {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage ?? 'ro';
+  const subjectName = useSubjectName();
   const { data, isPending, isError, refetch } = useStudentGrades();
   const [subjectId, setSubjectId] = useState('');
   const [page, setPage] = useState(1);
@@ -35,7 +37,9 @@ export default function StudentGradesPage() {
       key: 'subject',
       header: t('student.grades.table.subject'),
       render: (grade) => (
-        <span className="font-medium text-slate-900">{grade.subject.name}</span>
+        <span className="font-medium text-slate-900">
+          {subjectName(grade.subject.name)}
+        </span>
       ),
     },
     {
@@ -144,7 +148,7 @@ export default function StudentGradesPage() {
                   <option value="">{t('student.grades.filter.all')}</option>
                   {data.bySubject.map((item) => (
                     <option key={item.subjectId} value={item.subjectId}>
-                      {item.subject}
+                      {subjectName(item.subject)}
                     </option>
                   ))}
                 </SelectField>

@@ -9,6 +9,7 @@ import TeacherStudentGradesPage from './TeacherStudentGradesPage.tsx';
 
 vi.mock('../../services/teacherService.ts', () => ({
   teacherService: {
+    getClasses: vi.fn(),
     getAllClassStudents: vi.fn(),
     getSubjects: vi.fn(),
     getStudentGrades: vi.fn(),
@@ -69,6 +70,15 @@ function dialog() {
 describe('TeacherStudentGradesPage', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    service.getClasses.mockResolvedValue([
+      {
+        id: 3,
+        name: '9A',
+        studentCount: 1,
+        isHomeroom: false,
+        subjects: [english, maths],
+      },
+    ]);
     service.getAllClassStudents.mockResolvedValue({
       data: [
         {

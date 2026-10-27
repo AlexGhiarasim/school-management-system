@@ -8,6 +8,8 @@ import {
   FIRST_NAMES,
   LAST_NAMES,
   STUDENTS_PER_CLASS,
+  SUBJECT_OVERRIDES,
+  SUBJECT_TEACHERS,
   SUBJECTS,
   TEACHER_COUNT,
   UNASSIGNED_STUDENTS,
@@ -83,6 +85,7 @@ function createIdentityFactory(domain: string) {
 
 async function clearDatabase() {
   await prisma.grade.deleteMany();
+  await prisma.teachingAssignment.deleteMany();
   await prisma.student.deleteMany();
   await prisma.class.deleteMany();
   await prisma.teacher.deleteMany();
@@ -118,7 +121,7 @@ async function main() {
   const subjects = await prisma.subject.findMany();
 
   const teacherIdentity = createIdentityFactory('school.test');
-  const teachers = [];
+  const teachers: { id: number }[] = [];
   for (let index = 0; index < TEACHER_COUNT; index++) {
     const { firstName, lastName, email } = teacherIdentity();
     teachers.push(
@@ -154,9 +157,24 @@ async function main() {
 
   const grades = [];
   for (const plan of CLASS_PLANS) {
-    const teacher = teachers[plan.teacherIndex];
     const schoolClass = await prisma.class.create({
-      data: { name: plan.name, teacherId: teacher.id },
+      data: { name: plan.name, teacherId: teachers[plan.teacherIndex].id },
+    });
+
+    const teacherOf = (subjectName: string) =>
+      teachers[
+        SUBJECT_OVERRIDES.find(
+          (item) =>
+            item.className === plan.name && item.subject === subjectName,
+        )?.teacherIndex ?? SUBJECT_TEACHERS[subjectName]
+      ];
+
+    await prisma.teachingAssignment.createMany({
+      data: subjects.map((subject) => ({
+        classId: schoolClass.id,
+        subjectId: subject.id,
+        teacherId: teacherOf(subject.name).id,
+      })),
     });
 
     for (let index = 0; index < STUDENTS_PER_CLASS; index++) {
@@ -167,7 +185,7 @@ async function main() {
         for (let n = 0; n < count; n++) {
           grades.push({
             studentId: student.id,
-            teacherId: teacher.id,
+            teacherId: teacherOf(subject.name).id,
             subjectId: subject.id,
             value: randomGrade(),
             date: randomDate(GRADING_PERIOD.from, GRADING_PERIOD.days),

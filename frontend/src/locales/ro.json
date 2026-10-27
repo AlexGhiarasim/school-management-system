@@ -30,6 +30,18 @@
     "TEACHER": "Profesor",
     "STUDENT": "Elev"
   },
+  "subjectNames": {
+    "Mathematics": "Matematică",
+    "Romanian Language": "Limba română",
+    "English": "Limba engleză",
+    "Physics": "Fizică",
+    "Chemistry": "Chimie",
+    "Biology": "Biologie",
+    "History": "Istorie",
+    "Geography": "Geografie",
+    "Computer Science": "Informatică",
+    "Physical Education": "Educație fizică"
+  },
   "nav": {
     "main": "Navigare principală",
     "signOut": "Deconectare",
@@ -115,6 +127,7 @@
       "students_few": "{{count}} elevi",
       "students_other": "{{count}} de elevi",
       "open": "Vezi elevii",
+      "homeroom": "Diriginte",
       "empty": {
         "title": "Nu ai încă nicio clasă",
         "description": "Un administrator îți va aloca clasele. Ele vor apărea aici."
@@ -144,7 +157,8 @@
     "studentGrades": {
       "back": "Înapoi la clasă",
       "title": "Notele elevului",
-      "description": "Poți adăuga note și le poți modifica pe cele date de tine.",
+      "description": "Poți adăuga note la materiile pe care le predai și le poți modifica pe cele date de tine.",
+      "homeroomDescription": "Ca diriginte vezi toate notele elevului. Le poți modifica doar pe cele date de tine.",
       "add": "Adaugă notă",
       "filter": {
         "label": "Materia",

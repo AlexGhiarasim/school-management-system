@@ -13,10 +13,12 @@ import {
   useAllClassStudents,
   useStudentGrades,
   useSubjects,
+  useTeacherClasses,
 } from '../../features/teacher/hooks.ts';
 import type { TeacherGrade } from '../../features/teacher/types.ts';
 import { GradeBadge } from '../../features/student/components/GradeBadge.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
+import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { paths } from '../../routes/paths.ts';
 import { formatDate } from '../../utils/format.ts';
 
@@ -25,6 +27,7 @@ const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
 export default function TeacherStudentGradesPage() {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage ?? 'ro';
+  const subjectName = useSubjectName();
   const { user } = useAuth();
   const params = useParams();
   const classId = Number(params.classId);
@@ -49,13 +52,22 @@ export default function TeacherStudentGradesPage() {
     !Number.isInteger(studentId) ||
     (students.isSuccess && !student);
   const ownProfileId = user?.profile?.id;
+  const schoolClass = useTeacherClasses().data?.find(
+    (item) => item.id === classId,
+  );
+  const taughtSubjects = schoolClass?.subjects ?? [];
+  const filterSubjects = schoolClass?.isHomeroom
+    ? (subjects.data?.data ?? [])
+    : taughtSubjects;
 
   const columns: Column<TeacherGrade>[] = [
     {
       key: 'subject',
       header: t('teacher.studentGrades.table.subject'),
       render: (grade) => (
-        <span className="font-medium text-slate-900">{grade.subject.name}</span>
+        <span className="font-medium text-slate-900">
+          {subjectName(grade.subject.name)}
+        </span>
       ),
     },
     {
@@ -119,11 +131,17 @@ export default function TeacherStudentGradesPage() {
                 ? `${student.firstName} ${student.lastName}`
                 : t('teacher.studentGrades.title')
             }
-            description={t('teacher.studentGrades.description')}
+            description={
+              schoolClass?.isHomeroom
+                ? t('teacher.studentGrades.homeroomDescription')
+                : t('teacher.studentGrades.description')
+            }
             actions={
-              <Button fullWidth={false} onClick={() => setCreating(true)}>
-                {t('teacher.studentGrades.add')}
-              </Button>
+              taughtSubjects.length > 0 && (
+                <Button fullWidth={false} onClick={() => setCreating(true)}>
+                  {t('teacher.studentGrades.add')}
+                </Button>
+              )
             }
           />
 
@@ -137,9 +155,9 @@ export default function TeacherStudentGradesPage() {
               }}
             >
               <option value="">{t('teacher.studentGrades.filter.all')}</option>
-              {subjects.data?.data.map((subject) => (
+              {filterSubjects.map((subject) => (
                 <option key={subject.id} value={subject.id}>
-                  {subject.name}
+                  {subjectName(subject.name)}
                 </option>
               ))}
             </SelectField>
@@ -177,7 +195,7 @@ export default function TeacherStudentGradesPage() {
               setEditing(null);
             }}
             studentId={studentId}
-            subjects={subjects.data?.data ?? []}
+            subjects={taughtSubjects}
             grade={editing}
           />
         </>
