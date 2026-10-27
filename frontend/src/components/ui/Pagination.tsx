@@ -7,6 +7,23 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
+const MAX_VISIBLE_PAGES = 7;
+
+function visiblePages(page: number, totalPages: number): (number | null)[] {
+  if (totalPages <= MAX_VISIBLE_PAGES) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  const pages = new Set([1, totalPages, page - 1, page, page + 1]);
+  const sorted = [...pages]
+    .filter((value) => value >= 1 && value <= totalPages)
+    .sort((a, b) => a - b);
+
+  return sorted.flatMap((value, index) =>
+    index > 0 && value - sorted[index - 1] > 1 ? [null, value] : [value],
+  );
+}
+
 export function Pagination({ meta, onPageChange }: PaginationProps) {
   const { t } = useTranslation();
   const { page, totalPages, total } = meta;
@@ -21,10 +38,7 @@ export function Pagination({ meta, onPageChange }: PaginationProps) {
       <p className="text-sm text-slate-500">
         {t('common.pagination.total', { count: total })}
       </p>
-      <div className="flex items-center gap-3">
-        <span className="text-sm text-slate-600">
-          {t('common.pagination.summary', { page, totalPages })}
-        </span>
+      <div className="flex flex-wrap items-center gap-1.5">
         <Button
           variant="secondary"
           fullWidth={false}
@@ -33,6 +47,32 @@ export function Pagination({ meta, onPageChange }: PaginationProps) {
         >
           {t('common.pagination.previous')}
         </Button>
+        {visiblePages(page, totalPages).map((value, index) =>
+          value === null ? (
+            <span
+              key={`gap-${index}`}
+              aria-hidden="true"
+              className="px-1 text-slate-400"
+            >
+              ...
+            </span>
+          ) : (
+            <button
+              key={value}
+              type="button"
+              aria-label={t('common.pagination.page', { page: value })}
+              aria-current={value === page ? 'page' : undefined}
+              onClick={() => onPageChange(value)}
+              className={`h-9 min-w-9 rounded-lg px-2 text-sm font-medium transition-colors ${
+                value === page
+                  ? 'bg-slate-900 text-white'
+                  : 'text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50 hover:text-slate-900'
+              }`}
+            >
+              {value}
+            </button>
+          ),
+        )}
         <Button
           variant="secondary"
           fullWidth={false}

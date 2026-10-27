@@ -40,6 +40,16 @@ export class StudentsController {
     return this.studentsService.findProfile(user.studentId);
   }
 
+  @Get('me/class')
+  @Roles(Role.STUDENT)
+  findClassOverview(@CurrentUser() user: AuthenticatedUser) {
+    if (user.studentId === null) {
+      throw new ForbiddenException();
+    }
+
+    return this.studentsService.findClassOverview(user.studentId);
+  }
+
   @Get()
   findAll(@Query() query: ListStudentsQueryDto) {
     return this.studentsService.findAll(query);

@@ -6,11 +6,29 @@ import { Pagination } from './Pagination.tsx';
 const meta = { page: 2, limit: 20, total: 45, totalPages: 3 };
 
 describe('Pagination', () => {
-  it('shows the total and the current page', () => {
+  it('shows the total and marks the current page', () => {
     render(<Pagination meta={meta} onPageChange={vi.fn()} />);
 
     expect(screen.getByText('45 records')).toBeVisible();
-    expect(screen.getByText('Page 2 of 3')).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Page 2' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+  });
+
+  it('jumps to a page and shortens a long list of pages', () => {
+    const onPageChange = vi.fn();
+    render(
+      <Pagination
+        meta={{ page: 5, limit: 10, total: 200, totalPages: 20 }}
+        onPageChange={onPageChange}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Page 20' }));
+
+    expect(onPageChange).toHaveBeenCalledWith(20);
+    expect(screen.queryByRole('button', { name: 'Page 10' })).toBeNull();
   });
 
   it('moves to the previous and the next page', () => {

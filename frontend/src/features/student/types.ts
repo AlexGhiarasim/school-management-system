@@ -8,6 +8,14 @@ export interface StudentProfile {
   class: { id: number; name: string } | null;
 }
 
+export interface ClassOverview {
+  id: number;
+  name: string;
+  teacher: { firstName: string; lastName: string } | null;
+  studentCount: number;
+  students: { id: number; firstName: string; lastName: string }[];
+}
+
 export interface SubjectAverage {
   subjectId: number;
   subject: string;

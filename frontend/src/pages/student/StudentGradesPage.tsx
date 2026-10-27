@@ -4,6 +4,7 @@ import { PageHeader } from '../../components/layout/PageHeader.tsx';
 import { DataTable, type Column } from '../../components/ui/DataTable.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { ErrorState } from '../../components/ui/ErrorState.tsx';
+import { Pagination } from '../../components/ui/Pagination.tsx';
 import { SelectField } from '../../components/ui/SelectField.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
 import { GradeBadge } from '../../features/student/components/GradeBadge.tsx';
@@ -11,8 +12,8 @@ import { SubjectAverages } from '../../features/student/components/SubjectAverag
 import { useStudentGrades } from '../../features/student/hooks.ts';
 import type { StudentGrade } from '../../features/student/types.ts';
 import { formatDate, formatNumber } from '../../utils/format.ts';
-import { averageTone } from '../../utils/grades.ts';
 
+const PAGE_SIZE = 10;
 const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
 
 export default function StudentGradesPage() {
@@ -20,12 +21,14 @@ export default function StudentGradesPage() {
   const language = i18n.resolvedLanguage ?? 'ro';
   const { data, isPending, isError, refetch } = useStudentGrades();
   const [subjectId, setSubjectId] = useState('');
+  const [page, setPage] = useState(1);
 
-  const rows = data
+  const filtered = data
     ? data.grades.filter(
         (grade) => !subjectId || String(grade.subject.id) === subjectId,
       )
     : [];
+  const rows = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const columns: Column<StudentGrade>[] = [
     {
@@ -90,19 +93,17 @@ export default function StudentGradesPage() {
         <div className="space-y-8">
           <div className="grid gap-4 sm:grid-cols-3">
             <div className={CARD}>
-              <p className="text-sm text-slate-500">
+              <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
                 {t('student.grades.summary.average')}
               </p>
-              <p
-                className={`mt-2 text-4xl font-bold tracking-tight ${averageTone(data.average ?? 0)}`}
-              >
+              <p className="mt-2 text-4xl font-bold tracking-tight text-slate-900">
                 {data.average === null
                   ? '-'
                   : formatNumber(data.average, language)}
               </p>
             </div>
             <div className={CARD}>
-              <p className="text-sm text-slate-500">
+              <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
                 {t('student.grades.summary.grades')}
               </p>
               <p className="mt-2 text-4xl font-bold tracking-tight text-slate-900">
@@ -110,7 +111,7 @@ export default function StudentGradesPage() {
               </p>
             </div>
             <div className={CARD}>
-              <p className="text-sm text-slate-500">
+              <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
                 {t('student.grades.summary.subjects')}
               </p>
               <p className="mt-2 text-4xl font-bold tracking-tight text-slate-900">
@@ -123,7 +124,7 @@ export default function StudentGradesPage() {
             <h2 className="mb-4 text-lg font-semibold text-slate-900">
               {t('student.grades.bySubject.title')}
             </h2>
-            <SubjectAverages subjects={data.bySubject} />
+            <SubjectAverages subjects={data.bySubject} grades={data.grades} />
           </div>
 
           <div>
@@ -135,7 +136,10 @@ export default function StudentGradesPage() {
                 <SelectField
                   label={t('student.grades.filter.label')}
                   value={subjectId}
-                  onChange={(event) => setSubjectId(event.target.value)}
+                  onChange={(event) => {
+                    setSubjectId(event.target.value);
+                    setPage(1);
+                  }}
                 >
                   <option value="">{t('student.grades.filter.all')}</option>
                   {data.bySubject.map((item) => (
@@ -151,6 +155,15 @@ export default function StudentGradesPage() {
               columns={columns}
               rows={rows}
               rowKey={(grade) => grade.id}
+            />
+            <Pagination
+              meta={{
+                page,
+                limit: PAGE_SIZE,
+                total: filtered.length,
+                totalPages: Math.ceil(filtered.length / PAGE_SIZE),
+              }}
+              onPageChange={setPage}
             />
           </div>
         </div>

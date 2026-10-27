@@ -19,7 +19,7 @@
       "label": "Pagination",
       "previous": "Previous",
       "next": "Next",
-      "summary": "Page {{page}} of {{totalPages}}",
+      "page": "Page {{page}}",
       "total_one": "{{count}} record",
       "total_other": "{{count}} records"
     }
@@ -60,6 +60,18 @@
       "noClass": {
         "title": "You are not in a class yet",
         "description": "An administrator will add you to a class. Until then you will have no grades."
+      },
+      "classOverview": {
+        "teacher": "Class teacher",
+        "noTeacher": "Not assigned yet",
+        "students_one": "{{count}} student",
+        "students_other": "{{count}} students",
+        "title": "Your classmates",
+        "you": "you"
+      },
+      "recent": {
+        "title": "Latest grades",
+        "viewAll": "View all grades"
       }
     },
     "grades": {

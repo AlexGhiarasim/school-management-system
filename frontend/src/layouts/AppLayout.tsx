@@ -17,7 +17,7 @@ export function AppLayout() {
     : user.email;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-sky-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       <header className="border-b border-slate-200/70 bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-6 py-4 sm:px-10">
           <div className="flex items-center gap-3">
@@ -29,7 +29,7 @@ export function AppLayout() {
 
           <nav
             aria-label={t('nav.main')}
-            className="order-last -mx-6 flex w-[calc(100%+3rem)] gap-1 overflow-x-auto px-6 sm:-mx-10 sm:w-[calc(100%+5rem)] sm:px-10 lg:order-none lg:mx-0 lg:w-auto lg:px-0"
+            className="order-last -mx-6 flex w-[calc(100%+3rem)] gap-1 overflow-x-auto overflow-y-hidden px-6 sm:-mx-10 sm:w-[calc(100%+5rem)] sm:px-10 lg:order-none lg:mx-0 lg:w-auto lg:px-0"
           >
             {NAV_ITEMS[user.role].map((item) => (
               <NavLink
@@ -37,10 +37,10 @@ export function AppLayout() {
                 to={item.to}
                 end={item.end ?? true}
                 className={({ isActive }) =>
-                  `whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100 ${
+                  `relative whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100 ${
                     isActive
-                      ? 'bg-indigo-50 text-indigo-700'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                      ? 'text-slate-900 after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:bg-indigo-600'
+                      : 'text-slate-500 hover:text-slate-900'
                   }`
                 }
               >

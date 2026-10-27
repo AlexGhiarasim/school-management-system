@@ -75,6 +75,22 @@ describe('StudentGradesPage', () => {
     expect(screen.getByText('1 grade')).toBeVisible();
   });
 
+  it('shows every grade of a subject with its date inside the subject card', async () => {
+    getGrades.mockResolvedValue(grades);
+    renderWithQuery(<StudentGradesPage />);
+
+    const maths = await screen.findByRole('progressbar', {
+      name: 'Mathematics',
+    });
+    const card = within(maths.closest('li') as HTMLElement);
+
+    expect(card.getByText('10')).toBeVisible();
+    expect(card.getByText('Oct 2, 2026')).toBeVisible();
+    expect(card.getByText('8')).toBeVisible();
+    expect(card.getByText('Oct 1, 2026')).toBeVisible();
+    expect(card.queryByText('Sep 30, 2026')).not.toBeInTheDocument();
+  });
+
   it('lists every grade and names an administrator when there is no teacher', async () => {
     getGrades.mockResolvedValue(grades);
     renderWithQuery(<StudentGradesPage />);
@@ -98,6 +114,24 @@ describe('StudentGradesPage', () => {
     expect(within(table).getAllByRole('row')).toHaveLength(2);
     expect(within(table).getByText('English')).toBeVisible();
     expect(within(table).queryByText('Mathematics')).not.toBeInTheDocument();
+  });
+
+  it('shows ten grades per page in the table', async () => {
+    getGrades.mockResolvedValue({
+      ...grades,
+      grades: Array.from({ length: 12 }, (_, index) => ({
+        ...grades.grades[0],
+        id: index + 1,
+      })),
+    });
+    renderWithQuery(<StudentGradesPage />);
+
+    const table = await screen.findByRole('table');
+    expect(within(table).getAllByRole('row')).toHaveLength(11);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Page 2' }));
+
+    expect(within(table).getAllByRole('row')).toHaveLength(3);
   });
 
   it('tells the student when there are no grades yet', async () => {

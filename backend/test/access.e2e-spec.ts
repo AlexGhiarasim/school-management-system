@@ -64,6 +64,26 @@ describe('Access control and grading (e2e)', () => {
         .expect(403);
     });
 
+    it('shows a student their own class with classmates, names only', async () => {
+      await http()
+        .get('/api/students/me/class')
+        .set('Authorization', as('teacher'))
+        .expect(403);
+
+      const response = await http()
+        .get('/api/students/me/class')
+        .set('Authorization', as('student'))
+        .expect(200);
+
+      expect(response.body.id).toBe(context.ids.ownClass);
+      expect(response.body.studentCount).toBe(response.body.students.length);
+      expect(Object.keys(response.body.students[0]).sort()).toEqual([
+        'firstName',
+        'id',
+        'lastName',
+      ]);
+    });
+
     it('lets a teacher see only the students of their own class', async () => {
       const own = await http()
         .get(`/api/classes/${context.ids.ownClass}/students`)

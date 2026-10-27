@@ -19,7 +19,7 @@
       "label": "Paginare",
       "previous": "Înapoi",
       "next": "Înainte",
-      "summary": "Pagina {{page}} din {{totalPages}}",
+      "page": "Pagina {{page}}",
       "total_one": "{{count}} înregistrare",
       "total_few": "{{count}} înregistrări",
       "total_other": "{{count}} de înregistrări"
@@ -61,6 +61,19 @@
       "noClass": {
         "title": "Nu ești încă într-o clasă",
         "description": "Un administrator te va adăuga într-o clasă. Până atunci nu vei avea note."
+      },
+      "classOverview": {
+        "teacher": "Diriginte",
+        "noTeacher": "Încă nealocat",
+        "students_one": "{{count}} elev",
+        "students_few": "{{count}} elevi",
+        "students_other": "{{count}} de elevi",
+        "title": "Colegii tăi",
+        "you": "tu"
+      },
+      "recent": {
+        "title": "Ultimele note",
+        "viewAll": "Vezi toate notele"
       }
     },
     "grades": {
