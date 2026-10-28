@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../../components/ui/Button.tsx';
 import { ConfirmSave } from '../../../components/ui/ConfirmSave.tsx';
+import { DeleteLink } from '../../../components/ui/DeleteLink.tsx';
 import { Modal } from '../../../components/ui/Modal.tsx';
 import { SelectField } from '../../../components/ui/SelectField.tsx';
 import { TextField } from '../../../components/ui/TextField.tsx';
@@ -51,9 +52,15 @@ interface GradeEditFormProps {
   grade: AdminGrade;
   subjects: AdminSubject[];
   onDone: () => void;
+  onDelete?: () => void;
 }
 
-function GradeEditForm({ grade, subjects, onDone }: GradeEditFormProps) {
+function GradeEditForm({
+  grade,
+  subjects,
+  onDone,
+  onDelete,
+}: GradeEditFormProps) {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage ?? 'ro';
   const subjectName = useSubjectName();
@@ -137,7 +144,14 @@ function GradeEditForm({ grade, subjects, onDone }: GradeEditFormProps) {
           </p>
         )}
 
-        <div className="flex justify-end gap-3 pt-2">
+        <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
+          {onDelete && (
+            <DeleteLink
+              label={t('admin.grades.delete.title')}
+              onClick={onDelete}
+              className="mr-auto"
+            />
+          )}
           <Button variant="secondary" fullWidth={false} onClick={onDone}>
             {t('common.cancel')}
           </Button>
@@ -181,12 +195,14 @@ interface GradeEditModalProps {
   grade: AdminGrade | null;
   subjects: AdminSubject[];
   onClose: () => void;
+  onDelete?: () => void;
 }
 
 export function GradeEditModal({
   grade,
   subjects,
   onClose,
+  onDelete,
 }: GradeEditModalProps) {
   const { t } = useTranslation();
 
@@ -197,7 +213,12 @@ export function GradeEditModal({
       title={t('teacher.gradeForm.editTitle')}
     >
       {grade && (
-        <GradeEditForm grade={grade} subjects={subjects} onDone={onClose} />
+        <GradeEditForm
+          grade={grade}
+          subjects={subjects}
+          onDone={onClose}
+          onDelete={onDelete}
+        />
       )}
     </Modal>
   );

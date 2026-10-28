@@ -42,6 +42,16 @@ export interface ListFilters {
   search: string;
 }
 
+export interface AdminAccount {
+  id: number;
+  firstName: string | null;
+  lastName: string | null;
+  email: string;
+  phone: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
 export interface AdminTeacher {
   id: number;
   firstName: string;

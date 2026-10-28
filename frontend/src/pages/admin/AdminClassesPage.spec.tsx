@@ -1,6 +1,7 @@
-﻿// @vitest-environment jsdom
+// @vitest-environment jsdom
 import { fireEvent, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { startDeleting } from '../../test/startDeleting.ts';
 import { confirmSave } from '../../test/confirmSave.ts';
 import type { AdminClass } from '../../features/admin/types.ts';
 import { ApiError } from '../../lib/api.ts';
@@ -184,9 +185,7 @@ describe('AdminClassesPage', () => {
     service.deleteClass.mockResolvedValue(null);
     renderPage(<AdminClassesPage />, options);
 
-    fireEvent.click(
-      (await screen.findAllByRole('button', { name: 'Delete' }))[0],
-    );
+    await startDeleting();
     const confirmation = within(await dialog());
 
     expect(confirmation.getByText(/left without a class/)).toBeVisible();

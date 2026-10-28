@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../../components/ui/Button.tsx';
 import { ConfirmSave } from '../../../components/ui/ConfirmSave.tsx';
+import { DeleteLink } from '../../../components/ui/DeleteLink.tsx';
 import { Modal } from '../../../components/ui/Modal.tsx';
 import { SelectField } from '../../../components/ui/SelectField.tsx';
 import { TextField } from '../../../components/ui/TextField.tsx';
@@ -33,9 +34,15 @@ interface ClassFormProps {
   schoolClass: AdminClass | null;
   teachers: AdminTeacher[];
   onDone: () => void;
+  onDelete?: () => void;
 }
 
-function ClassForm({ schoolClass, teachers, onDone }: ClassFormProps) {
+function ClassForm({
+  schoolClass,
+  teachers,
+  onDone,
+  onDelete,
+}: ClassFormProps) {
   const { t } = useTranslation();
   const { notify } = useToast();
   const mutation = useSaveClass();
@@ -114,7 +121,14 @@ function ClassForm({ schoolClass, teachers, onDone }: ClassFormProps) {
           </p>
         )}
 
-        <div className="flex justify-end gap-3 pt-2">
+        <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
+          {onDelete && (
+            <DeleteLink
+              label={t('admin.classes.delete.title')}
+              onClick={onDelete}
+              className="mr-auto"
+            />
+          )}
           <Button variant="secondary" fullWidth={false} onClick={onDone}>
             {t('common.cancel')}
           </Button>
@@ -158,6 +172,7 @@ interface ClassFormModalProps {
   onClose: () => void;
   schoolClass: AdminClass | null;
   teachers: AdminTeacher[];
+  onDelete?: () => void;
 }
 
 export function ClassFormModal({
@@ -165,6 +180,7 @@ export function ClassFormModal({
   onClose,
   schoolClass,
   teachers,
+  onDelete,
 }: ClassFormModalProps) {
   const { t } = useTranslation();
 
@@ -182,6 +198,7 @@ export function ClassFormModal({
         schoolClass={schoolClass}
         teachers={teachers}
         onDone={onClose}
+        onDelete={schoolClass ? onDelete : undefined}
       />
     </Modal>
   );

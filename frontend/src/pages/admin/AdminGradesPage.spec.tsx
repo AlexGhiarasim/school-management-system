@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { startDeleting } from '../../test/startDeleting.ts';
 import { confirmSave } from '../../test/confirmSave.ts';
 import type { AdminGrade } from '../../features/admin/types.ts';
 import { adminService } from '../../services/adminService.ts';
@@ -205,9 +206,7 @@ describe('AdminGradesPage', () => {
     service.deleteGrade.mockResolvedValue(null);
     renderPage(<AdminGradesPage />, options);
 
-    fireEvent.click(
-      (await screen.findAllByRole('button', { name: 'Delete' }))[0],
-    );
+    await startDeleting();
     const confirmation = within(await dialog());
 
     expect(

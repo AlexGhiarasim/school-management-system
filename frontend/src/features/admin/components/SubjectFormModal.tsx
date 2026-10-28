@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../../components/ui/Button.tsx';
 import { ConfirmSave } from '../../../components/ui/ConfirmSave.tsx';
+import { DeleteLink } from '../../../components/ui/DeleteLink.tsx';
 import { Modal } from '../../../components/ui/Modal.tsx';
 import { TextField } from '../../../components/ui/TextField.tsx';
 import { useConfirmedSubmit } from '../../../hooks/useConfirmedSubmit.ts';
@@ -30,9 +31,11 @@ function validate({ name }: SubjectValues) {
 function SubjectForm({
   subject,
   onDone,
+  onDelete,
 }: {
   subject: AdminSubject | null;
   onDone: () => void;
+  onDelete?: () => void;
 }) {
   const { t } = useTranslation();
   const { notify } = useToast();
@@ -95,7 +98,14 @@ function SubjectForm({
           </p>
         )}
 
-        <div className="flex justify-end gap-3 pt-2">
+        <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
+          {onDelete && (
+            <DeleteLink
+              label={t('admin.subjects.delete.title')}
+              onClick={onDelete}
+              className="mr-auto"
+            />
+          )}
           <Button variant="secondary" fullWidth={false} onClick={onDone}>
             {t('common.cancel')}
           </Button>
@@ -127,12 +137,14 @@ interface SubjectFormModalProps {
   open: boolean;
   onClose: () => void;
   subject: AdminSubject | null;
+  onDelete?: () => void;
 }
 
 export function SubjectFormModal({
   open,
   onClose,
   subject,
+  onDelete,
 }: SubjectFormModalProps) {
   const { t } = useTranslation();
 
@@ -146,7 +158,11 @@ export function SubjectFormModal({
           : 'admin.subjects.form.createTitle',
       )}
     >
-      <SubjectForm subject={subject} onDone={onClose} />
+      <SubjectForm
+        subject={subject}
+        onDone={onClose}
+        onDelete={subject ? onDelete : undefined}
+      />
     </Modal>
   );
 }

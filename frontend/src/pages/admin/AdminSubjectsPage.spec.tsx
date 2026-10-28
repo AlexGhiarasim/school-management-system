@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { fireEvent, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { startDeleting } from '../../test/startDeleting.ts';
 import { confirmSave } from '../../test/confirmSave.ts';
 import type { AdminSubject } from '../../features/admin/types.ts';
 import { ApiError } from '../../lib/api.ts';
@@ -118,9 +119,7 @@ describe('AdminSubjectsPage', () => {
     service.deleteSubject.mockResolvedValue(null);
     renderPage(<AdminSubjectsPage />, options);
 
-    fireEvent.click(
-      (await screen.findAllByRole('button', { name: 'Delete' }))[0],
-    );
+    await startDeleting();
     fireEvent.click(
       within(await dialog()).getByRole('button', { name: 'Delete' }),
     );
@@ -133,9 +132,7 @@ describe('AdminSubjectsPage', () => {
     service.deleteSubject.mockRejectedValue(new ApiError(409, 'Conflict'));
     renderPage(<AdminSubjectsPage />, options);
 
-    fireEvent.click(
-      (await screen.findAllByRole('button', { name: 'Delete' }))[0],
-    );
+    await startDeleting();
     fireEvent.click(
       within(await dialog()).getByRole('button', { name: 'Delete' }),
     );

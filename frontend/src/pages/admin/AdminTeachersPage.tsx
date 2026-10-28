@@ -8,6 +8,10 @@ import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { ErrorState } from '../../components/ui/ErrorState.tsx';
 import { Pagination } from '../../components/ui/Pagination.tsx';
 import { TextField } from '../../components/ui/TextField.tsx';
+import {
+  CredentialsDialog,
+  type Credentials,
+} from '../../features/admin/components/CredentialsDialog.tsx';
 import { TeacherFormModal } from '../../features/admin/components/TeacherFormModal.tsx';
 import {
   useAdminTeachers,
@@ -26,6 +30,7 @@ export default function AdminTeachersPage() {
 
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const [credentials, setCredentials] = useState<Credentials | null>(null);
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState<AdminTeacher | null>(null);
   const [deleting, setDeleting] = useState<AdminTeacher | null>(null);
@@ -84,14 +89,6 @@ export default function AdminTeachersPage() {
             onClick={() => setEditing(teacher)}
           >
             {t('admin.teachers.table.edit')}
-          </Button>
-          <Button
-            variant="danger"
-            fullWidth={false}
-            className="px-3 py-1.5"
-            onClick={() => setDeleting(teacher)}
-          >
-            {t('admin.teachers.table.delete')}
           </Button>
         </div>
       ),
@@ -163,6 +160,16 @@ export default function AdminTeachersPage() {
           setEditing(null);
         }}
         teacher={editing}
+        onCreated={setCredentials}
+        onDelete={() => {
+          setDeleting(editing);
+          setEditing(null);
+        }}
+      />
+
+      <CredentialsDialog
+        credentials={credentials}
+        onClose={() => setCredentials(null)}
       />
 
       <ConfirmDialog

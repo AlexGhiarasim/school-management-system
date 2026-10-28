@@ -9,6 +9,10 @@ import { ErrorState } from '../../components/ui/ErrorState.tsx';
 import { Pagination } from '../../components/ui/Pagination.tsx';
 import { SelectField } from '../../components/ui/SelectField.tsx';
 import { TextField } from '../../components/ui/TextField.tsx';
+import {
+  CredentialsDialog,
+  type Credentials,
+} from '../../features/admin/components/CredentialsDialog.tsx';
 import { StudentFormModal } from '../../features/admin/components/StudentFormModal.tsx';
 import {
   useAdminClasses,
@@ -34,19 +38,31 @@ export default function AdminStudentsPage() {
   const [search, setSearch] = useState('');
   const [classFilter, setClassFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [archiveOpen, setArchiveOpen] = useState(false);
+  const [archivePage, setArchivePage] = useState(1);
+  const [credentials, setCredentials] = useState<Credentials | null>(null);
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState<AdminStudent | null>(null);
   const [deleting, setDeleting] = useState<AdminStudent | null>(null);
   const debouncedSearch = useDebouncedValue(search);
 
+  // The list shows students with a class. Those without one are in the archive,
+  // a section below the list.
   const students = useAdminStudents({
     page,
     search: debouncedSearch,
     classFilter,
   });
+  const archive = useAdminStudents({
+    page: archivePage,
+    search: '',
+    classFilter: NO_CLASS_FILTER,
+  });
   const classes = useAdminClasses();
   const deleteStudent = useDeleteStudent();
   const filtering = debouncedSearch.trim() !== '' || classFilter !== '';
+  const archivedRows = archive.data?.data ?? [];
+  const archiveTotal = archive.data?.meta.total ?? 0;
   const rows = students.data?.data ?? [];
 
   async function confirmDelete() {
@@ -119,14 +135,6 @@ export default function AdminStudentsPage() {
           >
             {t('admin.students.table.edit')}
           </Button>
-          <Button
-            variant="danger"
-            fullWidth={false}
-            className="px-3 py-1.5"
-            onClick={() => setDeleting(student)}
-          >
-            {t('admin.students.table.delete')}
-          </Button>
         </div>
       ),
     },
@@ -165,9 +173,6 @@ export default function AdminStudentsPage() {
           }}
         >
           <option value="">{t('admin.students.filter.all')}</option>
-          <option value={NO_CLASS_FILTER}>
-            {t('admin.students.filter.noClass')}
-          </option>
           {classes.data?.data.map((schoolClass) => (
             <option key={schoolClass.id} value={schoolClass.id}>
               {schoolClass.name}
@@ -208,6 +213,58 @@ export default function AdminStudentsPage() {
         </>
       )}
 
+      {archiveTotal > 0 && (
+        <section className="mt-10">
+          <button
+            type="button"
+            aria-expanded={archiveOpen}
+            onClick={() => setArchiveOpen((open) => !open)}
+            className="flex w-full items-center justify-between rounded-xl bg-white px-4 py-3 text-left ring-1 ring-slate-200 transition-colors hover:bg-slate-50"
+          >
+            <span className="font-medium text-slate-900">
+              {t('admin.students.archive.title', { count: archiveTotal })}
+            </span>
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className={`h-5 w-5 text-slate-400 transition-transform ${
+                archiveOpen ? 'rotate-180' : ''
+              }`}
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+
+          {archiveOpen && (
+            <div className="mt-3 animate-fade-in">
+              <p className="mb-3 text-sm text-slate-500">
+                {t('admin.students.archive.description')}
+              </p>
+              <DataTable
+                caption={t('admin.students.archive.title', {
+                  count: archiveTotal,
+                })}
+                columns={columns}
+                rows={archivedRows}
+                rowKey={(student) => student.id}
+                loading={archive.isPending}
+              />
+              {archive.data && (
+                <Pagination
+                  meta={archive.data.meta}
+                  onPageChange={setArchivePage}
+                />
+              )}
+            </div>
+          )}
+        </section>
+      )}
+
       <StudentFormModal
         open={creating || editing !== null}
         onClose={() => {
@@ -216,6 +273,16 @@ export default function AdminStudentsPage() {
         }}
         student={editing}
         classes={classes.data?.data ?? []}
+        onCreated={setCredentials}
+        onDelete={() => {
+          setDeleting(editing);
+          setEditing(null);
+        }}
+      />
+
+      <CredentialsDialog
+        credentials={credentials}
+        onClose={() => setCredentials(null)}
       />
 
       <ConfirmDialog

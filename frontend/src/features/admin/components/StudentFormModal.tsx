@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../../components/ui/Button.tsx';
 import { ConfirmSave } from '../../../components/ui/ConfirmSave.tsx';
+import { DeleteLink } from '../../../components/ui/DeleteLink.tsx';
 import { Modal } from '../../../components/ui/Modal.tsx';
 import { SelectField } from '../../../components/ui/SelectField.tsx';
 import { TextField } from '../../../components/ui/TextField.tsx';
@@ -24,8 +25,10 @@ import {
   PASSWORD_MAX_LENGTH,
   PHONE_MAX_LENGTH,
 } from '../../../utils/validators.ts';
+import { generatePassword } from '../../../utils/generatePassword.ts';
 import { useSaveStudent } from '../hooks.ts';
 import type { AdminClass, AdminStudent } from '../types.ts';
+import type { Credentials } from './CredentialsDialog.tsx';
 
 const TODAY = new Date().toISOString().slice(0, 10);
 
@@ -75,28 +78,37 @@ interface StudentFormProps {
   student: AdminStudent | null;
   classes: AdminClass[];
   onDone: () => void;
+  onCreated?: (credentials: Credentials) => void;
+  onDelete?: () => void;
 }
 
-function StudentForm({ student, classes, onDone }: StudentFormProps) {
+function StudentForm({
+  student,
+  classes,
+  onDone,
+  onCreated,
+  onDelete,
+}: StudentFormProps) {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage ?? 'ro';
   const { notify } = useToast();
   const mutation = useSaveStudent();
   const editing = student !== null;
 
-  const { field, setFieldError, handleSubmit } = useFormState<StudentValues>(
-    {
-      firstName: student?.firstName ?? '',
-      lastName: student?.lastName ?? '',
-      email: student?.email ?? '',
-      phone: student?.phone ?? '',
-      dateOfBirth: student?.dateOfBirth ?? '',
-      password: '',
-      classId: student?.class ? String(student.class.id) : '',
-    },
-    (values) => validate(values, !editing),
-    t,
-  );
+  const { setValues, field, setFieldError, handleSubmit } =
+    useFormState<StudentValues>(
+      {
+        firstName: student?.firstName ?? '',
+        lastName: student?.lastName ?? '',
+        email: student?.email ?? '',
+        phone: student?.phone ?? '',
+        dateOfBirth: student?.dateOfBirth ?? '',
+        password: '',
+        classId: student?.class ? String(student.class.id) : '',
+      },
+      (values) => validate(values, !editing),
+      t,
+    );
 
   async function save(values: StudentValues) {
     const classId = values.classId ? Number(values.classId) : undefined;
@@ -123,6 +135,13 @@ function StudentForm({ student, classes, onDone }: StudentFormProps) {
         ),
         'success',
       );
+      if (!editing) {
+        onCreated?.({
+          name: `${profile.firstName} ${profile.lastName}`,
+          email: profile.email,
+          password: values.password,
+        });
+      }
       onDone();
     } catch (error) {
       if (error instanceof ApiError && error.status === 409) {
@@ -199,14 +218,28 @@ function StudentForm({ student, classes, onDone }: StudentFormProps) {
           </SelectField>
         </div>
         {!editing && (
-          <TextField
-            label={t('auth.fields.password')}
-            type="password"
-            autoComplete="new-password"
-            maxLength={PASSWORD_MAX_LENGTH}
-            placeholder={t('auth.fields.newPasswordPlaceholder')}
-            {...field('password')}
-          />
+          <div>
+            <TextField
+              label={t('auth.fields.password')}
+              type="password"
+              autoComplete="new-password"
+              maxLength={PASSWORD_MAX_LENGTH}
+              placeholder={t('auth.fields.newPasswordPlaceholder')}
+              {...field('password')}
+            />
+            <button
+              type="button"
+              onClick={() =>
+                setValues((current) => ({
+                  ...current,
+                  password: generatePassword(),
+                }))
+              }
+              className="mt-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 focus:outline-none focus-visible:underline"
+            >
+              {t('credentials.generate')}
+            </button>
+          </div>
         )}
 
         {showAlert && (
@@ -218,7 +251,14 @@ function StudentForm({ student, classes, onDone }: StudentFormProps) {
           </p>
         )}
 
-        <div className="flex justify-end gap-3 pt-2">
+        <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
+          {onDelete && (
+            <DeleteLink
+              label={t('admin.students.delete.title')}
+              onClick={onDelete}
+              className="mr-auto"
+            />
+          )}
           <Button variant="secondary" fullWidth={false} onClick={onDone}>
             {t('common.cancel')}
           </Button>
@@ -278,6 +318,8 @@ interface StudentFormModalProps {
   onClose: () => void;
   student: AdminStudent | null;
   classes: AdminClass[];
+  onCreated?: (credentials: Credentials) => void;
+  onDelete?: () => void;
 }
 
 export function StudentFormModal({
@@ -285,6 +327,8 @@ export function StudentFormModal({
   onClose,
   student,
   classes,
+  onCreated,
+  onDelete,
 }: StudentFormModalProps) {
   const { t } = useTranslation();
 
@@ -298,7 +342,13 @@ export function StudentFormModal({
           : 'admin.students.form.createTitle',
       )}
     >
-      <StudentForm student={student} classes={classes} onDone={onClose} />
+      <StudentForm
+        student={student}
+        classes={classes}
+        onDone={onClose}
+        onCreated={onCreated}
+        onDelete={student ? onDelete : undefined}
+      />
     </Modal>
   );
 }

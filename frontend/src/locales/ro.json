@@ -1,4 +1,4 @@
-{
+﻿{
   "common": {
     "appName": "Sistem de gestiune școlară",
     "showPassword": "Arată parola",
@@ -31,6 +31,14 @@
     "ADMIN": "Administrator",
     "TEACHER": "Profesor",
     "STUDENT": "Elev"
+  },
+  "credentials": {
+    "title": "Contul a fost creat",
+    "message": "Transmite aceste date lui {{name}}. Se poate autentifica imediat cu ele.",
+    "warning": "Parola nu mai poate fi văzută după ce închizi fereastra, deci copiaz-o acum.",
+    "copyAll": "Copiază tot",
+    "done": "Am notat",
+    "generate": "Generează o parolă"
   },
   "account": {
     "password": {
@@ -236,9 +244,6 @@
       "taught_other": "Materiile pe care le predai",
       "taughtEmpty": "Nicio notă încă la această materie.",
       "average": "Media",
-      "teaching": {
-        "title": "Cine predă la clasa {{name}}"
-      },
       "overview": {
         "title": "Toate materiile",
         "readOnly": "Doar vizualizare"
@@ -288,7 +293,11 @@
   },
   "admin": {
     "profile": {
-      "description": "Datele contului tău de administrator."
+      "description": "Datele contului tău de administrator și ale celorlalți administratori.",
+      "admins_one": "Administrator",
+      "admins_few": "Administratori",
+      "admins_other": "Administratori",
+      "you": "tu"
     },
     "grades": {
       "description": "Toate notele școlii. Filtrează după clasă, elev sau materie și modifică sau șterge orice notă.",
@@ -513,6 +522,10 @@
       },
       "search": "Caută",
       "searchPlaceholder": "Nume sau email",
+      "archive": {
+        "title": "Arhivă ({{count}})",
+        "description": "Elevii care nu sunt într-o clasă. Alege „Modifică” ca să îi atribui unei clase."
+      },
       "filter": {
         "label": "Clasa",
         "all": "Toate clasele",

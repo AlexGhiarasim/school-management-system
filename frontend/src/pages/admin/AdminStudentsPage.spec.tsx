@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { startDeleting } from '../../test/startDeleting.ts';
 import { confirmSave } from '../../test/confirmSave.ts';
 import type { AdminStudent } from '../../features/admin/types.ts';
 import { ApiError } from '../../lib/api.ts';
@@ -218,9 +219,7 @@ describe('AdminStudentsPage', () => {
     service.deleteStudent.mockResolvedValue(null);
     renderPage(<AdminStudentsPage />, options);
 
-    fireEvent.click(
-      (await screen.findAllByRole('button', { name: 'Delete' }))[0],
-    );
+    await startDeleting();
     const confirmation = within(await dialog());
 
     expect(confirmation.getByText(/Mihai Constantin/)).toBeVisible();
@@ -228,9 +227,7 @@ describe('AdminStudentsPage', () => {
     fireEvent.click(confirmation.getByRole('button', { name: 'Cancel' }));
     expect(service.deleteStudent).not.toHaveBeenCalled();
 
-    fireEvent.click(
-      (await screen.findAllByRole('button', { name: 'Delete' }))[0],
-    );
+    await startDeleting();
     fireEvent.click(
       within(await dialog()).getByRole('button', { name: 'Delete' }),
     );

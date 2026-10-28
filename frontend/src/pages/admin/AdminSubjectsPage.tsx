@@ -80,14 +80,6 @@ export default function AdminSubjectsPage() {
           >
             {t('admin.subjects.table.edit')}
           </Button>
-          <Button
-            variant="danger"
-            fullWidth={false}
-            className="px-3 py-1.5"
-            onClick={() => setDeleting(subject)}
-          >
-            {t('admin.subjects.table.delete')}
-          </Button>
         </div>
       ),
     },
@@ -158,6 +150,10 @@ export default function AdminSubjectsPage() {
           setEditing(null);
         }}
         subject={editing}
+        onDelete={() => {
+          setDeleting(editing);
+          setEditing(null);
+        }}
       />
 
       <ConfirmDialog

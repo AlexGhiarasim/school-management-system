@@ -22,6 +22,7 @@ import type {
 } from './types.ts';
 
 export const adminKeys = {
+  admins: ['admin', 'admins'] as const,
   students: ['admin', 'students'] as const,
   studentList: (filters: StudentFilters) =>
     ['admin', 'students', filters] as const,
@@ -58,6 +59,14 @@ export function useAdminStudents(filters: StudentFilters) {
     queryKey: adminKeys.studentList(filters),
     queryFn: () => adminService.listStudents(filters),
     placeholderData: keepPreviousData,
+  });
+}
+
+export function useAdmins() {
+  return useQuery({
+    queryKey: adminKeys.admins,
+    queryFn: adminService.listAdmins,
+    staleTime: 60_000,
   });
 }
 

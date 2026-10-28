@@ -17,7 +17,6 @@ import {
 import type { TeacherGrade } from '../../features/teacher/types.ts';
 import { SubjectAverages } from '../../features/student/components/SubjectAverages.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
-import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { paths } from '../../routes/paths.ts';
 import { formatNumber } from '../../utils/format.ts';
 import { averageBySubject, overallAverage } from '../../utils/grades.ts';
@@ -39,7 +38,6 @@ export default function TeacherStudentGradesPage() {
   const students = useAllClassStudents(classId);
   const grades = useStudentGrades(studentId);
   const classes = useTeacherClasses();
-  const subjectName = useSubjectName();
 
   const student = students.data?.data.find((item) => item.id === studentId);
   const notFound =
@@ -94,6 +92,8 @@ export default function TeacherStudentGradesPage() {
                 ? `${student.firstName} ${student.lastName}`
                 : t('teacher.studentGrades.title')
             }
+            badge={student ? t('roles.STUDENT') : undefined}
+            large
             description={description}
             actions={
               taught.length > 0 && (
@@ -201,36 +201,6 @@ export default function TeacherStudentGradesPage() {
                   )}
                 </div>
               )}
-            </div>
-          )}
-
-          {teaching.data && teaching.data.length > 0 && (
-            <div className="mt-10">
-              <h2 className="mb-4 text-lg font-semibold text-slate-900">
-                {t('teacher.studentGrades.teaching.title', {
-                  name: schoolClass?.name ?? '',
-                })}
-              </h2>
-              <dl
-                className={`${CARD} grid gap-x-8 gap-y-1 sm:grid-cols-2`}
-                aria-label={t('teacher.studentGrades.teaching.title', {
-                  name: schoolClass?.name ?? '',
-                })}
-              >
-                {teaching.data.map(({ subject, teacher }) => (
-                  <div
-                    key={subject.id}
-                    className="flex items-baseline justify-between gap-4 border-b border-slate-100 py-2.5"
-                  >
-                    <dt className="text-slate-600">
-                      {subjectName(subject.name)}
-                    </dt>
-                    <dd className="text-right font-medium text-slate-900">
-                      {teacher.firstName} {teacher.lastName}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
             </div>
           )}
 

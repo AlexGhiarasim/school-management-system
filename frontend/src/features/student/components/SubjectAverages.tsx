@@ -47,7 +47,10 @@ export function SubjectAverages({
                   })}
                 </p>
                 {teachers?.[item.subjectId] && (
-                  <p className="mt-1 text-sm font-medium text-slate-600">
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    <span className="font-normal text-slate-500">
+                      {t('student.grades.table.teacher')}:
+                    </span>{' '}
                     {teachers[item.subjectId]}
                   </p>
                 )}

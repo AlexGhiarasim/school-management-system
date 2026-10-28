@@ -109,14 +109,6 @@ export default function AdminGradesPage() {
           >
             {t('admin.grades.table.edit')}
           </Button>
-          <Button
-            variant="danger"
-            fullWidth={false}
-            className="px-3 py-1.5"
-            onClick={() => setDeleting(grade)}
-          >
-            {t('admin.grades.table.delete')}
-          </Button>
         </div>
       ),
     },
@@ -215,6 +207,10 @@ export default function AdminGradesPage() {
         grade={editing}
         subjects={subjects.data?.data ?? []}
         onClose={() => setEditing(null)}
+        onDelete={() => {
+          setDeleting(editing);
+          setEditing(null);
+        }}
       />
 
       <ConfirmDialog

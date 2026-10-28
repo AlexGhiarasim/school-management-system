@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../../components/ui/Button.tsx';
 import { ConfirmSave } from '../../../components/ui/ConfirmSave.tsx';
+import { DeleteLink } from '../../../components/ui/DeleteLink.tsx';
 import { Modal } from '../../../components/ui/Modal.tsx';
 import { TextField } from '../../../components/ui/TextField.tsx';
 import { useConfirmedSubmit } from '../../../hooks/useConfirmedSubmit.ts';
@@ -20,8 +21,10 @@ import {
   PASSWORD_MAX_LENGTH,
   PHONE_MAX_LENGTH,
 } from '../../../utils/validators.ts';
+import { generatePassword } from '../../../utils/generatePassword.ts';
 import { useSaveTeacher } from '../hooks.ts';
 import type { AdminTeacher } from '../types.ts';
+import type { Credentials } from './CredentialsDialog.tsx';
 
 interface TeacherValues {
   firstName: string;
@@ -63,26 +66,31 @@ function validate(values: TeacherValues, requirePassword: boolean) {
 function TeacherForm({
   teacher,
   onDone,
+  onCreated,
+  onDelete,
 }: {
   teacher: AdminTeacher | null;
   onDone: () => void;
+  onCreated?: (credentials: Credentials) => void;
+  onDelete?: () => void;
 }) {
   const { t } = useTranslation();
   const { notify } = useToast();
   const mutation = useSaveTeacher();
   const editing = teacher !== null;
 
-  const { field, setFieldError, handleSubmit } = useFormState<TeacherValues>(
-    {
-      firstName: teacher?.firstName ?? '',
-      lastName: teacher?.lastName ?? '',
-      email: teacher?.email ?? '',
-      phone: teacher?.phone ?? '',
-      password: '',
-    },
-    (values) => validate(values, !editing),
-    t,
-  );
+  const { setValues, field, setFieldError, handleSubmit } =
+    useFormState<TeacherValues>(
+      {
+        firstName: teacher?.firstName ?? '',
+        lastName: teacher?.lastName ?? '',
+        email: teacher?.email ?? '',
+        phone: teacher?.phone ?? '',
+        password: '',
+      },
+      (values) => validate(values, !editing),
+      t,
+    );
 
   async function save(values: TeacherValues) {
     const profile = {
@@ -105,6 +113,13 @@ function TeacherForm({
         ),
         'success',
       );
+      if (!editing) {
+        onCreated?.({
+          name: `${profile.firstName} ${profile.lastName}`,
+          email: profile.email,
+          password: values.password,
+        });
+      }
       onDone();
     } catch (error) {
       if (error instanceof ApiError && error.status === 409) {
@@ -161,14 +176,28 @@ function TeacherForm({
           {...field('phone')}
         />
         {!editing && (
-          <TextField
-            label={t('auth.fields.password')}
-            type="password"
-            autoComplete="new-password"
-            maxLength={PASSWORD_MAX_LENGTH}
-            placeholder={t('auth.fields.newPasswordPlaceholder')}
-            {...field('password')}
-          />
+          <div>
+            <TextField
+              label={t('auth.fields.password')}
+              type="password"
+              autoComplete="new-password"
+              maxLength={PASSWORD_MAX_LENGTH}
+              placeholder={t('auth.fields.newPasswordPlaceholder')}
+              {...field('password')}
+            />
+            <button
+              type="button"
+              onClick={() =>
+                setValues((current) => ({
+                  ...current,
+                  password: generatePassword(),
+                }))
+              }
+              className="mt-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 focus:outline-none focus-visible:underline"
+            >
+              {t('credentials.generate')}
+            </button>
+          </div>
         )}
 
         {showAlert && (
@@ -180,7 +209,14 @@ function TeacherForm({
           </p>
         )}
 
-        <div className="flex justify-end gap-3 pt-2">
+        <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
+          {onDelete && (
+            <DeleteLink
+              label={t('admin.teachers.delete.title')}
+              onClick={onDelete}
+              className="mr-auto"
+            />
+          )}
           <Button variant="secondary" fullWidth={false} onClick={onDone}>
             {t('common.cancel')}
           </Button>
@@ -228,12 +264,16 @@ interface TeacherFormModalProps {
   open: boolean;
   onClose: () => void;
   teacher: AdminTeacher | null;
+  onCreated?: (credentials: Credentials) => void;
+  onDelete?: () => void;
 }
 
 export function TeacherFormModal({
   open,
   onClose,
   teacher,
+  onCreated,
+  onDelete,
 }: TeacherFormModalProps) {
   const { t } = useTranslation();
 
@@ -247,7 +287,12 @@ export function TeacherFormModal({
           : 'admin.teachers.form.createTitle',
       )}
     >
-      <TeacherForm teacher={teacher} onDone={onClose} />
+      <TeacherForm
+        teacher={teacher}
+        onDone={onClose}
+        onCreated={onCreated}
+        onDelete={teacher ? onDelete : undefined}
+      />
     </Modal>
   );
 }

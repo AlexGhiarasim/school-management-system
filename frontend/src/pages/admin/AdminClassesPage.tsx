@@ -99,14 +99,6 @@ export default function AdminClassesPage() {
           >
             {t('admin.classes.table.edit')}
           </Button>
-          <Button
-            variant="danger"
-            fullWidth={false}
-            className="px-3 py-1.5"
-            onClick={() => setDeleting(schoolClass)}
-          >
-            {t('admin.classes.table.delete')}
-          </Button>
         </div>
       ),
     },
@@ -178,6 +170,10 @@ export default function AdminClassesPage() {
         }}
         schoolClass={editing}
         teachers={teachers.data?.data ?? []}
+        onDelete={() => {
+          setDeleting(editing);
+          setEditing(null);
+        }}
       />
 
       <ConfirmDialog

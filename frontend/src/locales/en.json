@@ -31,6 +31,14 @@
     "TEACHER": "Teacher",
     "STUDENT": "Student"
   },
+  "credentials": {
+    "title": "The account was created",
+    "message": "Give these details to {{name}}. They can sign in with them right away.",
+    "warning": "The password cannot be seen again after you close this window. Copy it now.",
+    "copyAll": "Copy all",
+    "done": "I have noted them",
+    "generate": "Generate a password"
+  },
   "account": {
     "password": {
       "title": "Change password",
@@ -231,9 +239,6 @@
       "taught_other": "The subjects you teach",
       "taughtEmpty": "No grades in this subject yet.",
       "average": "Average",
-      "teaching": {
-        "title": "Who teaches in class {{name}}"
-      },
       "overview": {
         "title": "All subjects",
         "readOnly": "View only"
@@ -283,7 +288,10 @@
   },
   "admin": {
     "profile": {
-      "description": "The details of your administrator account."
+      "description": "The details of your administrator account and of the other administrators.",
+      "admins_one": "Administrator",
+      "admins_other": "Administrators",
+      "you": "you"
     },
     "grades": {
       "description": "All the grades of the school. Filter by class, student or subject and edit or delete any grade.",
@@ -507,6 +515,10 @@
       },
       "search": "Search",
       "searchPlaceholder": "Name or email",
+      "archive": {
+        "title": "Archive ({{count}})",
+        "description": "Students who are not in a class. Choose Edit to assign them to a class."
+      },
       "filter": {
         "label": "Class",
         "all": "All classes",

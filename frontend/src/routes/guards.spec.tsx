@@ -1,4 +1,4 @@
-﻿// @vitest-environment jsdom
+// @vitest-environment jsdom
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
@@ -21,6 +21,7 @@ vi.mock('../services/adminService.ts', () => ({
     listClassStudents: () => new Promise(() => undefined),
     listGrades: () => new Promise(() => undefined),
     listAllSubjects: () => new Promise(() => undefined),
+    listAdmins: () => new Promise(() => undefined),
     listAllClassStudents: () => new Promise(() => undefined),
     listSubjects: () => new Promise(() => undefined),
   },
@@ -86,7 +87,7 @@ describe('route guards', () => {
     ['STUDENT', '/admin/subjects', 'My profile'],
     ['STUDENT', '/teacher/classes/3/students/7', 'My profile'],
     ['TEACHER', '/student/grades', 'My profile'],
-    ['ADMIN', '/teacher/classes', 'Students'],
+    ['ADMIN', '/teacher/classes', 'My profile'],
   ] as const)('keeps a %s out of %s', (role, path, expected) => {
     renderAt(path, userWith(role));
 
@@ -96,7 +97,7 @@ describe('route guards', () => {
   it.each([
     ['STUDENT', 'My profile'],
     ['TEACHER', 'My profile'],
-    ['ADMIN', 'Students'],
+    ['ADMIN', 'My profile'],
   ] as const)(
     'moves a signed-in %s from the start page to their home',
     (role, expected) => {
