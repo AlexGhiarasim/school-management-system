@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../components/layout/PageHeader.tsx';
 import { Button } from '../../components/ui/Button.tsx';
+import { ClearFilters } from '../../components/ui/ClearFilters.tsx';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog.tsx';
 import { DataTable, type Column } from '../../components/ui/DataTable.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
@@ -28,7 +29,7 @@ import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
 import { formatDate } from '../../utils/format.ts';
 
-const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
+const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
 export default function AdminStudentsPage() {
   const { t, i18n } = useTranslation();
@@ -112,7 +113,7 @@ export default function AdminStudentsPage() {
       header: t('admin.students.table.class'),
       render: (student) =>
         student.class ? (
-          <span className="rounded-lg bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
+          <span className="rounded-lg bg-indigo-50 px-2.5 py-1 text-[13px] font-semibold text-indigo-700">
             {student.class.name}
           </span>
         ) : (
@@ -180,6 +181,14 @@ export default function AdminStudentsPage() {
           ))}
         </SelectField>
       </div>
+      <ClearFilters
+        visible={search.trim() !== '' || classFilter !== ''}
+        onClear={() => {
+          setSearch('');
+          setClassFilter('');
+          setPage(1);
+        }}
+      />
 
       {students.isError ? (
         <div className={CARD}>
@@ -219,7 +228,7 @@ export default function AdminStudentsPage() {
             type="button"
             aria-expanded={archiveOpen}
             onClick={() => setArchiveOpen((open) => !open)}
-            className="flex w-full items-center justify-between rounded-xl bg-white px-4 py-3 text-left ring-1 ring-slate-200 transition-colors hover:bg-slate-50"
+            className="flex w-full items-center justify-between rounded-xl bg-white px-4 py-3 text-left ring-1 ring-slate-300 transition-colors hover:bg-slate-50"
           >
             <span className="font-medium text-slate-900">
               {t('admin.students.archive.title', { count: archiveTotal })}
@@ -242,7 +251,7 @@ export default function AdminStudentsPage() {
 
           {archiveOpen && (
             <div className="mt-3 animate-fade-in">
-              <p className="mb-3 text-sm text-slate-500">
+              <p className="mb-3 text-[15px] text-slate-500">
                 {t('admin.students.archive.description')}
               </p>
               <DataTable

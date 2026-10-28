@@ -14,7 +14,7 @@ import type { ClassStudent } from '../../features/teacher/types.ts';
 import { paths } from '../../routes/paths.ts';
 import { formatDate } from '../../utils/format.ts';
 
-const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
+const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
 export default function ClassStudentsPage() {
   const { t, i18n } = useTranslation();
@@ -75,7 +75,7 @@ export default function ClassStudentsPage() {
     <section>
       <Link
         to={paths.teacher.classes}
-        className="mb-4 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
+        className="mb-4 inline-block text-[15px] font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
       >
         {t('teacher.classStudents.back')}
       </Link>

@@ -33,20 +33,20 @@ export function ProfileField({
 
   return (
     <div
-      className={`group -mx-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-slate-50 ${
+      className={`group min-w-0 rounded-lg border border-slate-300 bg-slate-50/60 px-4 py-3 transition-colors hover:bg-slate-50 ${
         wide ? 'sm:col-span-2' : ''
       }`}
     >
-      <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+      <dt className="text-[13px] font-medium tracking-wide text-slate-600 uppercase">
         {label}
       </dt>
-      <dd className="mt-1 flex items-center justify-between gap-3 text-slate-900">
-        <span className="break-words">{value}</span>
+      <dd className="relative mt-1 text-[15px] text-slate-900">
+        <span className="[overflow-wrap:anywhere]">{value}</span>
         {copyable && (
           <button
             type="button"
             onClick={() => void copy()}
-            className={`shrink-0 text-xs font-medium transition ${
+            className={`absolute -top-5 right-0 text-xs font-medium transition ${
               copied
                 ? 'text-emerald-700'
                 : 'text-slate-400 opacity-0 group-hover:opacity-100 hover:text-indigo-600 focus-visible:opacity-100'

@@ -16,7 +16,7 @@ export function ProfileBanner({
   children,
 }: ProfileBannerProps) {
   return (
-    <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+    <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-300">
       <div
         aria-hidden="true"
         className="h-24 bg-[radial-gradient(circle_at_85%_20%,rgb(224_242_254),transparent_55%),linear-gradient(to_right,rgb(224_231_255),rgb(238_242_255))]"

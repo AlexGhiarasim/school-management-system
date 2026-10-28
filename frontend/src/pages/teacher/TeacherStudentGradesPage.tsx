@@ -21,8 +21,8 @@ import { paths } from '../../routes/paths.ts';
 import { formatNumber } from '../../utils/format.ts';
 import { averageBySubject, overallAverage } from '../../utils/grades.ts';
 
-const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
-const LABEL = 'text-xs font-medium tracking-wide text-slate-500 uppercase';
+const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
+const LABEL = 'text-[13px] font-medium tracking-wide text-slate-500 uppercase';
 
 export default function TeacherStudentGradesPage() {
   const { t, i18n } = useTranslation();
@@ -72,7 +72,7 @@ export default function TeacherStudentGradesPage() {
     <section>
       <Link
         to={paths.teacher.classStudents(params.classId ?? '')}
-        className="mb-4 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
+        className="mb-4 inline-block text-[15px] font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
       >
         {t('teacher.studentGrades.back')}
       </Link>
@@ -148,7 +148,7 @@ export default function TeacherStudentGradesPage() {
                     <h2 className="text-lg font-semibold text-slate-900">
                       {t('teacher.studentGrades.overview.title')}
                     </h2>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-[15px] text-slate-500">
                       {t('teacher.studentGrades.overview.readOnly')}
                     </p>
                   </div>
@@ -196,6 +196,7 @@ export default function TeacherStudentGradesPage() {
                         subjects={bySubject}
                         grades={all}
                         teachers={teacherNames}
+                        framed
                       />
                     </div>
                   )}

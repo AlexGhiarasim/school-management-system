@@ -21,7 +21,7 @@ export function AppLayout() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-      <header className="border-b border-slate-200/70 bg-white/80 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-gray-200 bg-gray-100 shadow-sm">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-6 py-4 sm:px-10">
           <div className="flex items-center gap-3">
             <Logo className="h-9 w-9" />
@@ -89,7 +89,9 @@ export function AppLayout() {
       />
 
       <main className="mx-auto max-w-6xl px-6 py-10 sm:px-10">
-        <Outlet />
+        <div className="min-w-0 rounded-3xl border border-slate-300 bg-slate-100/60 p-3 shadow-sm sm:p-6">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

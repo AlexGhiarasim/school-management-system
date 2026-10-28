@@ -9,6 +9,8 @@ import { ProfileField } from '../../components/ui/ProfileField.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
 import { ChangePasswordButton } from '../../features/auth/components/ChangePasswordCard.tsx';
 import { GradeBadge } from '../../features/student/components/GradeBadge.tsx';
+import { StudentPanel } from '../../features/student/components/StudentPanel.tsx';
+import { StudentMetric } from '../../features/student/components/StudentMetric.tsx';
 import {
   useClassOverview,
   useStudentGrades,
@@ -18,7 +20,7 @@ import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { paths } from '../../routes/paths.ts';
 import { formatDate, formatNumber } from '../../utils/format.ts';
 
-const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
+const CARD = 'rounded-2xl border border-slate-300 bg-white p-6 shadow-sm';
 const RECENT_GRADES = 5;
 
 export default function StudentProfilePage() {
@@ -59,14 +61,14 @@ export default function StudentProfilePage() {
       )}
 
       {data && (
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="animate-rise lg:col-span-2">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-3">
+          <div className="min-w-0 animate-rise lg:col-span-2 [&>div]:h-full [&>div]:ring-slate-300">
             <ProfileBanner
               initials={`${data.firstName[0]}${data.lastName[0]}`}
               name={`${data.firstName} ${data.lastName}`}
               subtitle={t('roles.STUDENT')}
             >
-              <dl className="mt-5 grid gap-x-6 gap-y-1 sm:grid-cols-2">
+              <dl className="mt-6 grid gap-3 sm:grid-cols-2">
                 <ProfileField
                   label={t('student.profile.fields.firstName')}
                   value={data.firstName}
@@ -86,7 +88,6 @@ export default function StudentProfilePage() {
                     label={t('auth.fields.phone').replace(/ \(.*\)$/, '')}
                     value={data.phone}
                     copyable
-                    wide
                   />
                 )}
                 <ProfileField
@@ -99,77 +100,69 @@ export default function StudentProfilePage() {
           </div>
 
           <div
-            className={`${CARD} animate-rise flex flex-col`}
+            className="flex min-w-0 animate-rise flex-col overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-sm"
             style={{ animationDelay: '100ms' }}
           >
-            <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-              {t('student.profile.fields.class')}
-            </p>
-            {data.class ? (
-              <p className="mt-2 text-4xl font-bold tracking-tight text-slate-900">
-                {data.class.name}
-              </p>
-            ) : (
-              <div className="mt-2">
-                <p className="font-medium text-slate-900">
-                  {t('student.profile.noClass.title')}
+            <StudentPanel title={t('student.profile.fields.class')} embedded>
+              {data.class ? (
+                <p className="text-4xl font-semibold tracking-tight text-slate-900">
+                  {data.class.name}
                 </p>
-                <p className="mt-1 text-sm text-slate-500">
-                  {t('student.profile.noClass.description')}
-                </p>
-              </div>
-            )}
+              ) : (
+                <div className="mt-2">
+                  <p className="font-medium text-slate-900">
+                    {t('student.profile.noClass.title')}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    {t('student.profile.noClass.description')}
+                  </p>
+                </div>
+              )}
 
-            {classOverview && (
-              <p className="mt-2 text-sm text-slate-500">
-                <button
-                  type="button"
-                  onClick={() => setClassmatesOpen(true)}
-                  className="font-medium text-slate-700 underline decoration-indigo-300 underline-offset-4 hover:text-slate-900 hover:decoration-indigo-600"
-                >
-                  {t('student.profile.classOverview.students', {
-                    count: classOverview.studentCount,
-                  })}
-                </button>
-                {' · '}
-                {t('student.profile.classOverview.teacher')}:{' '}
-                {classOverview.teacher
-                  ? `${classOverview.teacher.firstName} ${classOverview.teacher.lastName}`
-                  : t('student.profile.classOverview.noTeacher')}
-              </p>
-            )}
+              {classOverview && (
+                <div className="mt-3 text-[15px] text-slate-500">
+                  <button
+                    type="button"
+                    onClick={() => setClassmatesOpen(true)}
+                    className="rounded-md font-medium text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-600"
+                  >
+                    {t('student.profile.classOverview.students', {
+                      count: classOverview.studentCount,
+                    })}
+                  </button>
+                  <div className="mt-5 border-t border-slate-300 pt-4">
+                    <p className="text-[13px] text-slate-500">
+                      {t('student.profile.classOverview.teacher')}
+                    </p>
+                    <p className="mt-1 text-base font-medium text-slate-800">
+                      {classOverview.teacher
+                        ? `${classOverview.teacher.firstName} ${classOverview.teacher.lastName}`
+                        : t('student.profile.classOverview.noTeacher')}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </StudentPanel>
 
             {grades && grades.grades.length > 0 && (
-              <dl className="mt-auto grid grid-cols-2 gap-4 border-t border-slate-100 pt-5">
-                <div>
-                  <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                    {t('student.grades.summary.average')}
-                  </dt>
-                  <dd className="mt-1 text-2xl font-bold text-slate-900">
-                    {grades.average === null
+              <dl className="mt-auto grid grid-cols-2 gap-3 border-t border-slate-300 bg-slate-50 p-5">
+                <StudentMetric
+                  compact
+                  label={t('student.grades.summary.average')}
+                  value={
+                    grades.average === null
                       ? '-'
-                      : formatNumber(grades.average, language)}
-                  </dd>
-                  {grades.average !== null && (
-                    <div
-                      aria-hidden="true"
-                      className="mt-2 h-1 overflow-hidden rounded-full bg-slate-100"
-                    >
-                      <div
-                        className="h-full rounded-full bg-slate-700 transition-all duration-700"
-                        style={{ width: `${(grades.average / 10) * 100}%` }}
-                      />
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                    {t('student.grades.summary.grades')}
-                  </dt>
-                  <dd className="mt-1 text-2xl font-bold text-slate-900">
-                    {grades.grades.length}
-                  </dd>
-                </div>
+                      : formatNumber(grades.average, language)
+                  }
+                  progress={
+                    grades.average === null ? null : grades.average * 10
+                  }
+                />
+                <StudentMetric
+                  compact
+                  label={t('student.grades.summary.grades')}
+                  value={grades.grades.length}
+                />
               </dl>
             )}
           </div>
@@ -208,17 +201,13 @@ export default function StudentProfilePage() {
           )}
 
           {grades && grades.grades.length > 0 && (
-            <div
-              className={`${CARD} animate-rise lg:col-span-3`}
-              style={{ animationDelay: '200ms' }}
-            >
-              <div className="flex items-center justify-between gap-4">
-                <h2 className="text-lg font-semibold text-slate-900">
-                  {t('student.profile.recent.title')}
-                </h2>
+            <StudentPanel
+              title={t('student.profile.recent.title')}
+              className="lg:col-span-3"
+              actions={
                 <Link
                   to={paths.student.grades}
-                  className="group text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                  className="group rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-indigo-600 shadow-sm transition-colors hover:bg-slate-100 hover:text-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   {t('student.profile.recent.viewAll')}
                   <span
@@ -228,19 +217,20 @@ export default function StudentProfilePage() {
                     →
                   </span>
                 </Link>
-              </div>
-              <ul className="mt-3 divide-y divide-slate-100">
+              }
+            >
+              <ul className="divide-y divide-slate-200">
                 {grades.grades.slice(0, RECENT_GRADES).map((grade) => (
                   <li key={grade.id}>
                     <Link
                       to={paths.student.grades}
-                      className="-mx-3 flex items-center justify-between gap-4 rounded-xl px-3 py-3 transition-colors hover:bg-slate-50 focus:outline-none focus-visible:bg-slate-50"
+                      className="-mx-2 flex items-center justify-between gap-3 rounded-lg px-2 py-3.5 transition-colors hover:bg-slate-50 focus:outline-none focus-visible:bg-slate-100"
                     >
                       <span className="font-medium text-slate-900">
                         {subjectName(grade.subject.name)}
                       </span>
-                      <span className="flex items-center gap-4">
-                        <span className="text-sm text-slate-500">
+                      <span className="flex shrink-0 flex-col-reverse items-end gap-1 sm:flex-row sm:items-center sm:gap-4">
+                        <span className="text-xs text-slate-500 sm:text-sm">
                           {formatDate(grade.date, language)}
                         </span>
                         <GradeBadge value={grade.value} />
@@ -249,7 +239,7 @@ export default function StudentProfilePage() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </StudentPanel>
           )}
         </div>
       )}

@@ -7,7 +7,7 @@ import { useTeacherClasses } from '../../features/teacher/hooks.ts';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { useSubjectName } from '../../hooks/useSubjectName.ts';
 
-const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
+const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
 export default function TeacherProfilePage() {
   const { t } = useTranslation();
@@ -28,7 +28,7 @@ export default function TeacherProfilePage() {
 
       <div className="space-y-6">
         <div className="grid gap-6 lg:grid-cols-3">
-          <div className="animate-rise lg:col-span-2">
+          <div className="min-w-0 animate-rise lg:col-span-2">
             <ProfileBanner
               initials={
                 profile
@@ -42,7 +42,7 @@ export default function TeacherProfilePage() {
               }
               subtitle={t('roles.TEACHER')}
             >
-              <dl className="mt-5">
+              <dl className="mt-6 grid gap-3">
                 <ProfileField
                   label={t('auth.fields.email')}
                   value={user.email}
@@ -64,17 +64,17 @@ export default function TeacherProfilePage() {
             className={`${CARD} animate-rise`}
             style={{ animationDelay: '100ms' }}
           >
-            <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+            <p className="text-[13px] font-medium tracking-wide text-slate-600 uppercase">
               {t('teacher.profile.teaching')}
             </p>
             {classes && classes.length > 0 ? (
-              <ul className="mt-3 space-y-3 text-sm">
+              <ul className="mt-3 divide-y divide-slate-200 text-[15px] [&>li]:py-3 [&>li:first-child]:pt-0 [&>li:last-child]:pb-0">
                 {classes.map((schoolClass) => (
                   <li key={schoolClass.id}>
-                    <p className="flex items-center gap-2 font-semibold text-slate-900">
+                    <p className="flex flex-wrap items-center gap-2 font-semibold text-slate-900">
                       {schoolClass.name}
                       {schoolClass.isHomeroom && (
-                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">
+                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[13px] font-medium text-slate-700">
                           {t('teacher.classes.homeroom')}
                         </span>
                       )}
@@ -90,7 +90,7 @@ export default function TeacherProfilePage() {
                 ))}
               </ul>
             ) : (
-              <p className="mt-3 text-sm text-slate-500">
+              <p className="mt-3 text-[15px] text-slate-500">
                 {t('teacher.classes.empty.title')}
               </p>
             )}

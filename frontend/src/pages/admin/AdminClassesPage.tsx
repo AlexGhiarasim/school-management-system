@@ -21,7 +21,7 @@ import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
 import { paths } from '../../routes/paths.ts';
 
-const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
+const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
 export default function AdminClassesPage() {
   const { t } = useTranslation();

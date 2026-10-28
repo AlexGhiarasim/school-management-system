@@ -11,12 +11,14 @@ interface SubjectAveragesProps {
   grades: StudentGrade[];
   // Optional name of the teacher of each subject, by subject id.
   teachers?: Record<number, string>;
+  framed?: boolean;
 }
 
 export function SubjectAverages({
   subjects,
   grades,
   teachers,
+  framed = false,
 }: SubjectAveragesProps) {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage ?? 'ro';
@@ -34,7 +36,11 @@ export function SubjectAverages({
         return (
           <li
             key={item.subjectId}
-            className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"
+            className={
+              framed
+                ? 'rounded-xl border border-slate-300 bg-white p-4 shadow-sm'
+                : 'rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200'
+            }
           >
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -47,7 +53,7 @@ export function SubjectAverages({
                   })}
                 </p>
                 {teachers?.[item.subjectId] && (
-                  <p className="mt-1 text-sm font-medium text-slate-700">
+                  <p className="mt-1 text-base font-medium text-slate-700">
                     <span className="font-normal text-slate-500">
                       {t('student.grades.table.teacher')}:
                     </span>{' '}
@@ -55,7 +61,15 @@ export function SubjectAverages({
                   </p>
                 )}
               </div>
-              <p className="text-2xl font-bold text-slate-900">{average}</p>
+              <p
+                className={
+                  framed
+                    ? 'flex h-11 min-w-11 shrink-0 items-center justify-center rounded-lg border border-slate-300 bg-slate-50 px-2 text-xl font-semibold text-slate-900 tabular-nums'
+                    : 'text-2xl font-bold text-slate-900'
+                }
+              >
+                {average}
+              </p>
             </div>
             <div
               role="progressbar"
@@ -71,7 +85,13 @@ export function SubjectAverages({
               />
             </div>
 
-            <ul className="mt-4 space-y-2 border-t border-slate-100 pt-4">
+            <ul
+              className={
+                framed
+                  ? 'mt-4 divide-y divide-slate-200 border-t border-slate-300 [&>li]:py-2.5 [&>li:last-child]:pb-0'
+                  : 'mt-4 space-y-2 border-t border-slate-100 pt-4'
+              }
+            >
               {subjectGrades.map((grade) => (
                 <li
                   key={grade.id}

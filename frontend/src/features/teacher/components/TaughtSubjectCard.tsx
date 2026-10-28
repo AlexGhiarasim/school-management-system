@@ -34,14 +34,14 @@ export function TaughtSubjectCard({
   return (
     <article
       aria-label={subjectName(subject.name)}
-      className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"
+      className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-300"
     >
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="font-semibold text-slate-900">
             {subjectName(subject.name)}
           </h3>
-          <p className="mt-0.5 text-sm text-slate-500">
+          <p className="mt-0.5 text-[15px] text-slate-500">
             {t('student.grades.bySubject.gradesCount', {
               count: grades.length,
             })}
@@ -49,7 +49,7 @@ export function TaughtSubjectCard({
         </div>
         {average !== null && (
           <div className="text-right">
-            <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+            <p className="text-[13px] font-medium tracking-wide text-slate-500 uppercase">
               {t('teacher.studentGrades.average')}
             </p>
             <p className="text-2xl font-bold text-slate-900">{average}</p>
@@ -58,22 +58,25 @@ export function TaughtSubjectCard({
       </div>
 
       {grades.length === 0 ? (
-        <p className="mt-4 border-t border-slate-100 pt-4 text-sm text-slate-500">
+        <p className="mt-4 border-t border-slate-100 pt-4 text-[15px] text-slate-500">
           {t('teacher.studentGrades.taughtEmpty')}
         </p>
       ) : (
         <ul className="mt-4 divide-y divide-slate-100 border-t border-slate-100">
           {grades.map((grade) => (
-            <li key={grade.id} className="flex items-center gap-4 py-2.5">
+            <li
+              key={grade.id}
+              className="flex flex-wrap items-center gap-3 py-2.5"
+            >
               <GradeBadge value={grade.value} />
-              <span className="text-sm text-slate-600">
+              <span className="text-[15px] text-slate-600">
                 {formatDate(grade.date, language)}
               </span>
               {grade.teacher?.id === ownProfileId && (
                 <Button
                   variant="secondary"
                   fullWidth={false}
-                  className="ml-auto px-3 py-1 text-xs"
+                  className="ml-auto px-3 py-1 text-[13px]"
                   onClick={() => onEdit(grade)}
                 >
                   {t('teacher.studentGrades.table.edit')}

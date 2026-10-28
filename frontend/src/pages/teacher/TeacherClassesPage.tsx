@@ -8,7 +8,7 @@ import { useTeacherClasses } from '../../features/teacher/hooks.ts';
 import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { paths } from '../../routes/paths.ts';
 
-const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
+const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
 export default function TeacherClassesPage() {
   const { t } = useTranslation();
@@ -58,12 +58,12 @@ export default function TeacherClassesPage() {
                     {schoolClass.name}
                   </p>
                   {schoolClass.isHomeroom && (
-                    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+                    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[13px] font-medium text-slate-700">
                       {t('teacher.classes.homeroom')}
                     </span>
                   )}
                 </div>
-                <p className="mt-3 text-sm text-slate-500">
+                <p className="mt-3 text-[15px] text-slate-500">
                   {t('teacher.classes.students', {
                     count: schoolClass.studentCount,
                   })}
@@ -80,7 +80,7 @@ export default function TeacherClassesPage() {
                     ))}
                   </ul>
                 )}
-                <p className="mt-4 text-sm font-medium text-indigo-600">
+                <p className="mt-4 text-[15px] font-medium text-indigo-600">
                   {t('teacher.classes.open')}
                 </p>
               </Link>

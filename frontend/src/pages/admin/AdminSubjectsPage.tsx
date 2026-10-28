@@ -20,7 +20,7 @@ import { useToast } from '../../hooks/useToast.ts';
 import { ApiError } from '../../lib/api.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
 
-const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
+const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
 export default function AdminSubjectsPage() {
   const { t } = useTranslation();

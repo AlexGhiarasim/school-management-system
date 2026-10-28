@@ -9,13 +9,15 @@ import { SelectField } from '../../components/ui/SelectField.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
 import { GradeBadge } from '../../features/student/components/GradeBadge.tsx';
 import { SubjectAverages } from '../../features/student/components/SubjectAverages.tsx';
+import { StudentPanel } from '../../features/student/components/StudentPanel.tsx';
+import { StudentMetric } from '../../features/student/components/StudentMetric.tsx';
 import { useStudentGrades } from '../../features/student/hooks.ts';
 import type { StudentGrade } from '../../features/student/types.ts';
 import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { formatDate, formatNumber } from '../../utils/format.ts';
 
 const PAGE_SIZE = 10;
-const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
+const CARD = 'rounded-2xl border border-slate-300 bg-white p-6 shadow-sm';
 
 export default function StudentGradesPage() {
   const { t, i18n } = useTranslation();
@@ -94,48 +96,38 @@ export default function StudentGradesPage() {
       )}
 
       {data && data.grades.length > 0 && (
-        <div className="space-y-8">
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className={CARD}>
-              <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                {t('student.grades.summary.average')}
-              </p>
-              <p className="mt-2 text-4xl font-bold tracking-tight text-slate-900">
-                {data.average === null
+        <div className="space-y-6">
+          <dl className="grid gap-4 sm:grid-cols-3">
+            <StudentMetric
+              label={t('student.grades.summary.average')}
+              value={
+                data.average === null
                   ? '-'
-                  : formatNumber(data.average, language)}
-              </p>
-            </div>
-            <div className={CARD}>
-              <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                {t('student.grades.summary.grades')}
-              </p>
-              <p className="mt-2 text-4xl font-bold tracking-tight text-slate-900">
-                {data.grades.length}
-              </p>
-            </div>
-            <div className={CARD}>
-              <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                {t('student.grades.summary.subjects')}
-              </p>
-              <p className="mt-2 text-4xl font-bold tracking-tight text-slate-900">
-                {data.bySubject.length}
-              </p>
-            </div>
-          </div>
+                  : formatNumber(data.average, language)
+              }
+              progress={data.average === null ? null : data.average * 10}
+            />
+            <StudentMetric
+              label={t('student.grades.summary.grades')}
+              value={data.grades.length}
+            />
+            <StudentMetric
+              label={t('student.grades.summary.subjects')}
+              value={data.bySubject.length}
+            />
+          </dl>
 
-          <div>
-            <h2 className="mb-4 text-lg font-semibold text-slate-900">
-              {t('student.grades.bySubject.title')}
-            </h2>
-            <SubjectAverages subjects={data.bySubject} grades={data.grades} />
-          </div>
+          <StudentPanel title={t('student.grades.bySubject.title')}>
+            <SubjectAverages
+              subjects={data.bySubject}
+              grades={data.grades}
+              framed
+            />
+          </StudentPanel>
 
-          <div>
-            <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
-              <h2 className="text-lg font-semibold text-slate-900">
-                {t('student.grades.table.title')}
-              </h2>
+          <StudentPanel
+            title={t('student.grades.table.title')}
+            actions={
               <div className="w-full sm:w-64">
                 <SelectField
                   label={t('student.grades.filter.label')}
@@ -153,13 +145,16 @@ export default function StudentGradesPage() {
                   ))}
                 </SelectField>
               </div>
+            }
+          >
+            <div className="overflow-hidden rounded-xl border border-slate-300 [&>div]:rounded-none [&>div]:shadow-none [&>div]:ring-0 [&_thead]:bg-slate-100 [&_thead]:text-slate-600">
+              <DataTable
+                caption={t('student.grades.table.caption')}
+                columns={columns}
+                rows={rows}
+                rowKey={(grade) => grade.id}
+              />
             </div>
-            <DataTable
-              caption={t('student.grades.table.caption')}
-              columns={columns}
-              rows={rows}
-              rowKey={(grade) => grade.id}
-            />
             <Pagination
               meta={{
                 page,
@@ -169,7 +164,7 @@ export default function StudentGradesPage() {
               }}
               onPageChange={setPage}
             />
-          </div>
+          </StudentPanel>
         </div>
       )}
     </section>
