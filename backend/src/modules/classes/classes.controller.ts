@@ -64,6 +64,15 @@ export class ClassesController {
     return this.classesService.assignTeacher(id, dto.teacherId);
   }
 
+  @Get(':id/teaching')
+  @Roles(Role.ADMIN, Role.TEACHER)
+  findTeaching(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.classesService.findTeaching(id, user);
+  }
+
   @Get(':id/students')
   @Roles(Role.ADMIN, Role.TEACHER)
   findStudents(

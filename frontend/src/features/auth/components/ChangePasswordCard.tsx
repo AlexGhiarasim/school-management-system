@@ -97,6 +97,7 @@ function PasswordForm({
           type="password"
           autoComplete="current-password"
           maxLength={PASSWORD_MAX_LENGTH}
+          placeholder="********"
           {...field('currentPassword')}
         />
         <TextField

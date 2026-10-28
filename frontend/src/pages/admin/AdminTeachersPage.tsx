@@ -66,6 +66,12 @@ export default function AdminTeachersPage() {
       render: (teacher) => teacher.email,
     },
     {
+      key: 'phone',
+      header: t('admin.teachers.table.phone'),
+      className: 'hidden md:table-cell',
+      render: (teacher) => teacher.phone ?? '-',
+    },
+    {
       key: 'actions',
       header: t('admin.teachers.table.actions'),
       className: 'text-right',

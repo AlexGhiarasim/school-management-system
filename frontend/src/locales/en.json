@@ -207,6 +207,7 @@
         "caption": "Students of the class",
         "name": "Student",
         "email": "Email",
+        "phone": "Phone",
         "dateOfBirth": "Date of birth",
         "grades": "Grades",
         "viewGrades": "View grades"
@@ -224,7 +225,19 @@
       "back": "Back to the class",
       "title": "Student grades",
       "description": "You can add grades for the subjects you teach and edit the ones you gave.",
-      "homeroomDescription": "As class teacher you see every grade of the student. You can change only the grades you gave.",
+      "homeroomDescription": "As class teacher you see every grade of the student. You can change only the grades of the subject you teach.",
+      "homeroomOnlyDescription": "As class teacher you see every grade of the student, for viewing only.",
+      "taught_one": "The subject you teach",
+      "taught_other": "The subjects you teach",
+      "taughtEmpty": "No grades in this subject yet.",
+      "average": "Average",
+      "teaching": {
+        "title": "Who teaches in class {{name}}"
+      },
+      "overview": {
+        "title": "All subjects",
+        "readOnly": "View only"
+      },
       "add": "Add grade",
       "filter": {
         "label": "Subject",
@@ -422,6 +435,7 @@
         "caption": "The teachers of the school",
         "name": "Teacher",
         "email": "Email",
+        "phone": "Phone",
         "actions": "Actions",
         "edit": "Edit",
         "delete": "Delete"
@@ -502,6 +516,7 @@
         "caption": "The students of the school",
         "name": "Student",
         "email": "Email",
+        "phone": "Phone",
         "dateOfBirth": "Date of birth",
         "class": "Class",
         "noClass": "No class",
@@ -588,6 +603,8 @@
     },
     "fields": {
       "email": "Email",
+      "phone": "Phone (optional)",
+      "phonePlaceholder": "e.g. +44 7700 900123",
       "emailPlaceholder": "e.g. mary.smith@school.test",
       "password": "Password",
       "passwordPlaceholder": "Your password",
@@ -602,6 +619,7 @@
     },
     "errors": {
       "emailInvalid": "Enter a valid email.",
+      "phoneInvalid": "Enter a valid phone number.",
       "passwordRequired": "Enter your password.",
       "firstNameRequired": "Enter your first name.",
       "lastNameRequired": "Enter your last name.",

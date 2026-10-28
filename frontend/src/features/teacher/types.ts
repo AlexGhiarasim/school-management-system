@@ -12,6 +12,12 @@ export interface ClassStudent {
   lastName: string;
   dateOfBirth: string;
   email: string;
+  phone?: string | null;
+}
+
+export interface ClassTeaching {
+  subject: { id: number; name: string };
+  teacher: { id: number; firstName: string; lastName: string };
 }
 
 export interface Subject {

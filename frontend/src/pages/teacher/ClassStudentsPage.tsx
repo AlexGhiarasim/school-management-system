@@ -43,6 +43,12 @@ export default function ClassStudentsPage() {
       render: (student) => student.email,
     },
     {
+      key: 'phone',
+      header: t('teacher.classStudents.table.phone'),
+      className: 'hidden md:table-cell',
+      render: (student) => student.phone ?? '-',
+    },
+    {
       key: 'dateOfBirth',
       header: t('teacher.classStudents.table.dateOfBirth'),
       render: (student) => formatDate(student.dateOfBirth, language),

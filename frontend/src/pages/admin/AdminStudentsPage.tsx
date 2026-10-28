@@ -80,6 +80,12 @@ export default function AdminStudentsPage() {
       render: (student) => student.email,
     },
     {
+      key: 'phone',
+      header: t('admin.students.table.phone'),
+      className: 'hidden lg:table-cell',
+      render: (student) => student.phone ?? '-',
+    },
+    {
       key: 'dateOfBirth',
       header: t('admin.students.table.dateOfBirth'),
       className: 'hidden sm:table-cell',

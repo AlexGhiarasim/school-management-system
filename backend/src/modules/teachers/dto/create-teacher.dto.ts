@@ -7,6 +7,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { OptionalPhone } from '../../../common/decorators/optional-phone.decorator.js';
 import {
   NormalizeEmail,
   Trim,
@@ -38,6 +39,9 @@ export class CreateTeacherDto {
   @IsEmail()
   @MaxLength(EMAIL_MAX_LENGTH)
   email: string;
+
+  @OptionalPhone()
+  phone?: string | null;
 
   @IsString()
   @MinLength(PASSWORD_MIN_LENGTH)

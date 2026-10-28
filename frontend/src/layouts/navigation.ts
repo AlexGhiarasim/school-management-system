@@ -13,8 +13,8 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
     { to: paths.student.grades, labelKey: 'nav.student.grades' },
   ],
   TEACHER: [
-    { to: paths.teacher.classes, labelKey: 'nav.teacher.classes', end: false },
     { to: paths.teacher.profile, labelKey: 'nav.teacher.profile' },
+    { to: paths.teacher.classes, labelKey: 'nav.teacher.classes', end: false },
   ],
   ADMIN: [
     { to: paths.admin.students, labelKey: 'nav.admin.students' },

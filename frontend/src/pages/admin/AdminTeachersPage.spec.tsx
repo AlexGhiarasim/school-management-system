@@ -98,6 +98,7 @@ describe('AdminTeachersPage', () => {
       firstName: 'Elena',
       lastName: 'Ionescu',
       email: 'elena.ionescu@school.test',
+      phone: '',
       password: 'Parola123',
     });
   });
@@ -155,6 +156,7 @@ describe('AdminTeachersPage', () => {
       firstName: 'Laura',
       lastName: 'Marinescu',
       email: 'laura.marin@school.test',
+      phone: '',
     });
   });
 

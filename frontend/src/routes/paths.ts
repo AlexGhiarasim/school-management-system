@@ -34,6 +34,6 @@ export const roleProfile: Record<Role, string> = {
 
 export const roleHome: Record<Role, string> = {
   STUDENT: paths.student.profile,
-  TEACHER: paths.teacher.classes,
+  TEACHER: paths.teacher.profile,
   ADMIN: paths.admin.students,
 };

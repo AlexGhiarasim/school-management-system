@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { confirmSave } from '../../test/confirmSave.ts';
@@ -12,6 +12,7 @@ vi.mock('../../services/teacherService.ts', () => ({
   teacherService: {
     getClasses: vi.fn(),
     getAllClassStudents: vi.fn(),
+    getClassTeaching: vi.fn(),
     getSubjects: vi.fn(),
     getStudentGrades: vi.fn(),
     createGrade: vi.fn(),
@@ -71,6 +72,7 @@ function dialog() {
 describe('TeacherStudentGradesPage', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    service.getClassTeaching.mockResolvedValue([]);
     service.getClasses.mockResolvedValue([
       {
         id: 3,
@@ -106,8 +108,28 @@ describe('TeacherStudentGradesPage', () => {
     expect(
       await screen.findByRole('heading', { name: 'Mihai Constantin' }),
     ).toBeVisible();
-    expect(await screen.findAllByText('English')).not.toHaveLength(0);
-    expect(screen.getAllByRole('row')).toHaveLength(4);
+    expect(
+      await screen.findByRole('article', { name: 'English' }),
+    ).toBeVisible();
+    expect(screen.getByRole('article', { name: 'Mathematics' })).toBeVisible();
+  });
+
+  it('shows a class teacher every subject, without any edit button', async () => {
+    service.getClasses.mockResolvedValue([
+      {
+        id: 3,
+        name: '9A',
+        studentCount: 1,
+        isHomeroom: true,
+        subjects: [],
+      },
+    ]);
+    renderPage(<TeacherStudentGradesPage />, options);
+
+    expect(await screen.findByText('All subjects')).toBeVisible();
+    expect(screen.getByText('View only')).toBeVisible();
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Add grade' })).toBeNull();
   });
 
   it('lets the teacher edit only the grades they gave', async () => {
@@ -117,22 +139,10 @@ describe('TeacherStudentGradesPage', () => {
 
     expect(buttons).toHaveLength(1);
     expect(
-      within(buttons[0].closest('tr') as HTMLElement).getByText('Mathematics'),
+      within(buttons[0].closest('article') as HTMLElement).getByText(
+        'Mathematics',
+      ),
     ).toBeVisible();
-  });
-
-  it('filters the grades by subject', async () => {
-    renderPage(<TeacherStudentGradesPage />, options);
-
-    await screen.findByRole('table');
-    await screen.findByRole('option', { name: 'English' });
-    fireEvent.change(screen.getAllByLabelText('Subject')[0], {
-      target: { value: '2' },
-    });
-
-    await waitFor(() =>
-      expect(service.getStudentGrades).toHaveBeenLastCalledWith(7, 1, 2),
-    );
   });
 
   it('asks for the missing fields before saving a new grade', async () => {

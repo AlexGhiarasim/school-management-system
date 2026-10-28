@@ -9,9 +9,15 @@ const MAX_GRADE = 10;
 interface SubjectAveragesProps {
   subjects: SubjectAverage[];
   grades: StudentGrade[];
+  // Optional name of the teacher of each subject, by subject id.
+  teachers?: Record<number, string>;
 }
 
-export function SubjectAverages({ subjects, grades }: SubjectAveragesProps) {
+export function SubjectAverages({
+  subjects,
+  grades,
+  teachers,
+}: SubjectAveragesProps) {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage ?? 'ro';
   const subjectName = useSubjectName();
@@ -40,6 +46,11 @@ export function SubjectAverages({ subjects, grades }: SubjectAveragesProps) {
                     count: item.count,
                   })}
                 </p>
+                {teachers?.[item.subjectId] && (
+                  <p className="mt-1 text-sm font-medium text-slate-600">
+                    {teachers[item.subjectId]}
+                  </p>
+                )}
               </div>
               <p className="text-2xl font-bold text-slate-900">{average}</p>
             </div>

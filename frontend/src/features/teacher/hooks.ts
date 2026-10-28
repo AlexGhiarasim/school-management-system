@@ -13,13 +13,12 @@ export const teacherKeys = {
     ['teacher', 'classes', classId, 'students', page] as const,
   allClassStudents: (classId: number) =>
     ['teacher', 'classes', classId, 'students', 'all'] as const,
+  classTeaching: (classId: number) =>
+    ['teacher', 'classes', classId, 'teaching'] as const,
   subjects: ['teacher', 'subjects'] as const,
   grades: ['teacher', 'grades'] as const,
-  studentGrades: (
-    studentId: number,
-    subjectId: number | undefined,
-    page: number,
-  ) => ['teacher', 'grades', studentId, subjectId ?? 'all', page] as const,
+  studentGrades: (studentId: number) =>
+    ['teacher', 'grades', studentId] as const,
 };
 
 export function useTeacherClasses() {
@@ -46,6 +45,15 @@ export function useAllClassStudents(classId: number) {
   });
 }
 
+export function useClassTeaching(classId: number, enabled: boolean) {
+  return useQuery({
+    queryKey: teacherKeys.classTeaching(classId),
+    queryFn: () => teacherService.getClassTeaching(classId),
+    enabled: enabled && Number.isInteger(classId),
+    staleTime: 5 * 60_000,
+  });
+}
+
 export function useSubjects() {
   return useQuery({
     queryKey: teacherKeys.subjects,
@@ -54,16 +62,11 @@ export function useSubjects() {
   });
 }
 
-export function useStudentGrades(
-  studentId: number,
-  subjectId: number | undefined,
-  page: number,
-) {
+export function useStudentGrades(studentId: number) {
   return useQuery({
-    queryKey: teacherKeys.studentGrades(studentId, subjectId, page),
-    queryFn: () => teacherService.getStudentGrades(studentId, page, subjectId),
+    queryKey: teacherKeys.studentGrades(studentId),
+    queryFn: () => teacherService.getStudentGrades(studentId),
     enabled: Number.isInteger(studentId),
-    placeholderData: keepPreviousData,
   });
 }
 

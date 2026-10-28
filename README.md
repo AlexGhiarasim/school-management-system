@@ -87,6 +87,10 @@ share another.
 | Teacher | `laura.marin@school.test` (class teacher of 9A, teaches Mathematics in every class and Physics in 9A) | `Teacher123!` |
 | Student | `mihai.constantin@student.school.test` | `Student123!` |
 
+Students and teachers also get a made-up phone number (the administrator has
+none). They use a range reserved for fiction, such as `+44 7700 900123`, and are
+not in a Romanian format.
+
 Other accounts follow the same pattern: teachers use `@school.test` and students
 use `@student.school.test`. Run `npm run prisma:seed` again at any time to reset
 the data.
@@ -193,7 +197,10 @@ touches the frontend. Another workflow builds the Docker images.
   The request always answers 204, so it does not reveal which emails have an
   account. Changing or resetting a password signs out every other session, because
   tokens issued before `passwordChangedAt` are rejected. Emails go through SMTP
-  (`SMTP_HOST`, `SMTP_PORT`, `MAIL_FROM`, `APP_URL`); Mailpit is the local inbox.
+  and the settings are optional: without them the messages go to Mailpit, the
+  local inbox, and a failed delivery is only logged. To send real emails, set
+  `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM` and
+  `APP_URL` in `.env` (see `.env.example`).
 - **Input validation.** Names accept letters, spaces, hyphens and apostrophes (2-100 characters). Passwords need 8-72 characters with at least one letter and one digit, birth dates must be between 1900 and today, and unknown fields are rejected. The frontend applies the same rules before sending a form.
 - **Rate limiting.** Login is limited to 5 attempts per minute, the rest of the
   API to 100 requests per minute.

@@ -48,6 +48,13 @@ export default function TeacherProfilePage() {
                   value={user.email}
                   copyable
                 />
+                {profile?.phone && (
+                  <ProfileField
+                    label={t('auth.fields.phone').replace(/ \(.*\)$/, '')}
+                    value={profile.phone}
+                    copyable
+                  />
+                )}
               </dl>
               <ChangePasswordButton />
             </ProfileBanner>

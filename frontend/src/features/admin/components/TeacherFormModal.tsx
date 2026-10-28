@@ -15,8 +15,10 @@ import {
 import {
   EMAIL_MAX_LENGTH,
   isValidEmail,
+  isValidPhone,
   NAME_MAX_LENGTH,
   PASSWORD_MAX_LENGTH,
+  PHONE_MAX_LENGTH,
 } from '../../../utils/validators.ts';
 import { useSaveTeacher } from '../hooks.ts';
 import type { AdminTeacher } from '../types.ts';
@@ -25,6 +27,7 @@ interface TeacherValues {
   firstName: string;
   lastName: string;
   email: string;
+  phone: string;
   password: string;
 }
 
@@ -45,6 +48,9 @@ function validate(values: TeacherValues, requirePassword: boolean) {
 
   if (!isValidEmail(values.email)) {
     errors.email = { key: 'auth.errors.emailInvalid' };
+  }
+  if (!isValidPhone(values.phone)) {
+    errors.phone = { key: 'auth.errors.phoneInvalid' };
   }
   if (requirePassword) {
     const password = validatePassword(values.password);
@@ -71,6 +77,7 @@ function TeacherForm({
       firstName: teacher?.firstName ?? '',
       lastName: teacher?.lastName ?? '',
       email: teacher?.email ?? '',
+      phone: teacher?.phone ?? '',
       password: '',
     },
     (values) => validate(values, !editing),
@@ -82,6 +89,7 @@ function TeacherForm({
       firstName: values.firstName.trim(),
       lastName: values.lastName.trim(),
       email: values.email.trim(),
+      phone: values.phone.trim(),
     };
 
     try {
@@ -144,6 +152,14 @@ function TeacherForm({
           maxLength={EMAIL_MAX_LENGTH}
           {...field('email')}
         />
+        <TextField
+          label={t('auth.fields.phone')}
+          placeholder={t('auth.fields.phonePlaceholder')}
+          type="tel"
+          inputMode="tel"
+          maxLength={PHONE_MAX_LENGTH}
+          {...field('phone')}
+        />
         {!editing && (
           <TextField
             label={t('auth.fields.password')}
@@ -191,6 +207,14 @@ function TeacherForm({
                   label: t('auth.fields.email'),
                   value: confirm.values.email.trim(),
                 },
+                ...(confirm.values.phone.trim()
+                  ? [
+                      {
+                        label: t('auth.fields.phone'),
+                        value: confirm.values.phone.trim(),
+                      },
+                    ]
+                  : []),
               ]
             : []
         }

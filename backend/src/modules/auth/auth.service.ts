@@ -233,6 +233,7 @@ export class AuthService {
             id: profile.id,
             firstName: profile.firstName,
             lastName: profile.lastName,
+            phone: profile.phone,
           }
         : null,
     };

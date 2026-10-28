@@ -18,9 +18,11 @@ import {
   EMAIL_MAX_LENGTH,
   isValidBirthDate,
   isValidEmail,
+  isValidPhone,
   MIN_BIRTH_DATE_ISO,
   NAME_MAX_LENGTH,
   PASSWORD_MAX_LENGTH,
+  PHONE_MAX_LENGTH,
 } from '../../../utils/validators.ts';
 import { useSaveStudent } from '../hooks.ts';
 import type { AdminClass, AdminStudent } from '../types.ts';
@@ -31,6 +33,7 @@ interface StudentValues {
   firstName: string;
   lastName: string;
   email: string;
+  phone: string;
   dateOfBirth: string;
   password: string;
   classId: string;
@@ -53,6 +56,9 @@ function validate(values: StudentValues, requirePassword: boolean) {
 
   if (!isValidEmail(values.email)) {
     errors.email = { key: 'auth.errors.emailInvalid' };
+  }
+  if (!isValidPhone(values.phone)) {
+    errors.phone = { key: 'auth.errors.phoneInvalid' };
   }
   if (!isValidBirthDate(values.dateOfBirth)) {
     errors.dateOfBirth = { key: 'auth.errors.dateOfBirthInvalid' };
@@ -83,6 +89,7 @@ function StudentForm({ student, classes, onDone }: StudentFormProps) {
       firstName: student?.firstName ?? '',
       lastName: student?.lastName ?? '',
       email: student?.email ?? '',
+      phone: student?.phone ?? '',
       dateOfBirth: student?.dateOfBirth ?? '',
       password: '',
       classId: student?.class ? String(student.class.id) : '',
@@ -97,6 +104,7 @@ function StudentForm({ student, classes, onDone }: StudentFormProps) {
       firstName: values.firstName.trim(),
       lastName: values.lastName.trim(),
       email: values.email.trim(),
+      phone: values.phone.trim(),
       dateOfBirth: values.dateOfBirth,
     };
 
@@ -161,6 +169,14 @@ function StudentForm({ student, classes, onDone }: StudentFormProps) {
           spellCheck={false}
           maxLength={EMAIL_MAX_LENGTH}
           {...field('email')}
+        />
+        <TextField
+          label={t('auth.fields.phone')}
+          placeholder={t('auth.fields.phonePlaceholder')}
+          type="tel"
+          inputMode="tel"
+          maxLength={PHONE_MAX_LENGTH}
+          {...field('phone')}
         />
         <div className="grid gap-4 sm:grid-cols-2">
           <TextField
@@ -229,6 +245,14 @@ function StudentForm({ student, classes, onDone }: StudentFormProps) {
                   label: t('auth.fields.email'),
                   value: confirm.values.email.trim(),
                 },
+                ...(confirm.values.phone.trim()
+                  ? [
+                      {
+                        label: t('auth.fields.phone'),
+                        value: confirm.values.phone.trim(),
+                      },
+                    ]
+                  : []),
                 {
                   label: t('auth.fields.dateOfBirth'),
                   value: formatDate(confirm.values.dateOfBirth, language),

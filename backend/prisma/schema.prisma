@@ -47,6 +47,7 @@ model Teacher {
   id        Int      @id @default(autoincrement())
   firstName String
   lastName  String
+  phone     String?  @db.VarChar(20)
   userId    Int      @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -73,6 +74,7 @@ model Student {
   id          Int      @id @default(autoincrement())
   firstName   String
   lastName    String
+  phone       String?  @db.VarChar(20)
   dateOfBirth DateTime @db.Date
   userId      Int      @unique
   classId     Int?

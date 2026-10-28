@@ -208,6 +208,7 @@ describe('AdminStudentsPage', () => {
       firstName: 'Mihai',
       lastName: 'Constantin',
       email: 'mihai.constantin@student.school.test',
+      phone: '',
       dateOfBirth: '2010-05-17',
     });
     expect(service.assignStudentClass).toHaveBeenCalledWith(7, null);

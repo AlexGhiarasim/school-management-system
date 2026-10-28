@@ -211,6 +211,7 @@
         "caption": "Elevii clasei",
         "name": "Elev",
         "email": "Email",
+        "phone": "Telefon",
         "dateOfBirth": "Data nașterii",
         "grades": "Note",
         "viewGrades": "Vezi notele"
@@ -228,7 +229,20 @@
       "back": "Înapoi la clasă",
       "title": "Notele elevului",
       "description": "Poți adăuga note la materiile pe care le predai și le poți modifica pe cele date de tine.",
-      "homeroomDescription": "Ca diriginte vezi toate notele elevului. Le poți modifica doar pe cele date de tine.",
+      "homeroomDescription": "Ca diriginte vezi toate notele elevului. Le poți modifica doar pe cele de la materia pe care o predai.",
+      "homeroomOnlyDescription": "Ca diriginte vezi toate notele elevului, doar pentru vizualizare.",
+      "taught_one": "Materia pe care o predai",
+      "taught_few": "Materiile pe care le predai",
+      "taught_other": "Materiile pe care le predai",
+      "taughtEmpty": "Nicio notă încă la această materie.",
+      "average": "Media",
+      "teaching": {
+        "title": "Cine predă la clasa {{name}}"
+      },
+      "overview": {
+        "title": "Toate materiile",
+        "readOnly": "Doar vizualizare"
+      },
       "add": "Adaugă notă",
       "filter": {
         "label": "Materia",
@@ -427,6 +441,7 @@
         "caption": "Profesorii școlii",
         "name": "Profesor",
         "email": "Email",
+        "phone": "Telefon",
         "actions": "Acțiuni",
         "edit": "Modifică",
         "delete": "Șterge"
@@ -507,6 +522,7 @@
         "caption": "Elevii școlii",
         "name": "Elev",
         "email": "Email",
+        "phone": "Telefon",
         "dateOfBirth": "Data nașterii",
         "class": "Clasa",
         "noClass": "Fără clasă",
@@ -593,6 +609,8 @@
     },
     "fields": {
       "email": "Email",
+      "phone": "Telefon (opțional)",
+      "phonePlaceholder": "ex. +44 7700 900123",
       "emailPlaceholder": "ex. maria.popescu@scoala.test",
       "password": "Parolă",
       "passwordPlaceholder": "Parola ta",
@@ -607,6 +625,7 @@
     },
     "errors": {
       "emailInvalid": "Introdu un email valid.",
+      "phoneInvalid": "Introdu un număr de telefon valid.",
       "passwordRequired": "Introdu parola.",
       "firstNameRequired": "Introdu prenumele.",
       "lastNameRequired": "Introdu numele.",

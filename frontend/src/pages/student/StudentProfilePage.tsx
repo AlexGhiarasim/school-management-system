@@ -81,6 +81,14 @@ export default function StudentProfilePage() {
                   copyable
                   wide
                 />
+                {data.phone && (
+                  <ProfileField
+                    label={t('auth.fields.phone').replace(/ \(.*\)$/, '')}
+                    value={data.phone}
+                    copyable
+                    wide
+                  />
+                )}
                 <ProfileField
                   label={t('student.profile.fields.dateOfBirth')}
                   value={formatDate(data.dateOfBirth, language)}

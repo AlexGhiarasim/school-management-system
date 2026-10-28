@@ -3,109 +3,72 @@ import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../components/layout/PageHeader.tsx';
 import { Button } from '../../components/ui/Button.tsx';
-import { DataTable, type Column } from '../../components/ui/DataTable.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { ErrorState } from '../../components/ui/ErrorState.tsx';
-import { Pagination } from '../../components/ui/Pagination.tsx';
-import { SelectField } from '../../components/ui/SelectField.tsx';
+import { Skeleton } from '../../components/ui/Skeleton.tsx';
 import { GradeFormModal } from '../../features/teacher/components/GradeFormModal.tsx';
+import { TaughtSubjectCard } from '../../features/teacher/components/TaughtSubjectCard.tsx';
 import {
   useAllClassStudents,
+  useClassTeaching,
   useStudentGrades,
-  useSubjects,
   useTeacherClasses,
 } from '../../features/teacher/hooks.ts';
 import type { TeacherGrade } from '../../features/teacher/types.ts';
-import { GradeBadge } from '../../features/student/components/GradeBadge.tsx';
+import { SubjectAverages } from '../../features/student/components/SubjectAverages.tsx';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { paths } from '../../routes/paths.ts';
-import { formatDate } from '../../utils/format.ts';
+import { formatNumber } from '../../utils/format.ts';
+import { averageBySubject, overallAverage } from '../../utils/grades.ts';
 
 const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
+const LABEL = 'text-xs font-medium tracking-wide text-slate-500 uppercase';
 
 export default function TeacherStudentGradesPage() {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage ?? 'ro';
-  const subjectName = useSubjectName();
   const { user } = useAuth();
   const params = useParams();
   const classId = Number(params.classId);
   const studentId = Number(params.studentId);
 
-  const [page, setPage] = useState(1);
-  const [subjectFilter, setSubjectFilter] = useState('');
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState<TeacherGrade | null>(null);
 
   const students = useAllClassStudents(classId);
-  const subjects = useSubjects();
-  const grades = useStudentGrades(
-    studentId,
-    subjectFilter ? Number(subjectFilter) : undefined,
-    page,
-  );
+  const grades = useStudentGrades(studentId);
+  const classes = useTeacherClasses();
+  const subjectName = useSubjectName();
 
   const student = students.data?.data.find((item) => item.id === studentId);
   const notFound =
     !Number.isInteger(classId) ||
     !Number.isInteger(studentId) ||
     (students.isSuccess && !student);
-  const ownProfileId = user?.profile?.id;
-  const schoolClass = useTeacherClasses().data?.find(
-    (item) => item.id === classId,
-  );
-  const taughtSubjects = schoolClass?.subjects ?? [];
-  const filterSubjects = schoolClass?.isHomeroom
-    ? (subjects.data?.data ?? [])
-    : taughtSubjects;
 
-  const columns: Column<TeacherGrade>[] = [
-    {
-      key: 'subject',
-      header: t('teacher.studentGrades.table.subject'),
-      render: (grade) => (
-        <span className="font-medium text-slate-900">
-          {subjectName(grade.subject.name)}
-        </span>
-      ),
-    },
-    {
-      key: 'value',
-      header: t('teacher.studentGrades.table.grade'),
-      render: (grade) => <GradeBadge value={grade.value} />,
-    },
-    {
-      key: 'date',
-      header: t('teacher.studentGrades.table.date'),
-      render: (grade) => formatDate(grade.date, language),
-    },
-    {
-      key: 'teacher',
-      header: t('teacher.studentGrades.table.teacher'),
-      className: 'hidden sm:table-cell',
-      render: (grade) =>
-        grade.teacher
-          ? `${grade.teacher.firstName} ${grade.teacher.lastName}`
-          : t('teacher.studentGrades.table.noTeacher'),
-    },
-    {
-      key: 'actions',
-      header: t('teacher.studentGrades.table.actions'),
-      className: 'text-right',
-      render: (grade) =>
-        grade.teacher?.id === ownProfileId ? (
-          <Button
-            variant="secondary"
-            fullWidth={false}
-            className="px-3 py-1.5"
-            onClick={() => setEditing(grade)}
-          >
-            {t('teacher.studentGrades.table.edit')}
-          </Button>
-        ) : null,
-    },
-  ];
+  const schoolClass = classes.data?.find((item) => item.id === classId);
+  const taught = schoolClass?.subjects ?? [];
+  const isHomeroom = schoolClass?.isHomeroom ?? false;
+  // Only the class teacher can see who teaches what in the class.
+  const teaching = useClassTeaching(classId, isHomeroom);
+  const teacherNames = Object.fromEntries(
+    (teaching.data ?? []).map(({ subject, teacher }) => [
+      subject.id,
+      `${teacher.firstName} ${teacher.lastName}`,
+    ]),
+  );
+  const all = grades.data?.data ?? [];
+  const bySubject = averageBySubject(all);
+  const average = overallAverage(bySubject);
+
+  const description = isHomeroom
+    ? t(
+        taught.length > 0
+          ? 'teacher.studentGrades.homeroomDescription'
+          : 'teacher.studentGrades.homeroomOnlyDescription',
+      )
+    : t('teacher.studentGrades.description');
 
   return (
     <section>
@@ -131,13 +94,9 @@ export default function TeacherStudentGradesPage() {
                 ? `${student.firstName} ${student.lastName}`
                 : t('teacher.studentGrades.title')
             }
-            description={
-              schoolClass?.isHomeroom
-                ? t('teacher.studentGrades.homeroomDescription')
-                : t('teacher.studentGrades.description')
-            }
+            description={description}
             actions={
-              taughtSubjects.length > 0 && (
+              taught.length > 0 && (
                 <Button fullWidth={false} onClick={() => setCreating(true)}>
                   {t('teacher.studentGrades.add')}
                 </Button>
@@ -145,47 +104,134 @@ export default function TeacherStudentGradesPage() {
             }
           />
 
-          <div className="mb-4 w-full sm:w-64">
-            <SelectField
-              label={t('teacher.studentGrades.filter.label')}
-              value={subjectFilter}
-              onChange={(event) => {
-                setSubjectFilter(event.target.value);
-                setPage(1);
-              }}
-            >
-              <option value="">{t('teacher.studentGrades.filter.all')}</option>
-              {filterSubjects.map((subject) => (
-                <option key={subject.id} value={subject.id}>
-                  {subjectName(subject.name)}
-                </option>
-              ))}
-            </SelectField>
-          </div>
-
-          {grades.isError ? (
+          {grades.isError && (
             <div className={CARD}>
               <ErrorState onRetry={() => void grades.refetch()} />
             </div>
-          ) : (
-            <>
-              <DataTable
-                caption={t('teacher.studentGrades.table.caption')}
-                columns={columns}
-                rows={grades.data?.data ?? []}
-                rowKey={(grade) => grade.id}
-                loading={grades.isPending}
-                empty={
-                  <EmptyState
-                    title={t('teacher.studentGrades.empty.title')}
-                    description={t('teacher.studentGrades.empty.description')}
-                  />
-                }
-              />
-              {grades.data && (
-                <Pagination meta={grades.data.meta} onPageChange={setPage} />
+          )}
+
+          {grades.isPending && (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Skeleton className="h-40" />
+              <Skeleton className="h-40" />
+            </div>
+          )}
+
+          {grades.data && (
+            <div className="space-y-10">
+              {taught.length > 0 && (
+                <div>
+                  <h2 className="mb-4 text-lg font-semibold text-slate-900">
+                    {t('teacher.studentGrades.taught', {
+                      count: taught.length,
+                    })}
+                  </h2>
+                  <div className="grid items-start gap-4 lg:grid-cols-2">
+                    {taught.map((subject) => (
+                      <TaughtSubjectCard
+                        key={subject.id}
+                        subject={subject}
+                        grades={all.filter(
+                          (grade) => grade.subject.id === subject.id,
+                        )}
+                        ownProfileId={user?.profile?.id}
+                        onEdit={setEditing}
+                      />
+                    ))}
+                  </div>
+                </div>
               )}
-            </>
+
+              {isHomeroom && (
+                <div>
+                  <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+                    <h2 className="text-lg font-semibold text-slate-900">
+                      {t('teacher.studentGrades.overview.title')}
+                    </h2>
+                    <p className="text-sm text-slate-500">
+                      {t('teacher.studentGrades.overview.readOnly')}
+                    </p>
+                  </div>
+
+                  {all.length === 0 ? (
+                    <div className={CARD}>
+                      <EmptyState
+                        title={t('teacher.studentGrades.empty.title')}
+                        description={t(
+                          'teacher.studentGrades.empty.description',
+                        )}
+                      />
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        <div className={CARD}>
+                          <p className={LABEL}>
+                            {t('student.grades.summary.average')}
+                          </p>
+                          <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+                            {average === null
+                              ? '-'
+                              : formatNumber(average, language)}
+                          </p>
+                        </div>
+                        <div className={CARD}>
+                          <p className={LABEL}>
+                            {t('student.grades.summary.grades')}
+                          </p>
+                          <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+                            {all.length}
+                          </p>
+                        </div>
+                        <div className={CARD}>
+                          <p className={LABEL}>
+                            {t('student.grades.summary.subjects')}
+                          </p>
+                          <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+                            {bySubject.length}
+                          </p>
+                        </div>
+                      </div>
+                      <SubjectAverages
+                        subjects={bySubject}
+                        grades={all}
+                        teachers={teacherNames}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {teaching.data && teaching.data.length > 0 && (
+            <div className="mt-10">
+              <h2 className="mb-4 text-lg font-semibold text-slate-900">
+                {t('teacher.studentGrades.teaching.title', {
+                  name: schoolClass?.name ?? '',
+                })}
+              </h2>
+              <dl
+                className={`${CARD} grid gap-x-8 gap-y-1 sm:grid-cols-2`}
+                aria-label={t('teacher.studentGrades.teaching.title', {
+                  name: schoolClass?.name ?? '',
+                })}
+              >
+                {teaching.data.map(({ subject, teacher }) => (
+                  <div
+                    key={subject.id}
+                    className="flex items-baseline justify-between gap-4 border-b border-slate-100 py-2.5"
+                  >
+                    <dt className="text-slate-600">
+                      {subjectName(subject.name)}
+                    </dt>
+                    <dd className="text-right font-medium text-slate-900">
+                      {teacher.firstName} {teacher.lastName}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           )}
 
           <GradeFormModal
@@ -195,7 +241,7 @@ export default function TeacherStudentGradesPage() {
               setEditing(null);
             }}
             studentId={studentId}
-            subjects={taughtSubjects}
+            subjects={taught}
             grade={editing}
           />
         </>

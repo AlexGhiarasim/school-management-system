@@ -65,6 +65,14 @@ function randomDate(from: Date, days: number) {
   return date;
 }
 
+// Made-up numbers from a range reserved for fiction, not in a Romanian format.
+let phoneCounter = 0;
+
+function nextPhone() {
+  phoneCounter += 1;
+  return `+44 7700 900${String(phoneCounter).padStart(3, '0')}`;
+}
+
 function createIdentityFactory(domain: string) {
   const used = new Set<string>();
 
@@ -129,6 +137,7 @@ async function main() {
         data: {
           firstName,
           lastName,
+          phone: nextPhone(),
           user: {
             create: { email, passwordHash: hashes.teacher, role: Role.TEACHER },
           },
@@ -144,6 +153,7 @@ async function main() {
       data: {
         firstName,
         lastName,
+        phone: nextPhone(),
         dateOfBirth: new Date(
           Date.UTC(birthYear, randomInt(0, 11), randomInt(1, 28)),
         ),

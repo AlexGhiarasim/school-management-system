@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
@@ -80,12 +80,12 @@ describe('route guards', () => {
 
   it.each([
     ['STUDENT', '/admin/students', 'My profile'],
-    ['TEACHER', '/admin/teachers', 'My classes'],
-    ['TEACHER', '/admin/grades', 'My classes'],
+    ['TEACHER', '/admin/teachers', 'My profile'],
+    ['TEACHER', '/admin/grades', 'My profile'],
     ['STUDENT', '/admin/classes/3', 'My profile'],
     ['STUDENT', '/admin/subjects', 'My profile'],
     ['STUDENT', '/teacher/classes/3/students/7', 'My profile'],
-    ['TEACHER', '/student/grades', 'My classes'],
+    ['TEACHER', '/student/grades', 'My profile'],
     ['ADMIN', '/teacher/classes', 'Students'],
   ] as const)('keeps a %s out of %s', (role, path, expected) => {
     renderAt(path, userWith(role));
@@ -95,7 +95,7 @@ describe('route guards', () => {
 
   it.each([
     ['STUDENT', 'My profile'],
-    ['TEACHER', 'My classes'],
+    ['TEACHER', 'My profile'],
     ['ADMIN', 'Students'],
   ] as const)(
     'moves a signed-in %s from the start page to their home',

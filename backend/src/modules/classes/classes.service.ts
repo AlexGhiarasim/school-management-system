@@ -107,11 +107,35 @@ export class ClassesService {
     return toResponse(schoolClass);
   }
 
-  async findStudents(
-    id: number,
-    query: PaginationQueryDto,
-    user: AuthenticatedUser,
-  ) {
+  // Who teaches which subject in the class. Only the class teacher (and an
+  // administrator) can see it.
+  async findTeaching(id: number, user: AuthenticatedUser) {
+    const schoolClass = await this.prisma.class.findUnique({ where: { id } });
+
+    if (!schoolClass) {
+      throw new NotFoundException(`Class ${id} not found`);
+    }
+
+    if (
+      user.role === Role.TEACHER &&
+      schoolClass.teacherId !== user.teacherId
+    ) {
+      throw new ForbiddenException('Only the class teacher can see this');
+    }
+
+    const assignments = await this.prisma.teachingAssignment.findMany({
+      where: { classId: id },
+      select: {
+        subject: { select: { id: true, name: true } },
+        teacher: { select: { id: true, firstName: true, lastName: true } },
+      },
+      orderBy: { subject: { name: 'asc' } },
+    });
+
+    return assignments;
+  }
+
+  private async assertCanSee(id: number, user: AuthenticatedUser) {
     const teacherId = user.teacherId ?? -1;
     const schoolClass = await this.prisma.class.findUnique({
       where: { id },
@@ -131,6 +155,14 @@ export class ClassesService {
     ) {
       throw new ForbiddenException('You do not teach this class');
     }
+  }
+
+  async findStudents(
+    id: number,
+    query: PaginationQueryDto,
+    user: AuthenticatedUser,
+  ) {
+    await this.assertCanSee(id, user);
 
     const where = { classId: id };
 
@@ -141,6 +173,7 @@ export class ClassesService {
           id: true,
           firstName: true,
           lastName: true,
+          phone: true,
           dateOfBirth: true,
           user: { select: { email: true } },
         },

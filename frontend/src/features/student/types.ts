@@ -3,6 +3,7 @@ export interface StudentProfile {
   firstName: string;
   lastName: string;
   email: string;
+  phone?: string | null;
   dateOfBirth: string;
   isActive: boolean;
   class: { id: number; name: string } | null;

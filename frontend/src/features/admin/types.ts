@@ -3,6 +3,7 @@ export interface AdminStudent {
   firstName: string;
   lastName: string;
   email: string;
+  phone?: string | null;
   dateOfBirth: string;
   isActive: boolean;
   class: { id: number; name: string } | null;
@@ -27,6 +28,7 @@ export interface StudentInput {
   firstName: string;
   lastName: string;
   email: string;
+  phone?: string;
   dateOfBirth: string;
 }
 
@@ -45,6 +47,7 @@ export interface AdminTeacher {
   firstName: string;
   lastName: string;
   email: string;
+  phone?: string | null;
   isActive: boolean;
 }
 
@@ -52,6 +55,7 @@ export interface TeacherInput {
   firstName: string;
   lastName: string;
   email: string;
+  phone?: string;
 }
 
 export interface NewTeacherInput extends TeacherInput {
