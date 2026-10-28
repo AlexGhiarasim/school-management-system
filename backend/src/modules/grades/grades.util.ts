@@ -14,6 +14,8 @@ export function average(values: number[]): number | null {
   return Math.round((sum / values.length) * 100) / 100;
 }
 
+// Each subject average is rounded to a whole number, and the overall average
+// is the mean of those rounded subject averages.
 export function summarize(
   grades: { value: number; subject: { id: number; name: string } }[],
 ) {
@@ -32,13 +34,15 @@ export function summarize(
     .map(([subjectId, { name, values }]) => ({
       subjectId,
       subject: name,
-      average: average(values) as number,
+      average: Math.round(
+        values.reduce((total, value) => total + value, 0) / values.length,
+      ),
       count: values.length,
     }))
     .sort((a, b) => a.subject.localeCompare(b.subject));
 
   return {
-    average: average(grades.map(({ value }) => value)),
+    average: average(subjects.map((subject) => subject.average)),
     bySubject: subjects,
   };
 }

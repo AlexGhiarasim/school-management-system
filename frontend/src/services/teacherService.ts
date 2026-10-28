@@ -1,5 +1,6 @@
 import type {
   ClassStudent,
+  ClassTeaching,
   GradeInput,
   Subject,
   TeacherClass,
@@ -19,17 +20,18 @@ export const teacherService = {
       `/classes/${classId}/students?page=${page}&limit=${limit}`,
     ),
 
+  getClassTeaching: (classId: number) =>
+    authedRequest<ClassTeaching[]>(`/classes/${classId}/teaching`),
+
   getAllClassStudents: (classId: number) =>
     teacherService.getClassStudents(classId, 1, MAX_PAGE_SIZE),
 
   getSubjects: () =>
     authedRequest<Paginated<Subject>>(`/subjects?limit=${MAX_PAGE_SIZE}`),
 
-  getStudentGrades: (studentId: number, page: number, subjectId?: number) =>
+  getStudentGrades: (studentId: number) =>
     authedRequest<Paginated<TeacherGrade>>(
-      `/grades?studentId=${studentId}&page=${page}&limit=${PAGE_SIZE}${
-        subjectId ? `&subjectId=${subjectId}` : ''
-      }`,
+      `/grades?studentId=${studentId}&limit=${MAX_PAGE_SIZE}`,
     ),
 
   createGrade: (studentId: number, input: GradeInput) =>

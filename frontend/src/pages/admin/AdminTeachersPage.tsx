@@ -8,6 +8,10 @@ import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { ErrorState } from '../../components/ui/ErrorState.tsx';
 import { Pagination } from '../../components/ui/Pagination.tsx';
 import { TextField } from '../../components/ui/TextField.tsx';
+import {
+  CredentialsDialog,
+  type Credentials,
+} from '../../features/admin/components/CredentialsDialog.tsx';
 import { TeacherFormModal } from '../../features/admin/components/TeacherFormModal.tsx';
 import {
   useAdminTeachers,
@@ -18,7 +22,7 @@ import { useDebouncedValue } from '../../hooks/useDebouncedValue.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
 
-const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
+const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
 export default function AdminTeachersPage() {
   const { t } = useTranslation();
@@ -26,6 +30,7 @@ export default function AdminTeachersPage() {
 
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const [credentials, setCredentials] = useState<Credentials | null>(null);
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState<AdminTeacher | null>(null);
   const [deleting, setDeleting] = useState<AdminTeacher | null>(null);
@@ -66,6 +71,12 @@ export default function AdminTeachersPage() {
       render: (teacher) => teacher.email,
     },
     {
+      key: 'phone',
+      header: t('admin.teachers.table.phone'),
+      className: 'hidden md:table-cell',
+      render: (teacher) => teacher.phone ?? '-',
+    },
+    {
       key: 'actions',
       header: t('admin.teachers.table.actions'),
       className: 'text-right',
@@ -78,14 +89,6 @@ export default function AdminTeachersPage() {
             onClick={() => setEditing(teacher)}
           >
             {t('admin.teachers.table.edit')}
-          </Button>
-          <Button
-            variant="danger"
-            fullWidth={false}
-            className="px-3 py-1.5"
-            onClick={() => setDeleting(teacher)}
-          >
-            {t('admin.teachers.table.delete')}
           </Button>
         </div>
       ),
@@ -157,6 +160,16 @@ export default function AdminTeachersPage() {
           setEditing(null);
         }}
         teacher={editing}
+        onCreated={setCredentials}
+        onDelete={() => {
+          setDeleting(editing);
+          setEditing(null);
+        }}
+      />
+
+      <CredentialsDialog
+        credentials={credentials}
+        onClose={() => setCredentials(null)}
       />
 
       <ConfirmDialog

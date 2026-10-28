@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { fireEvent, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { StudentProfile } from '../../features/student/types.ts';
 import { studentService } from '../../services/studentService.ts';
@@ -7,10 +8,16 @@ import { renderWithQuery } from '../../test/renderWithQuery.tsx';
 import StudentProfilePage from './StudentProfilePage.tsx';
 
 vi.mock('../../services/studentService.ts', () => ({
-  studentService: { getProfile: vi.fn(), getGrades: vi.fn() },
+  studentService: {
+    getProfile: vi.fn(),
+    getGrades: vi.fn(),
+    getClassOverview: vi.fn(),
+  },
 }));
 
 const getProfile = vi.mocked(studentService.getProfile);
+const getGrades = vi.mocked(studentService.getGrades);
+const getClassOverview = vi.mocked(studentService.getClassOverview);
 
 const profile: StudentProfile = {
   id: 1,
@@ -25,6 +32,62 @@ const profile: StudentProfile = {
 describe('StudentProfilePage', () => {
   beforeEach(() => {
     getProfile.mockReset();
+    getGrades.mockReset();
+    getGrades.mockResolvedValue({ average: null, bySubject: [], grades: [] });
+    getClassOverview.mockReset();
+    getClassOverview.mockReturnValue(new Promise(() => undefined));
+  });
+
+  it('shows the class teacher, its size and the classmates', async () => {
+    getProfile.mockResolvedValue({ ...profile, id: 7 });
+    getClassOverview.mockResolvedValue({
+      id: 3,
+      name: '10A',
+      teacher: { firstName: 'Laura', lastName: 'Marin' },
+      studentCount: 2,
+      students: [
+        { id: 7, firstName: 'Mihai', lastName: 'Constantin' },
+        { id: 8, firstName: 'Ana', lastName: 'Pop' },
+      ],
+    });
+    renderWithQuery(<StudentProfilePage />);
+
+    const count = await screen.findByRole('button', { name: '2 students' });
+    expect(screen.queryByText('Pop')).not.toBeInTheDocument();
+
+    fireEvent.click(count);
+
+    expect(screen.getByText('Pop')).toBeInTheDocument();
+    expect(screen.getByText('you')).toBeInTheDocument();
+    expect(screen.getByText(/Laura Marin/)).toBeInTheDocument();
+  });
+
+  it('shows the average and the latest grades', async () => {
+    getProfile.mockResolvedValue(profile);
+    getGrades.mockResolvedValue({
+      average: 8,
+      bySubject: [
+        { subjectId: 1, subject: 'Mathematics', average: 8, count: 1 },
+      ],
+      grades: [
+        {
+          id: 1,
+          value: 8,
+          date: '2026-10-02',
+          subject: { id: 1, name: 'Mathematics' },
+          teacher: null,
+        },
+      ],
+    });
+    renderWithQuery(
+      <MemoryRouter>
+        <StudentProfilePage />
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByText('Latest grades')).toBeVisible();
+    expect(screen.getByText('Mathematics')).toBeVisible();
+    expect(screen.getByText('8.00')).toBeVisible();
   });
 
   it('shows the personal details and the class', async () => {

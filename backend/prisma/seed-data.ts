@@ -1,14 +1,31 @@
+// Both share the admin password. Phone numbers are made up, outside the range
+// used for teachers and students.
+export const ADMINS = [
+  {
+    email: 'admin@school.test',
+    firstName: 'Cristina',
+    lastName: 'Albu',
+    phone: '+44 7700 900990',
+  },
+  {
+    email: 'admin2@school.test',
+    firstName: 'Mihai',
+    lastName: 'Voicu',
+    phone: '+44 7700 900991',
+  },
+];
+
 export const SUBJECTS = [
-  'Mathematics',
-  'Romanian Language',
-  'English',
-  'Physics',
-  'Chemistry',
-  'Biology',
-  'History',
-  'Geography',
-  'Computer Science',
-  'Physical Education',
+  'Matematică',
+  'Limba română',
+  'Limba engleză',
+  'Fizică',
+  'Chimie',
+  'Biologie',
+  'Istorie',
+  'Geografie',
+  'Informatică',
+  'Educație fizică',
 ];
 
 export const FIRST_NAMES = [
@@ -78,7 +95,26 @@ export const CLASS_PLANS = [
   { name: '10A', birthYear: 2010, teacherIndex: 2 },
   { name: '10B', birthYear: 2010, teacherIndex: 3 },
   { name: '11A', birthYear: 2009, teacherIndex: 4 },
-  { name: '12A', birthYear: 2008, teacherIndex: 0 },
+  { name: '12A', birthYear: 2008, teacherIndex: 5 },
+];
+
+// Index of the teacher who teaches each subject in every class.
+export const SUBJECT_TEACHERS: Record<string, number> = {
+  Matematică: 0,
+  'Limba română': 1,
+  'Limba engleză': 2,
+  Fizică: 3,
+  Chimie: 4,
+  Biologie: 5,
+  Istorie: 6,
+  Geografie: 7,
+  Informatică: 8,
+  'Educație fizică': 9,
+};
+
+// The one class where a teacher takes a second subject.
+export const SUBJECT_OVERRIDES = [
+  { className: '9A', subject: 'Fizică', teacherIndex: 0 },
 ];
 
 export const TEACHER_COUNT = 10;

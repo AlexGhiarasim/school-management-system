@@ -20,7 +20,7 @@ import { getApiErrorKey } from '../../lib/apiErrors.ts';
 import { paths } from '../../routes/paths.ts';
 import { formatDate } from '../../utils/format.ts';
 
-const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
+const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
 export default function AdminClassStudentsPage() {
   const { t, i18n } = useTranslation();
@@ -98,7 +98,7 @@ export default function AdminClassStudentsPage() {
     <section>
       <Link
         to={paths.admin.classes}
-        className="mb-4 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
+        className="mb-4 inline-block text-[15px] font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
       >
         {t('admin.classStudents.back')}
       </Link>

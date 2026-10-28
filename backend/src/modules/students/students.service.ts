@@ -40,6 +40,7 @@ export class StudentsService {
 
   async findAll(query: ListStudentsQueryDto) {
     const where: Prisma.StudentWhereInput = {
+      ...(query.assigned && { classId: { not: null } }),
       ...(query.classId !== undefined && { classId: query.classId }),
       ...(query.unassigned && { classId: null }),
       ...(query.search && {
@@ -150,6 +151,33 @@ export class StudentsService {
 
   findProfile(id: number) {
     return this.findOne(id);
+  }
+
+  async findClassOverview(id: number) {
+    const student = await this.prisma.student.findUnique({
+      where: { id },
+      select: {
+        class: {
+          select: {
+            id: true,
+            name: true,
+            teacher: { select: { firstName: true, lastName: true } },
+            students: {
+              select: { id: true, firstName: true, lastName: true },
+              orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+            },
+          },
+        },
+      },
+    });
+
+    if (!student?.class) {
+      throw new NotFoundException('The student is not in a class');
+    }
+
+    const { students, ...schoolClass } = student.class;
+
+    return { ...schoolClass, studentCount: students.length, students };
   }
 
   private async assertClassExists(classId: number): Promise<void> {

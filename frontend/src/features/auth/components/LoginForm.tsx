@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import { Button } from '../../../components/ui/Button.tsx';
 import { TextField } from '../../../components/ui/TextField.tsx';
 import { useFormState, type FormError } from '../../../hooks/useFormState.ts';
 import { useAuth } from '../../../hooks/useAuth.ts';
 import { useRequestState } from '../../../hooks/useRequestState.ts';
+import { paths } from '../../../routes/paths.ts';
 import {
   EMAIL_MAX_LENGTH,
   isValidEmail,
@@ -69,6 +71,14 @@ export function LoginForm() {
         placeholder={t('auth.fields.passwordPlaceholder')}
         {...field('password')}
       />
+      <p className="-mt-2 text-right text-sm">
+        <Link
+          to={paths.forgotPassword}
+          className="font-medium text-slate-500 transition hover:text-indigo-600 focus:outline-none focus-visible:underline"
+        >
+          {t('auth.login.forgot')}
+        </Link>
+      </p>
       <Button type="submit" loading={loading}>
         {loading ? t('auth.login.submitting') : t('auth.login.submit')}
       </Button>

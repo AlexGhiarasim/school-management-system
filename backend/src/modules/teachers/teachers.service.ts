@@ -106,14 +106,26 @@ export class TeachersService {
 
   async findOwnClasses(teacherId: number) {
     const classes = await this.prisma.class.findMany({
-      where: { teacherId },
-      include: { _count: { select: { students: true } } },
+      where: {
+        OR: [{ teacherId }, { assignments: { some: { teacherId } } }],
+      },
+      include: {
+        _count: { select: { students: true } },
+        assignments: {
+          where: { teacherId },
+          select: { subject: { select: { id: true, name: true } } },
+        },
+      },
       orderBy: { name: 'asc' },
     });
 
-    return classes.map(({ _count, ...schoolClass }) => ({
+    return classes.map(({ _count, assignments, ...schoolClass }) => ({
       ...schoolClass,
       studentCount: _count.students,
+      isHomeroom: schoolClass.teacherId === teacherId,
+      subjects: assignments
+        .map(({ subject }) => subject)
+        .sort((a, b) => a.name.localeCompare(b.name)),
     }));
   }
 }

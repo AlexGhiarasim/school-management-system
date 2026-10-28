@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../../components/ui/Button.tsx';
+import { ConfirmDialog } from '../../../components/ui/ConfirmDialog.tsx';
 import { EmptyState } from '../../../components/ui/EmptyState.tsx';
 import { Modal } from '../../../components/ui/Modal.tsx';
 import { Skeleton } from '../../../components/ui/Skeleton.tsx';
@@ -9,19 +10,25 @@ import { useDebouncedValue } from '../../../hooks/useDebouncedValue.ts';
 import { useToast } from '../../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../../lib/apiErrors.ts';
 import { useAdminStudents, useAssignStudentClass } from '../hooks.ts';
-import { NO_CLASS_FILTER } from '../types.ts';
+import { NO_CLASS_FILTER, type AdminStudent } from '../types.ts';
 
 interface AddStudentsPanelProps {
   classId: number;
+  className: string;
   onDone: () => void;
 }
 
-function AddStudentsPanel({ classId, onDone }: AddStudentsPanelProps) {
+function AddStudentsPanel({
+  classId,
+  className,
+  onDone,
+}: AddStudentsPanelProps) {
   const { t } = useTranslation();
   const { notify } = useToast();
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebouncedValue(search);
   const [adding, setAdding] = useState<number | null>(null);
+  const [candidate, setCandidate] = useState<AdminStudent | null>(null);
 
   const students = useAdminStudents({
     page: 1,
@@ -98,7 +105,7 @@ function AddStudentsPanel({ classId, onDone }: AddStudentsPanelProps) {
                   fullWidth={false}
                   className="px-3 py-1.5"
                   loading={adding === student.id}
-                  onClick={() => void add(student.id)}
+                  onClick={() => setCandidate(student)}
                 >
                   {t('admin.classStudents.addModal.add')}
                 </Button>
@@ -113,6 +120,29 @@ function AddStudentsPanel({ classId, onDone }: AddStudentsPanelProps) {
           {t('admin.classStudents.addModal.done')}
         </Button>
       </div>
+
+      <ConfirmDialog
+        open={candidate !== null}
+        title={t('confirm.assign.title')}
+        message={t('confirm.assign.message', { name: className })}
+        details={
+          candidate
+            ? [
+                {
+                  label: t('confirm.assign.student'),
+                  value: `${candidate.lastName} ${candidate.firstName}`,
+                },
+                { label: t('confirm.assign.class'), value: className },
+              ]
+            : []
+        }
+        confirmLabel={t('confirm.add')}
+        onConfirm={() => {
+          if (candidate) void add(candidate.id);
+          setCandidate(null);
+        }}
+        onCancel={() => setCandidate(null)}
+      />
     </div>
   );
 }
@@ -138,7 +168,11 @@ export function AddStudentsModal({
       onClose={onClose}
       title={t('admin.classStudents.addModal.title', { name: className })}
     >
-      <AddStudentsPanel classId={classId} onDone={onClose} />
+      <AddStudentsPanel
+        classId={classId}
+        className={className}
+        onDone={onClose}
+      />
     </Modal>
   );
 }

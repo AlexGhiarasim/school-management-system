@@ -3,6 +3,16 @@ export const NAME_MAX_LENGTH = 100;
 export const PASSWORD_MIN_LENGTH = 8;
 export const PASSWORD_MAX_LENGTH = 72;
 export const EMAIL_MAX_LENGTH = 255;
+export const PHONE_MAX_LENGTH = 20;
+
+const PHONE_PATTERN = /^\+?\d[\d ()-]{5,18}\d$/;
+
+// A phone number is optional, so an empty value is valid.
+export function isValidPhone(value: string): boolean {
+  const phone = value.trim();
+
+  return phone === '' || PHONE_PATTERN.test(phone);
+}
 export const MIN_BIRTH_DATE_ISO = '1900-01-01';
 
 const EMAIL_PATTERN = /^[^\s@]+@([^\s@.]+\.)+[^\s@.]{2,}$/;

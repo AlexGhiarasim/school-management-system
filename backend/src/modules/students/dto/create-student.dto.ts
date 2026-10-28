@@ -10,6 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { IsBirthDate } from '../../../common/decorators/is-birth-date.decorator.js';
+import { OptionalPhone } from '../../../common/decorators/optional-phone.decorator.js';
 import {
   NormalizeEmail,
   Trim,
@@ -50,6 +51,9 @@ export class CreateStudentDto {
     message: 'password must contain at least one letter and one digit',
   })
   password: string;
+
+  @OptionalPhone()
+  phone?: string | null;
 
   @IsBirthDate()
   dateOfBirth: string;

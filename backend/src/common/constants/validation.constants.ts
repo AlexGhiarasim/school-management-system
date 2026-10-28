@@ -4,6 +4,9 @@ export const NAME_PATTERN = /^\p{L}[\p{L} '.-]*$/u;
 
 export const EMAIL_MAX_LENGTH = 255;
 
+export const PHONE_MAX_LENGTH = 20;
+export const PHONE_PATTERN = /^\+?\d[\d ()-]{5,18}\d$/;
+
 export const PASSWORD_MIN_LENGTH = 8;
 export const PASSWORD_MAX_LENGTH = 72;
 export const PASSWORD_PATTERN = /^(?=.*\p{L})(?=.*\d).+$/u;

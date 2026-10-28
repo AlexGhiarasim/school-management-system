@@ -1,7 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../../components/ui/Button.tsx';
+import { ConfirmSave } from '../../../components/ui/ConfirmSave.tsx';
+import { DeleteLink } from '../../../components/ui/DeleteLink.tsx';
 import { Modal } from '../../../components/ui/Modal.tsx';
 import { TextField } from '../../../components/ui/TextField.tsx';
+import { useConfirmedSubmit } from '../../../hooks/useConfirmedSubmit.ts';
 import { useFormState, type FormError } from '../../../hooks/useFormState.ts';
 import { useToast } from '../../../hooks/useToast.ts';
 import { ApiError } from '../../../lib/api.ts';
@@ -13,16 +16,21 @@ import {
 import {
   EMAIL_MAX_LENGTH,
   isValidEmail,
+  isValidPhone,
   NAME_MAX_LENGTH,
   PASSWORD_MAX_LENGTH,
+  PHONE_MAX_LENGTH,
 } from '../../../utils/validators.ts';
+import { generatePassword } from '../../../utils/generatePassword.ts';
 import { useSaveTeacher } from '../hooks.ts';
 import type { AdminTeacher } from '../types.ts';
+import type { Credentials } from './CredentialsDialog.tsx';
 
 interface TeacherValues {
   firstName: string;
   lastName: string;
   email: string;
+  phone: string;
   password: string;
 }
 
@@ -44,6 +52,9 @@ function validate(values: TeacherValues, requirePassword: boolean) {
   if (!isValidEmail(values.email)) {
     errors.email = { key: 'auth.errors.emailInvalid' };
   }
+  if (!isValidPhone(values.phone)) {
+    errors.phone = { key: 'auth.errors.phoneInvalid' };
+  }
   if (requirePassword) {
     const password = validatePassword(values.password);
     if (password) errors.password = password;
@@ -55,31 +66,38 @@ function validate(values: TeacherValues, requirePassword: boolean) {
 function TeacherForm({
   teacher,
   onDone,
+  onCreated,
+  onDelete,
 }: {
   teacher: AdminTeacher | null;
   onDone: () => void;
+  onCreated?: (credentials: Credentials) => void;
+  onDelete?: () => void;
 }) {
   const { t } = useTranslation();
   const { notify } = useToast();
   const mutation = useSaveTeacher();
   const editing = teacher !== null;
 
-  const { field, setFieldError, handleSubmit } = useFormState<TeacherValues>(
-    {
-      firstName: teacher?.firstName ?? '',
-      lastName: teacher?.lastName ?? '',
-      email: teacher?.email ?? '',
-      password: '',
-    },
-    (values) => validate(values, !editing),
-    t,
-  );
+  const { setValues, field, setFieldError, handleSubmit } =
+    useFormState<TeacherValues>(
+      {
+        firstName: teacher?.firstName ?? '',
+        lastName: teacher?.lastName ?? '',
+        email: teacher?.email ?? '',
+        phone: teacher?.phone ?? '',
+        password: '',
+      },
+      (values) => validate(values, !editing),
+      t,
+    );
 
   async function save(values: TeacherValues) {
     const profile = {
       firstName: values.firstName.trim(),
       lastName: values.lastName.trim(),
       email: values.email.trim(),
+      phone: values.phone.trim(),
     };
 
     try {
@@ -95,6 +113,13 @@ function TeacherForm({
         ),
         'success',
       );
+      if (!editing) {
+        onCreated?.({
+          name: `${profile.firstName} ${profile.lastName}`,
+          email: profile.email,
+          password: values.password,
+        });
+      }
       onDone();
     } catch (error) {
       if (error instanceof ApiError && error.status === 409) {
@@ -103,68 +128,135 @@ function TeacherForm({
     }
   }
 
+  const confirm = useConfirmedSubmit(save);
+
   const showAlert =
     mutation.isError &&
     !(mutation.error instanceof ApiError && mutation.error.status === 409);
 
   return (
-    <form
-      onSubmit={(event) => handleSubmit(event, save)}
-      noValidate
-      className="space-y-4"
-    >
-      <div className="grid gap-4 sm:grid-cols-2">
+    <>
+      <form
+        onSubmit={(event) => handleSubmit(event, confirm.request)}
+        noValidate
+        className="space-y-4"
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <TextField
+            label={t('auth.fields.firstName')}
+            placeholder={t('auth.fields.firstNamePlaceholder')}
+            autoCapitalize="words"
+            maxLength={NAME_MAX_LENGTH}
+            {...field('firstName')}
+          />
+          <TextField
+            label={t('auth.fields.lastName')}
+            placeholder={t('auth.fields.lastNamePlaceholder')}
+            autoCapitalize="words"
+            maxLength={NAME_MAX_LENGTH}
+            {...field('lastName')}
+          />
+        </div>
         <TextField
-          label={t('auth.fields.firstName')}
-          autoCapitalize="words"
-          maxLength={NAME_MAX_LENGTH}
-          {...field('firstName')}
+          label={t('auth.fields.email')}
+          placeholder={t('auth.fields.emailPlaceholder')}
+          type="email"
+          inputMode="email"
+          autoCapitalize="none"
+          spellCheck={false}
+          maxLength={EMAIL_MAX_LENGTH}
+          {...field('email')}
         />
         <TextField
-          label={t('auth.fields.lastName')}
-          autoCapitalize="words"
-          maxLength={NAME_MAX_LENGTH}
-          {...field('lastName')}
+          label={t('auth.fields.phone')}
+          placeholder={t('auth.fields.phonePlaceholder')}
+          type="tel"
+          inputMode="tel"
+          maxLength={PHONE_MAX_LENGTH}
+          {...field('phone')}
         />
-      </div>
-      <TextField
-        label={t('auth.fields.email')}
-        type="email"
-        inputMode="email"
-        autoCapitalize="none"
-        spellCheck={false}
-        maxLength={EMAIL_MAX_LENGTH}
-        {...field('email')}
+        {!editing && (
+          <div>
+            <TextField
+              label={t('auth.fields.password')}
+              type="password"
+              autoComplete="new-password"
+              maxLength={PASSWORD_MAX_LENGTH}
+              placeholder={t('auth.fields.newPasswordPlaceholder')}
+              {...field('password')}
+            />
+            <button
+              type="button"
+              onClick={() =>
+                setValues((current) => ({
+                  ...current,
+                  password: generatePassword(),
+                }))
+              }
+              className="mt-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 focus:outline-none focus-visible:underline"
+            >
+              {t('credentials.generate')}
+            </button>
+          </div>
+        )}
+
+        {showAlert && (
+          <p
+            role="alert"
+            className="rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-700"
+          >
+            {t(getApiErrorKey(mutation.error))}
+          </p>
+        )}
+
+        <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
+          {onDelete && (
+            <DeleteLink
+              label={t('admin.teachers.delete.title')}
+              onClick={onDelete}
+              className="mr-auto"
+            />
+          )}
+          <Button variant="secondary" fullWidth={false} onClick={onDone}>
+            {t('common.cancel')}
+          </Button>
+          <Button type="submit" fullWidth={false} loading={mutation.isPending}>
+            {mutation.isPending ? t('common.saving') : t('common.save')}
+          </Button>
+        </div>
+      </form>
+      <ConfirmSave
+        entity="teacher"
+        editing={editing}
+        details={
+          confirm.values
+            ? [
+                {
+                  label: t('auth.fields.firstName'),
+                  value: confirm.values.firstName.trim(),
+                },
+                {
+                  label: t('auth.fields.lastName'),
+                  value: confirm.values.lastName.trim(),
+                },
+                {
+                  label: t('auth.fields.email'),
+                  value: confirm.values.email.trim(),
+                },
+                ...(confirm.values.phone.trim()
+                  ? [
+                      {
+                        label: t('auth.fields.phone'),
+                        value: confirm.values.phone.trim(),
+                      },
+                    ]
+                  : []),
+              ]
+            : []
+        }
+        confirm={confirm}
       />
-      {!editing && (
-        <TextField
-          label={t('auth.fields.password')}
-          type="password"
-          autoComplete="new-password"
-          maxLength={PASSWORD_MAX_LENGTH}
-          placeholder={t('auth.fields.newPasswordPlaceholder')}
-          {...field('password')}
-        />
-      )}
-
-      {showAlert && (
-        <p
-          role="alert"
-          className="rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-700"
-        >
-          {t(getApiErrorKey(mutation.error))}
-        </p>
-      )}
-
-      <div className="flex justify-end gap-3 pt-2">
-        <Button variant="secondary" fullWidth={false} onClick={onDone}>
-          {t('common.cancel')}
-        </Button>
-        <Button type="submit" fullWidth={false} loading={mutation.isPending}>
-          {mutation.isPending ? t('common.saving') : t('common.save')}
-        </Button>
-      </div>
-    </form>
+    </>
   );
 }
 
@@ -172,12 +264,16 @@ interface TeacherFormModalProps {
   open: boolean;
   onClose: () => void;
   teacher: AdminTeacher | null;
+  onCreated?: (credentials: Credentials) => void;
+  onDelete?: () => void;
 }
 
 export function TeacherFormModal({
   open,
   onClose,
   teacher,
+  onCreated,
+  onDelete,
 }: TeacherFormModalProps) {
   const { t } = useTranslation();
 
@@ -191,7 +287,12 @@ export function TeacherFormModal({
           : 'admin.teachers.form.createTitle',
       )}
     >
-      <TeacherForm teacher={teacher} onDone={onClose} />
+      <TeacherForm
+        teacher={teacher}
+        onDone={onClose}
+        onCreated={onCreated}
+        onDelete={teacher ? onDelete : undefined}
+      />
     </Modal>
   );
 }

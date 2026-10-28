@@ -18,4 +18,11 @@ export class ListStudentsQueryDto extends PaginationQueryDto {
   )
   @IsBoolean()
   unassigned?: boolean;
+
+  @IsOptional()
+  @Transform(
+    ({ value }: { value: unknown }) => value === 'true' || value === true,
+  )
+  @IsBoolean()
+  assigned?: boolean;
 }

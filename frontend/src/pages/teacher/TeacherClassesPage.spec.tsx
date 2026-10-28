@@ -20,8 +20,8 @@ describe('TeacherClassesPage', () => {
 
   it('shows a card for every class with the number of students', async () => {
     getClasses.mockResolvedValue([
-      { id: 3, name: '9A', studentCount: 20 },
-      { id: 4, name: '12A', studentCount: 1 },
+      { id: 3, name: '9A', studentCount: 20, isHomeroom: false, subjects: [] },
+      { id: 4, name: '12A', studentCount: 1, isHomeroom: false, subjects: [] },
     ]);
     renderPage(<TeacherClassesPage />, options);
 
@@ -31,7 +31,9 @@ describe('TeacherClassesPage', () => {
   });
 
   it('links each class to the page with its students', async () => {
-    getClasses.mockResolvedValue([{ id: 3, name: '9A', studentCount: 20 }]);
+    getClasses.mockResolvedValue([
+      { id: 3, name: '9A', studentCount: 20, isHomeroom: false, subjects: [] },
+    ]);
     renderPage(<TeacherClassesPage />, options);
 
     const link = await screen.findByRole('link', { name: /9A/ });
@@ -48,7 +50,9 @@ describe('TeacherClassesPage', () => {
 
   it('shows an error and loads the classes again on retry', async () => {
     getClasses.mockRejectedValueOnce(new Error('offline'));
-    getClasses.mockResolvedValueOnce([{ id: 3, name: '9A', studentCount: 2 }]);
+    getClasses.mockResolvedValueOnce([
+      { id: 3, name: '9A', studentCount: 2, isHomeroom: false, subjects: [] },
+    ]);
     renderPage(<TeacherClassesPage />, options);
 
     expect(await screen.findByRole('alert')).toBeVisible();

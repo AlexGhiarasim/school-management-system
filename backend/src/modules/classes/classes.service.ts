@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -66,6 +67,7 @@ export class ClassesService {
   async create({ teacherId, ...data }: CreateClassDto) {
     if (teacherId !== undefined) {
       await this.assertTeacherExists(teacherId);
+      await this.assertNotClassTeacher(teacherId);
     }
 
     const schoolClass = await this.prisma.class.create({
@@ -93,6 +95,7 @@ export class ClassesService {
   async assignTeacher(id: number, teacherId: number | null) {
     if (teacherId !== null) {
       await this.assertTeacherExists(teacherId);
+      await this.assertNotClassTeacher(teacherId, id);
     }
 
     const schoolClass = await this.prisma.class.update({
@@ -104,11 +107,9 @@ export class ClassesService {
     return toResponse(schoolClass);
   }
 
-  async findStudents(
-    id: number,
-    query: PaginationQueryDto,
-    user: AuthenticatedUser,
-  ) {
+  // Who teaches which subject in the class. Only the class teacher (and an
+  // administrator) can see it.
+  async findTeaching(id: number, user: AuthenticatedUser) {
     const schoolClass = await this.prisma.class.findUnique({ where: { id } });
 
     if (!schoolClass) {
@@ -119,8 +120,49 @@ export class ClassesService {
       user.role === Role.TEACHER &&
       schoolClass.teacherId !== user.teacherId
     ) {
+      throw new ForbiddenException('Only the class teacher can see this');
+    }
+
+    const assignments = await this.prisma.teachingAssignment.findMany({
+      where: { classId: id },
+      select: {
+        subject: { select: { id: true, name: true } },
+        teacher: { select: { id: true, firstName: true, lastName: true } },
+      },
+      orderBy: { subject: { name: 'asc' } },
+    });
+
+    return assignments;
+  }
+
+  private async assertCanSee(id: number, user: AuthenticatedUser) {
+    const teacherId = user.teacherId ?? -1;
+    const schoolClass = await this.prisma.class.findUnique({
+      where: { id },
+      include: {
+        assignments: { where: { teacherId }, select: { id: true }, take: 1 },
+      },
+    });
+
+    if (!schoolClass) {
+      throw new NotFoundException(`Class ${id} not found`);
+    }
+
+    if (
+      user.role === Role.TEACHER &&
+      schoolClass.teacherId !== teacherId &&
+      schoolClass.assignments.length === 0
+    ) {
       throw new ForbiddenException('You do not teach this class');
     }
+  }
+
+  async findStudents(
+    id: number,
+    query: PaginationQueryDto,
+    user: AuthenticatedUser,
+  ) {
+    await this.assertCanSee(id, user);
 
     const where = { classId: id };
 
@@ -131,6 +173,7 @@ export class ClassesService {
           id: true,
           firstName: true,
           lastName: true,
+          phone: true,
           dateOfBirth: true,
           user: { select: { email: true } },
         },
@@ -146,6 +189,23 @@ export class ClassesService {
     }));
 
     return paginate(data, total, query);
+  }
+
+  // A teacher can be the class teacher of a single class.
+  private async assertNotClassTeacher(
+    teacherId: number,
+    exceptClassId?: number,
+  ): Promise<void> {
+    const count = await this.prisma.class.count({
+      where: {
+        teacherId,
+        ...(exceptClassId !== undefined && { id: { not: exceptClassId } }),
+      },
+    });
+
+    if (count > 0) {
+      throw new ConflictException('The teacher already leads another class');
+    }
   }
 
   private async assertTeacherExists(teacherId: number): Promise<void> {

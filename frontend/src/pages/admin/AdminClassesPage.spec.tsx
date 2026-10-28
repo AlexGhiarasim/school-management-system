@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 import { fireEvent, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { startDeleting } from '../../test/startDeleting.ts';
+import { confirmSave } from '../../test/confirmSave.ts';
 import type { AdminClass } from '../../features/admin/types.ts';
 import { ApiError } from '../../lib/api.ts';
 import { adminService } from '../../services/adminService.ts';
@@ -59,7 +61,7 @@ describe('AdminClassesPage', () => {
     expect(screen.getByText('Marin Laura')).toBeVisible();
     expect(screen.getByText('20 students')).toBeVisible();
     expect(screen.getByText('1 student')).toBeVisible();
-    expect(screen.getByText('No teacher')).toBeVisible();
+    expect(screen.getByText('No class teacher')).toBeVisible();
   });
 
   it('links every class to the page with its students', async () => {
@@ -86,6 +88,7 @@ describe('AdminClassesPage', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Add class' }));
     const form = within(await dialog());
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await form.findByText('Enter the name of the class.')).toBeVisible();
     expect(service.createClass).not.toHaveBeenCalled();
@@ -101,10 +104,11 @@ describe('AdminClassesPage', () => {
     fireEvent.change(form.getByLabelText('Class name'), {
       target: { value: '  10B  ' },
     });
-    fireEvent.change(form.getByLabelText('Teacher'), {
+    fireEvent.change(form.getByLabelText('Class teacher'), {
       target: { value: '5' },
     });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await screen.findByText('The class was added.')).toBeVisible();
     expect(service.createClass).toHaveBeenCalledWith({
@@ -123,6 +127,7 @@ describe('AdminClassesPage', () => {
       target: { value: '9A' },
     });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(
       await form.findByText('A class with this name already exists.'),
@@ -140,13 +145,16 @@ describe('AdminClassesPage', () => {
     const form = within(await dialog());
     await form.findByRole('option', { name: 'Marin Laura' });
 
-    expect(form.getByLabelText('Teacher')).toHaveValue('5');
+    expect(form.getByLabelText('Class teacher')).toHaveValue('5');
 
     fireEvent.change(form.getByLabelText('Class name'), {
       target: { value: '9B' },
     });
-    fireEvent.change(form.getByLabelText('Teacher'), { target: { value: '' } });
+    fireEvent.change(form.getByLabelText('Class teacher'), {
+      target: { value: '' },
+    });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await screen.findByText('The class was updated.')).toBeVisible();
     expect(service.updateClass).toHaveBeenCalledWith(3, '9B');
@@ -166,6 +174,7 @@ describe('AdminClassesPage', () => {
       target: { value: '9C' },
     });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await screen.findByText('The class was updated.')).toBeVisible();
     expect(service.updateClass).toHaveBeenCalledWith(3, '9C');
@@ -176,9 +185,7 @@ describe('AdminClassesPage', () => {
     service.deleteClass.mockResolvedValue(null);
     renderPage(<AdminClassesPage />, options);
 
-    fireEvent.click(
-      (await screen.findAllByRole('button', { name: 'Delete' }))[0],
-    );
+    await startDeleting();
     const confirmation = within(await dialog());
 
     expect(confirmation.getByText(/left without a class/)).toBeVisible();

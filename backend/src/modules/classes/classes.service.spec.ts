@@ -1,4 +1,4 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+﻿import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import type { AuthenticatedUser } from '../../common/interfaces/authenticated-user.interface.js';
 import type { PrismaService } from '../../database/prisma.service.js';
 import { Role } from '../../generated/prisma/enums.js';
@@ -63,7 +63,11 @@ describe('ClassesService', () => {
     });
 
     it('rejects a teacher who does not teach the class', async () => {
-      prisma.class.findUnique.mockResolvedValue({ id: 1, teacherId: 6 });
+      prisma.class.findUnique.mockResolvedValue({
+        id: 1,
+        teacherId: 6,
+        assignments: [],
+      });
 
       await expect(
         service.findStudents(1, query, teacher),
@@ -72,7 +76,11 @@ describe('ClassesService', () => {
     });
 
     it('rejects a teacher when the class has no teacher', async () => {
-      prisma.class.findUnique.mockResolvedValue({ id: 1, teacherId: null });
+      prisma.class.findUnique.mockResolvedValue({
+        id: 1,
+        teacherId: null,
+        assignments: [],
+      });
 
       await expect(
         service.findStudents(1, query, teacher),
@@ -80,7 +88,11 @@ describe('ClassesService', () => {
     });
 
     it('lets the teacher of the class list its students', async () => {
-      prisma.class.findUnique.mockResolvedValue({ id: 1, teacherId: 5 });
+      prisma.class.findUnique.mockResolvedValue({
+        id: 1,
+        teacherId: 5,
+        assignments: [],
+      });
 
       const result = await service.findStudents(1, query, teacher);
 
@@ -92,7 +104,11 @@ describe('ClassesService', () => {
     });
 
     it('lets an admin list the students of any class', async () => {
-      prisma.class.findUnique.mockResolvedValue({ id: 1, teacherId: 6 });
+      prisma.class.findUnique.mockResolvedValue({
+        id: 1,
+        teacherId: 6,
+        assignments: [],
+      });
 
       const result = await service.findStudents(1, query, admin);
 

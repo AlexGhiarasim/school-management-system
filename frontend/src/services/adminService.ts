@@ -1,5 +1,6 @@
 import {
   NO_CLASS_FILTER,
+  type AdminAccount,
   type AdminClass,
   type AdminGrade,
   type ClassInput,
@@ -35,11 +36,14 @@ function listQuery({ page, search }: ListFilters): string {
 }
 
 export const adminService = {
+  listAdmins: () => authedRequest<AdminAccount[]>('/admins'),
+
   listStudents: ({ page, search, classFilter }: StudentFilters) => {
     const query = new URLSearchParams(listQuery({ page, search }));
 
     if (classFilter === NO_CLASS_FILTER) query.set('unassigned', 'true');
     else if (classFilter) query.set('classId', classFilter);
+    else query.set('assigned', 'true');
 
     return authedRequest<Paginated<AdminStudent>>(`/students?${query}`);
   },

@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { startDeleting } from '../../test/startDeleting.ts';
+import { confirmSave } from '../../test/confirmSave.ts';
 import type { AdminStudent } from '../../features/admin/types.ts';
 import { ApiError } from '../../lib/api.ts';
 import { adminService } from '../../services/adminService.ts';
@@ -142,6 +144,7 @@ describe('AdminStudentsPage', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Add student' }));
     const form = within(await dialog());
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await form.findByText('Enter your first name.')).toBeVisible();
     expect(form.getByText('Enter a valid email.')).toBeVisible();
@@ -156,6 +159,7 @@ describe('AdminStudentsPage', () => {
     const form = within(await dialog());
     await fillNewStudent(form);
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await screen.findByText('The student was added.')).toBeVisible();
     expect(service.createStudent).toHaveBeenCalledWith(
@@ -175,6 +179,7 @@ describe('AdminStudentsPage', () => {
     const form = within(await dialog());
     await fillNewStudent(form);
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(
       await form.findByText('An account with this email already exists.'),
@@ -197,12 +202,14 @@ describe('AdminStudentsPage', () => {
 
     fireEvent.change(form.getByLabelText('Class'), { target: { value: '' } });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await screen.findByText('The student was updated.')).toBeVisible();
     expect(service.updateStudent).toHaveBeenCalledWith(7, {
       firstName: 'Mihai',
       lastName: 'Constantin',
       email: 'mihai.constantin@student.school.test',
+      phone: '',
       dateOfBirth: '2010-05-17',
     });
     expect(service.assignStudentClass).toHaveBeenCalledWith(7, null);
@@ -212,9 +219,7 @@ describe('AdminStudentsPage', () => {
     service.deleteStudent.mockResolvedValue(null);
     renderPage(<AdminStudentsPage />, options);
 
-    fireEvent.click(
-      (await screen.findAllByRole('button', { name: 'Delete' }))[0],
-    );
+    await startDeleting();
     const confirmation = within(await dialog());
 
     expect(confirmation.getByText(/Mihai Constantin/)).toBeVisible();
@@ -222,9 +227,7 @@ describe('AdminStudentsPage', () => {
     fireEvent.click(confirmation.getByRole('button', { name: 'Cancel' }));
     expect(service.deleteStudent).not.toHaveBeenCalled();
 
-    fireEvent.click(
-      (await screen.findAllByRole('button', { name: 'Delete' }))[0],
-    );
+    await startDeleting();
     fireEvent.click(
       within(await dialog()).getByRole('button', { name: 'Delete' }),
     );

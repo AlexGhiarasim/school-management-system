@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 import { fireEvent, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { startDeleting } from '../../test/startDeleting.ts';
+import { confirmSave } from '../../test/confirmSave.ts';
 import type { AdminTeacher } from '../../features/admin/types.ts';
 import { ApiError } from '../../lib/api.ts';
 import { adminService } from '../../services/adminService.ts';
@@ -90,12 +92,14 @@ describe('AdminTeachersPage', () => {
     const form = within(await dialog());
     fillNewTeacher(form);
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await screen.findByText('The teacher was added.')).toBeVisible();
     expect(service.createTeacher).toHaveBeenCalledWith({
       firstName: 'Elena',
       lastName: 'Ionescu',
       email: 'elena.ionescu@school.test',
+      phone: '',
       password: 'Parola123',
     });
   });
@@ -110,6 +114,7 @@ describe('AdminTeachersPage', () => {
       target: { value: 'onlyletters' },
     });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await form.findByText('Add a letter and a digit.')).toBeVisible();
     expect(service.createTeacher).not.toHaveBeenCalled();
@@ -123,6 +128,7 @@ describe('AdminTeachersPage', () => {
     const form = within(await dialog());
     fillNewTeacher(form);
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(
       await form.findByText('An account with this email already exists.'),
@@ -144,12 +150,14 @@ describe('AdminTeachersPage', () => {
       target: { value: 'Marinescu' },
     });
     fireEvent.click(form.getByRole('button', { name: 'Save' }));
+    confirmSave();
 
     expect(await screen.findByText('The teacher was updated.')).toBeVisible();
     expect(service.updateTeacher).toHaveBeenCalledWith(5, {
       firstName: 'Laura',
       lastName: 'Marinescu',
       email: 'laura.marin@school.test',
+      phone: '',
     });
   });
 
@@ -157,9 +165,7 @@ describe('AdminTeachersPage', () => {
     service.deleteTeacher.mockResolvedValue(null);
     renderPage(<AdminTeachersPage />, options);
 
-    fireEvent.click(
-      (await screen.findAllByRole('button', { name: 'Delete' }))[0],
-    );
+    await startDeleting();
     fireEvent.click(
       within(await dialog()).getByRole('button', { name: 'Delete' }),
     );

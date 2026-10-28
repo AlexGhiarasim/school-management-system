@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../components/layout/PageHeader.tsx';
 import { Button } from '../../components/ui/Button.tsx';
+import { ClearFilters } from '../../components/ui/ClearFilters.tsx';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog.tsx';
 import { DataTable, type Column } from '../../components/ui/DataTable.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
@@ -18,16 +19,18 @@ import {
 } from '../../features/admin/hooks.ts';
 import type { AdminGrade } from '../../features/admin/types.ts';
 import { GradeBadge } from '../../features/student/components/GradeBadge.tsx';
+import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
 import { formatDate } from '../../utils/format.ts';
 
-const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200';
+const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
 export default function AdminGradesPage() {
   const { t, i18n } = useTranslation();
   const { notify } = useToast();
   const language = i18n.resolvedLanguage ?? 'ro';
+  const subjectName = useSubjectName();
 
   const [classId, setClassId] = useState('');
   const [studentId, setStudentId] = useState('');
@@ -71,7 +74,7 @@ export default function AdminGradesPage() {
     {
       key: 'subject',
       header: t('admin.grades.table.subject'),
-      render: (grade) => grade.subject.name,
+      render: (grade) => subjectName(grade.subject.name),
     },
     {
       key: 'value',
@@ -106,14 +109,6 @@ export default function AdminGradesPage() {
             onClick={() => setEditing(grade)}
           >
             {t('admin.grades.table.edit')}
-          </Button>
-          <Button
-            variant="danger"
-            fullWidth={false}
-            className="px-3 py-1.5"
-            onClick={() => setDeleting(grade)}
-          >
-            {t('admin.grades.table.delete')}
           </Button>
         </div>
       ),
@@ -171,11 +166,20 @@ export default function AdminGradesPage() {
           <option value="">{t('admin.grades.filter.allSubjects')}</option>
           {subjects.data?.data.map((subject) => (
             <option key={subject.id} value={subject.id}>
-              {subject.name}
+              {subjectName(subject.name)}
             </option>
           ))}
         </SelectField>
       </div>
+      <ClearFilters
+        visible={filtering}
+        onClear={() => {
+          setClassId('');
+          setStudentId('');
+          setSubjectId('');
+          setPage(1);
+        }}
+      />
 
       {grades.isError ? (
         <div className={CARD}>
@@ -213,6 +217,10 @@ export default function AdminGradesPage() {
         grade={editing}
         subjects={subjects.data?.data ?? []}
         onClose={() => setEditing(null)}
+        onDelete={() => {
+          setDeleting(editing);
+          setEditing(null);
+        }}
       />
 
       <ConfirmDialog
@@ -220,7 +228,7 @@ export default function AdminGradesPage() {
         title={t('admin.grades.delete.title')}
         message={t('admin.grades.delete.message', {
           grade: deleting?.value ?? '',
-          subject: deleting?.subject.name ?? '',
+          subject: deleting ? subjectName(deleting.subject.name) : '',
           name: deleting
             ? `${deleting.student.firstName} ${deleting.student.lastName}`
             : '',

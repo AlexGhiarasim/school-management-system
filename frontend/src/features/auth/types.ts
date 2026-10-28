@@ -9,7 +9,12 @@ export interface AuthUser {
 }
 
 export interface CurrentUser extends AuthUser {
-  profile: { id: number; firstName: string; lastName: string } | null;
+  profile: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    phone?: string | null;
+  } | null;
 }
 
 export interface LoginResponse {
@@ -21,6 +26,7 @@ export interface RegisterPayload {
   firstName: string;
   lastName: string;
   email: string;
+  phone?: string;
   dateOfBirth: string;
   password: string;
 }

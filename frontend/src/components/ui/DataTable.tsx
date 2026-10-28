@@ -31,10 +31,10 @@ export function DataTable<T>({
   const showEmpty = !loading && rows.length === 0;
 
   return (
-    <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
-      <table className="w-full text-left text-sm">
+    <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-slate-300">
+      <table className="w-full text-left text-[15px]">
         <caption className="sr-only">{caption}</caption>
-        <thead className="border-b border-slate-200 bg-slate-50 text-xs font-semibold tracking-wide text-slate-500 uppercase">
+        <thead className="border-b border-slate-200 bg-slate-50 text-[13px] font-semibold tracking-wide text-slate-600 uppercase">
           <tr>
             {columns.map((column) => (
               <th

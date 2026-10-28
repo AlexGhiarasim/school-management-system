@@ -1,6 +1,10 @@
 import { Route, Routes } from 'react-router';
 import { AppLayout } from '../layouts/AppLayout.tsx';
+import AdminProfilePage from '../pages/admin/AdminProfilePage.tsx';
+import TeacherProfilePage from '../pages/teacher/TeacherProfilePage.tsx';
+import ForgotPasswordPage from '../pages/ForgotPasswordPage.tsx';
 import HomePage from '../pages/HomePage.tsx';
+import ResetPasswordPage from '../pages/ResetPasswordPage.tsx';
 import NotFoundPage from '../pages/NotFoundPage.tsx';
 import AdminClassesPage from '../pages/admin/AdminClassesPage.tsx';
 import AdminClassStudentsPage from '../pages/admin/AdminClassStudentsPage.tsx';
@@ -21,7 +25,10 @@ export function AppRoutes() {
     <Routes>
       <Route element={<PublicOnly />}>
         <Route path={paths.home} element={<HomePage />} />
+        <Route path={paths.forgotPassword} element={<ForgotPasswordPage />} />
       </Route>
+
+      <Route path={paths.resetPassword} element={<ResetPasswordPage />} />
 
       <Route element={<RequireAuth />}>
         <Route element={<AppLayout />}>
@@ -38,6 +45,10 @@ export function AppRoutes() {
 
           <Route element={<RequireRole role="TEACHER" />}>
             <Route
+              path={paths.teacher.profile}
+              element={<TeacherProfilePage />}
+            />
+            <Route
               path={paths.teacher.classes}
               element={<TeacherClassesPage />}
             />
@@ -52,6 +63,7 @@ export function AppRoutes() {
           </Route>
 
           <Route element={<RequireRole role="ADMIN" />}>
+            <Route path={paths.admin.profile} element={<AdminProfilePage />} />
             <Route
               path={paths.admin.students}
               element={<AdminStudentsPage />}

@@ -5,9 +5,10 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
+  wide?: boolean;
 }
 
-export function Modal({ open, onClose, title, children }: ModalProps) {
+export function Modal({ open, onClose, title, children, wide }: ModalProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -23,11 +24,13 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
     <dialog
       ref={dialog}
       aria-labelledby={titleId}
-      onClose={onClose}
+      onClose={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
       onClick={(event) => {
         if (event.target === dialog.current) onClose();
       }}
-      className="m-auto w-full max-w-lg rounded-2xl bg-white p-0 shadow-2xl ring-1 ring-slate-200 backdrop:bg-slate-900/40"
+      className={`m-auto w-full ${wide ? 'max-w-2xl' : 'max-w-lg'} rounded-2xl bg-white p-0 shadow-2xl ring-1 ring-slate-200 backdrop:bg-slate-900/40`}
     >
       {open && (
         <div className="p-6">

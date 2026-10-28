@@ -3,6 +3,7 @@ import {
   IsEnum,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUrl,
   Max,
@@ -44,6 +45,30 @@ class EnvironmentVariables {
   @IsInt()
   @Min(0)
   TRUST_PROXY: number = 0;
+
+  @IsString()
+  @IsNotEmpty()
+  SMTP_HOST: string = 'localhost';
+
+  @IsInt()
+  @Min(1)
+  @Max(65535)
+  SMTP_PORT: number = 1025;
+
+  @IsOptional()
+  @IsString()
+  SMTP_USER?: string;
+
+  @IsOptional()
+  @IsString()
+  SMTP_PASSWORD?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  MAIL_FROM: string = 'School Management System <no-reply@school.test>';
+
+  @IsUrl({ require_tld: false })
+  APP_URL: string = 'http://localhost:5173';
 }
 
 export function validateEnv(config: Record<string, unknown>) {

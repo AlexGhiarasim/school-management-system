@@ -29,6 +29,10 @@ API documentation is at `http://localhost:8080/api/docs`. Run
 database. Change `JWT_SECRET` in `.env` before using the stack for anything
 other than a demo.
 
+The application sends emails for password resets. In this stack they are caught
+by Mailpit, so nothing leaves your machine: open `http://localhost:8025` to read
+them.
+
 ### Run for development
 
 Prerequisites: Node.js 24, npm and Docker.
@@ -39,10 +43,11 @@ Prerequisites: Node.js 24, npm and Docker.
    cp .env.example .env
    ```
 
-2. Start MySQL:
+2. Start MySQL and Mailpit (the inbox for the emails sent by the application,
+   at `http://localhost:8025`):
 
    ```bash
-   docker compose up -d mysql
+   docker compose up -d mysql mailpit
    ```
 
 3. Install, migrate, seed and start the backend:
@@ -78,9 +83,13 @@ share another.
 
 | Role | Email | Password |
 |---|---|---|
-| Admin | `admin@school.test` | `Admin123!` |
-| Teacher | `laura.marin@school.test` (teaches 9A and 12A) | `Teacher123!` |
+| Admin | `admin@school.test` (a second one: `admin2@school.test`) | `Admin123!` |
+| Teacher | `laura.marin@school.test` (class teacher of 9A, teaches Mathematics in every class and Physics in 9A) | `Teacher123!` |
 | Student | `mihai.constantin@student.school.test` | `Student123!` |
+
+Students and teachers also get a made-up phone number (the administrator has
+none). They use a range reserved for fiction, such as `+44 7700 900123`, and are
+not in a Romanian format.
 
 Other accounts follow the same pattern: teachers use `@school.test` and students
 use `@student.school.test`. Run `npm run prisma:seed` again at any time to reset
@@ -95,8 +104,12 @@ All endpoints are under `/api`. Lists accept `page` and `limit` and return
 |---|---|---|---|
 | `POST /auth/login` | public | public | public |
 | `POST /auth/register` (creates a student account) | public | public | public |
+| `POST /auth/forgot-password` (emails a reset link) | public | public | public |
+| `POST /auth/reset-password` (sets a new password with the link token) | public | public | public |
+| `POST /auth/change-password` | yes | yes | yes |
 | `GET /auth/me` | yes | yes | yes |
 | `GET /health` | public | public | public |
+| `GET /admins` | yes | no | no |
 | `/subjects` (read) | yes | yes | yes |
 | `/subjects` (create, update, delete) | yes | no | no |
 | `/teachers` (CRUD) | yes | no | no |
@@ -116,7 +129,10 @@ All endpoints are under `/api`. Lists accept `page` and `limit` and return
 Authorization is enforced on the backend by a global JWT guard and a roles guard.
 Ownership rules live in the services:
 
-- A teacher can grade and view only students from the classes they teach.
+- A teacher teaches subjects in classes (`TeachingAssignment`). They can grade and
+  see only those subjects, for the students of those classes.
+- The class teacher (`Class.teacherId`) also sees every grade of the class, but can
+  change only the grades they gave.
 - A teacher can edit only the grades they gave.
 - The identity of a student or teacher always comes from the token, never from the URL.
 
@@ -169,11 +185,23 @@ touches the frontend. Another workflow builds the Docker images.
   Deleting a profile deletes its account in the same operation.
 - **Subjects as a table.** Grades reference a subject, which keeps names
   consistent and makes averages per subject reliable.
+- **Averages.** The average of a subject is rounded to a whole number (6.5
+  becomes 7), and the overall average is the mean of those rounded subject
+  averages, shown with two decimals.
 - **Long-lived access tokens, no refresh tokens.** A token is valid for two
   years (`JWT_EXPIRES_IN`), so users stay signed in until they sign out. The
   browser keeps it in local storage and the app signs out by itself when the
   server rejects it. A deactivated account loses access immediately, because the
   token is checked against the database on every request.
+- **Password reset.** "Forgot your password" emails a link with a random token.
+  Only its SHA-256 hash is stored, it expires after 60 minutes and works once.
+  The request always answers 204, so it does not reveal which emails have an
+  account. Changing or resetting a password signs out every other session, because
+  tokens issued before `passwordChangedAt` are rejected. Emails go through SMTP
+  and the settings are optional: without them the messages go to Mailpit, the
+  local inbox, and a failed delivery is only logged. To send real emails, set
+  `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM` and
+  `APP_URL` in `.env` (see `.env.example`).
 - **Input validation.** Names accept letters, spaces, hyphens and apostrophes (2-100 characters). Passwords need 8-72 characters with at least one letter and one digit, birth dates must be between 1900 and today, and unknown fields are rejected. The frontend applies the same rules before sending a form.
 - **Rate limiting.** Login is limited to 5 attempts per minute, the rest of the
   API to 100 requests per minute.

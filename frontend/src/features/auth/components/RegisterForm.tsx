@@ -12,9 +12,11 @@ import {
   EMAIL_MAX_LENGTH,
   isValidBirthDate,
   isValidEmail,
+  isValidPhone,
   MIN_BIRTH_DATE_ISO,
   NAME_MAX_LENGTH,
   PASSWORD_MAX_LENGTH,
+  PHONE_MAX_LENGTH,
 } from '../../../utils/validators.ts';
 import { getAuthErrorKey, isEmailTaken } from '../errors.ts';
 import { FormAlert } from './FormAlert.tsx';
@@ -26,6 +28,7 @@ interface RegisterValues {
   firstName: string;
   lastName: string;
   email: string;
+  phone: string;
   dateOfBirth: string;
   password: string;
   confirmPassword: string;
@@ -35,6 +38,7 @@ const INITIAL_VALUES: RegisterValues = {
   firstName: '',
   lastName: '',
   email: '',
+  phone: '',
   dateOfBirth: '',
   password: '',
   confirmPassword: '',
@@ -57,6 +61,9 @@ function validate(values: RegisterValues) {
 
   if (!isValidEmail(values.email)) {
     errors.email = { key: 'auth.errors.emailInvalid' };
+  }
+  if (!isValidPhone(values.phone)) {
+    errors.phone = { key: 'auth.errors.phoneInvalid' };
   }
   if (!isValidBirthDate(values.dateOfBirth)) {
     errors.dateOfBirth = { key: 'auth.errors.dateOfBirthInvalid' };
@@ -90,6 +97,7 @@ export function RegisterForm() {
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),
         email: form.email.trim(),
+        ...(form.phone.trim() && { phone: form.phone.trim() }),
         dateOfBirth: form.dateOfBirth,
         password: form.password,
       }),
@@ -124,17 +132,26 @@ export function RegisterForm() {
           {...field('lastName')}
         />
       </div>
+      <TextField
+        label={t('auth.fields.email')}
+        type="email"
+        autoComplete="email"
+        inputMode="email"
+        autoCapitalize="none"
+        spellCheck={false}
+        maxLength={EMAIL_MAX_LENGTH}
+        placeholder={t('auth.fields.emailPlaceholder')}
+        {...field('email')}
+      />
       <div className="grid gap-4 sm:grid-cols-2">
         <TextField
-          label={t('auth.fields.email')}
-          type="email"
-          autoComplete="email"
-          inputMode="email"
-          autoCapitalize="none"
-          spellCheck={false}
-          maxLength={EMAIL_MAX_LENGTH}
-          placeholder={t('auth.fields.emailPlaceholder')}
-          {...field('email')}
+          label={t('auth.fields.phone')}
+          type="tel"
+          autoComplete="tel"
+          inputMode="tel"
+          maxLength={PHONE_MAX_LENGTH}
+          placeholder={t('auth.fields.phonePlaceholder')}
+          {...field('phone')}
         />
         <TextField
           label={t('auth.fields.dateOfBirth')}

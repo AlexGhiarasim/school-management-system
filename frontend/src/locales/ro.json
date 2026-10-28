@@ -1,6 +1,6 @@
-{
+﻿{
   "common": {
-    "appName": "Sistem de management școlar",
+    "appName": "Sistem de gestiune școlară",
     "showPassword": "Arată parola",
     "hidePassword": "Ascunde parola",
     "language": "Limba",
@@ -10,6 +10,9 @@
     "saving": "Se salvează",
     "confirm": "Confirmă",
     "close": "Închide",
+    "clearFilters": "Șterge filtrele",
+    "copy": "Copiază",
+    "copied": "Copiat",
     "retry": "Încearcă din nou",
     "errorTitle": "Nu am putut încărca datele",
     "errorDescription": "A apărut o problemă la comunicarea cu serverul.",
@@ -19,7 +22,7 @@
       "label": "Paginare",
       "previous": "Înapoi",
       "next": "Înainte",
-      "summary": "Pagina {{page}} din {{totalPages}}",
+      "page": "Pagina {{page}}",
       "total_one": "{{count}} înregistrare",
       "total_few": "{{count}} înregistrări",
       "total_other": "{{count}} de înregistrări"
@@ -30,22 +33,106 @@
     "TEACHER": "Profesor",
     "STUDENT": "Elev"
   },
+  "credentials": {
+    "title": "Contul a fost creat",
+    "message": "Transmite aceste date lui {{name}}. Se poate autentifica imediat cu ele.",
+    "warning": "Parola nu mai poate fi văzută după ce închizi fereastra, deci copiaz-o acum.",
+    "copyAll": "Copiază tot",
+    "done": "Am notat",
+    "generate": "Generează o parolă"
+  },
+  "account": {
+    "password": {
+      "title": "Schimbă parola",
+      "hint": "Celelalte sesiuni deschise vor fi deconectate.",
+      "current": "Parola curentă",
+      "new": "Parola nouă",
+      "submit": "Schimbă parola",
+      "submitting": "Se salvează",
+      "changed": "Parola a fost schimbată."
+    }
+  },
+  "confirm": {
+    "password": {
+      "title": "Schimbi parola?",
+      "message": "Rămâi autentificat aici, iar celelalte sesiuni deschise vor fi deconectate.",
+      "confirm": "Da, schimbă"
+    },
+    "add": "Da, adaugă",
+    "save": "Da, salvează",
+    "grade": {
+      "createTitle": "Adaugi această notă?",
+      "createMessage": "Nota va fi salvată, iar elevul o va vedea imediat.",
+      "updateTitle": "Modifici această notă?",
+      "updateMessage": "Elevul va vedea imediat noua valoare."
+    },
+    "class": {
+      "createTitle": "Creezi această clasă?",
+      "createMessage": "Clasa va fi adăugată în școală.",
+      "updateTitle": "Salvezi modificările clasei?",
+      "updateMessage": "Clasa va fi actualizată pentru toți cei care o văd."
+    },
+    "student": {
+      "createTitle": "Adaugi acest elev?",
+      "createMessage": "Se va crea un cont de elev cu aceste date.",
+      "updateTitle": "Salvezi modificările elevului?",
+      "updateMessage": "Datele elevului vor fi actualizate."
+    },
+    "teacher": {
+      "createTitle": "Adaugi acest profesor?",
+      "createMessage": "Se va crea un cont de profesor cu aceste date.",
+      "updateTitle": "Salvezi modificările profesorului?",
+      "updateMessage": "Datele profesorului vor fi actualizate."
+    },
+    "subject": {
+      "createTitle": "Adaugi această materie?",
+      "createMessage": "Materia va putea fi folosită la note și la predare.",
+      "updateTitle": "Redenumești această materie?",
+      "updateMessage": "Numele se va schimba peste tot unde apare materia."
+    },
+    "assign": {
+      "title": "Adaugi elevul în această clasă?",
+      "message": "Elevul va fi mutat în {{name}} și își va vedea colegii acolo.",
+      "student": "Elev",
+      "class": "Clasa"
+    },
+    "none": "Niciuna"
+  },
+  "subjectNames": {
+    "Matematică": "Matematică",
+    "Limba română": "Limba română",
+    "Limba engleză": "Limba engleză",
+    "Fizică": "Fizică",
+    "Chimie": "Chimie",
+    "Biologie": "Biologie",
+    "Istorie": "Istorie",
+    "Geografie": "Geografie",
+    "Informatică": "Informatică",
+    "Educație fizică": "Educație fizică"
+  },
   "nav": {
     "main": "Navigare principală",
     "signOut": "Deconectare",
+    "signOutConfirm": {
+      "title": "Te deconectezi?",
+      "message": "Va trebui să te autentifici din nou ca să folosești aplicația.",
+      "confirm": "Da, deconectează-mă"
+    },
     "student": {
       "profile": "Profilul meu",
       "grades": "Notele mele"
     },
     "teacher": {
-      "classes": "Clasele mele"
+      "classes": "Clasele mele",
+      "profile": "Profilul meu"
     },
     "admin": {
       "students": "Elevi",
       "teachers": "Profesori",
       "classes": "Clase",
       "subjects": "Materii",
-      "grades": "Note"
+      "grades": "Note",
+      "profile": "Profilul meu"
     }
   },
   "student": {
@@ -61,6 +148,19 @@
       "noClass": {
         "title": "Nu ești încă într-o clasă",
         "description": "Un administrator te va adăuga într-o clasă. Până atunci nu vei avea note."
+      },
+      "classOverview": {
+        "teacher": "Diriginte",
+        "noTeacher": "Încă nealocat",
+        "students_one": "{{count}} elev",
+        "students_few": "{{count}} elevi",
+        "students_other": "{{count}} de elevi",
+        "title": "Colegii tăi",
+        "you": "tu"
+      },
+      "recent": {
+        "title": "Ultimele note",
+        "viewAll": "Vezi toate notele"
       }
     },
     "grades": {
@@ -96,12 +196,17 @@
     }
   },
   "teacher": {
+    "profile": {
+      "description": "Datele contului tău și clasele la care predai.",
+      "teaching": "Ce predai"
+    },
     "classes": {
       "description": "Clasele pe care le predai. Deschide o clasă ca să îi vezi elevii.",
       "students_one": "{{count}} elev",
       "students_few": "{{count}} elevi",
       "students_other": "{{count}} de elevi",
       "open": "Vezi elevii",
+      "homeroom": "Diriginte",
       "empty": {
         "title": "Nu ai încă nicio clasă",
         "description": "Un administrator îți va aloca clasele. Ele vor apărea aici."
@@ -115,6 +220,7 @@
         "caption": "Elevii clasei",
         "name": "Elev",
         "email": "Email",
+        "phone": "Telefon",
         "dateOfBirth": "Data nașterii",
         "grades": "Note",
         "viewGrades": "Vezi notele"
@@ -131,7 +237,18 @@
     "studentGrades": {
       "back": "Înapoi la clasă",
       "title": "Notele elevului",
-      "description": "Poți adăuga note și le poți modifica pe cele date de tine.",
+      "description": "Poți adăuga note la materiile pe care le predai și le poți modifica pe cele date de tine.",
+      "homeroomDescription": "Ca diriginte vezi toate notele elevului. Le poți modifica doar pe cele de la materia pe care o predai.",
+      "homeroomOnlyDescription": "Ca diriginte vezi toate notele elevului, doar pentru vizualizare.",
+      "taught_one": "Materia pe care o predai",
+      "taught_few": "Materiile pe care le predai",
+      "taught_other": "Materiile pe care le predai",
+      "taughtEmpty": "Nicio notă încă la această materie.",
+      "average": "Media",
+      "overview": {
+        "title": "Toate materiile",
+        "readOnly": "Doar vizualizare"
+      },
       "add": "Adaugă notă",
       "filter": {
         "label": "Materia",
@@ -176,6 +293,13 @@
     }
   },
   "admin": {
+    "profile": {
+      "description": "Datele contului tău de administrator și ale celorlalți administratori.",
+      "admins_one": "Administrator",
+      "admins_few": "Administratori",
+      "admins_other": "Administratori",
+      "you": "tu"
+    },
     "grades": {
       "description": "Toate notele școlii. Filtrează după clasă, elev sau materie și modifică sau șterge orice notă.",
       "editFor": "Nota elevului {{name}}",
@@ -217,8 +341,8 @@
     "classStudents": {
       "back": "Înapoi la clase",
       "title": "Clasa {{name}}",
-      "teacher": "Profesor: {{name}}",
-      "noTeacher": "Clasa nu are încă un profesor.",
+      "teacher": "Diriginte: {{name}}",
+      "noTeacher": "Clasa nu are încă un diriginte.",
       "add": "Adaugă elevi",
       "table": {
         "caption": "Elevii clasei",
@@ -260,7 +384,7 @@
       }
     },
     "classes": {
-      "description": "Clasele școlii, cu profesorul fiecăreia și numărul de elevi.",
+      "description": "Clasele școlii, cu dirigintele fiecăreia și numărul de elevi.",
       "add": "Adaugă clasă",
       "search": "Caută",
       "searchPlaceholder": "Numele clasei",
@@ -272,8 +396,8 @@
         "editTitle": "Modifică clasa",
         "name": "Numele clasei",
         "namePlaceholder": "ex. 9A",
-        "teacher": "Profesor",
-        "noTeacher": "Fără profesor",
+        "teacher": "Diriginte",
+        "noTeacher": "Fără diriginte",
         "created": "Clasa a fost adăugată.",
         "updated": "Clasa a fost modificată.",
         "errors": {
@@ -290,8 +414,8 @@
       "table": {
         "caption": "Clasele școlii",
         "name": "Clasa",
-        "teacher": "Profesor",
-        "noTeacher": "Fără profesor",
+        "teacher": "Diriginte",
+        "noTeacher": "Fără diriginte",
         "students": "Elevi",
         "actions": "Acțiuni",
         "edit": "Modifică",
@@ -327,6 +451,7 @@
         "caption": "Profesorii școlii",
         "name": "Profesor",
         "email": "Email",
+        "phone": "Telefon",
         "actions": "Acțiuni",
         "edit": "Modifică",
         "delete": "Șterge"
@@ -398,6 +523,10 @@
       },
       "search": "Caută",
       "searchPlaceholder": "Nume sau email",
+      "archive": {
+        "title": "Arhivă ({{count}})",
+        "description": "Elevii care nu sunt într-o clasă. Alege „Modifică” ca să îi atribui unei clase."
+      },
       "filter": {
         "label": "Clasa",
         "all": "Toate clasele",
@@ -407,6 +536,7 @@
         "caption": "Elevii școlii",
         "name": "Elev",
         "email": "Email",
+        "phone": "Telefon",
         "dateOfBirth": "Data nașterii",
         "class": "Clasa",
         "noClass": "Fără clasă",
@@ -440,19 +570,11 @@
     }
   },
   "landing": {
-    "badge": "Clase, note și oameni",
-    "headline": "Tot ce are nevoie școala ta, într-un singur loc.",
-    "subtitle": "O singură autentificare pentru toți. Ce poți face depinde de rolul contului tău.",
-    "roles": {
-      "teacher": {
-        "name": "Profesori",
-        "description": "Urmărește clasele tale și introdu note pentru elevii tăi."
-      },
-      "student": {
-        "name": "Elevi",
-        "description": "Vezi clasa, notele și media ta."
-      }
-    }
+    "headline": "Școala ta, mai",
+    "words": ["simplă", "organizată", "aproape"],
+    "subtitle": "Autentifică-te sau creează un cont ca să continui.",
+    "description": "Un spațiu simplu care ține școala organizată: informațiile importante sunt într-un singur loc, clare și la îndemână.",
+    "copyright": "© {{year}} Sistem de gestiune școlară"
   },
   "auth": {
     "tabsLabel": "Autentificare",
@@ -465,8 +587,31 @@
       "subtitle": "Autentifică-te pentru a continua către contul tău.",
       "prompt": "Nu ai cont?",
       "action": "Creează unul",
+      "forgot": "Ai uitat parola?",
       "submit": "Autentificare",
       "submitting": "Se autentifică"
+    },
+    "forgot": {
+      "title": "Ai uitat parola?",
+      "subtitle": "Scrie emailul contului și îți trimitem un link de resetare.",
+      "submit": "Trimite linkul",
+      "submitting": "Se trimite",
+      "back": "Înapoi la autentificare",
+      "sentTitle": "Verifică-ți emailul",
+      "sentText": "Dacă există un cont cu acest email, ți-am trimis un link de resetare. Este valabil 60 de minute. Verifică și folderul Spam."
+    },
+    "reset": {
+      "title": "Alege o parolă nouă",
+      "subtitle": "Folosește o parolă pe care nu o ai în altă parte.",
+      "newPassword": "Parola nouă",
+      "submit": "Salvează parola",
+      "submitting": "Se salvează",
+      "doneTitle": "Parola a fost schimbată",
+      "doneText": "Te poți autentifica acum cu noua parolă.",
+      "goLogin": "Mergi la autentificare",
+      "invalidTitle": "Link invalid sau expirat",
+      "invalidText": "Linkul de resetare nu mai este valabil. Poți cere unul nou.",
+      "requestNew": "Cere un link nou"
     },
     "register": {
       "title": "Creează-ți contul",
@@ -478,6 +623,8 @@
     },
     "fields": {
       "email": "Email",
+      "phone": "Telefon (opțional)",
+      "phonePlaceholder": "ex. +44 7700 900123",
       "emailPlaceholder": "ex. maria.popescu@scoala.test",
       "password": "Parolă",
       "passwordPlaceholder": "Parola ta",
@@ -492,6 +639,7 @@
     },
     "errors": {
       "emailInvalid": "Introdu un email valid.",
+      "phoneInvalid": "Introdu un număr de telefon valid.",
       "passwordRequired": "Introdu parola.",
       "firstNameRequired": "Introdu prenumele.",
       "lastNameRequired": "Introdu numele.",
@@ -505,6 +653,7 @@
       "confirmRequired": "Confirmă parola.",
       "passwordsMismatch": "Parolele nu coincid.",
       "invalidCredentials": "Email sau parolă incorecte.",
+      "currentPasswordWrong": "Parola curentă nu este corectă.",
       "network": "Nu ne putem conecta la server. Încearcă din nou.",
       "tooManyRequests": "Prea multe încercări. Încearcă din nou peste un minut.",
       "emailTaken": "Există deja un cont cu acest email.",

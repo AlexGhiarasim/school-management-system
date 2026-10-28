@@ -10,6 +10,9 @@ export class ProfileDto {
 
   @ApiProperty()
   lastName: string;
+
+  @ApiProperty({ nullable: true })
+  phone: string | null;
 }
 
 export class CurrentUserDto {

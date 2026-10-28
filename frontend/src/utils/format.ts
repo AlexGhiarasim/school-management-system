@@ -17,3 +17,16 @@ export function formatNumber(value: number, language: string): string {
     maximumFractionDigits: 2,
   }).format(value);
 }
+
+export function formatShortDate(value: string, language: string): string {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return value;
+
+  return new Intl.DateTimeFormat(language, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(date);
+}

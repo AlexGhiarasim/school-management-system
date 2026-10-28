@@ -2,6 +2,8 @@ export interface TeacherClass {
   id: number;
   name: string;
   studentCount: number;
+  isHomeroom: boolean;
+  subjects: { id: number; name: string }[];
 }
 
 export interface ClassStudent {
@@ -10,6 +12,12 @@ export interface ClassStudent {
   lastName: string;
   dateOfBirth: string;
   email: string;
+  phone?: string | null;
+}
+
+export interface ClassTeaching {
+  subject: { id: number; name: string };
+  teacher: { id: number; firstName: string; lastName: string };
 }
 
 export interface Subject {

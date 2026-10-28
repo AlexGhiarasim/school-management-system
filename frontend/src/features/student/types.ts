@@ -3,9 +3,18 @@ export interface StudentProfile {
   firstName: string;
   lastName: string;
   email: string;
+  phone?: string | null;
   dateOfBirth: string;
   isActive: boolean;
   class: { id: number; name: string } | null;
+}
+
+export interface ClassOverview {
+  id: number;
+  name: string;
+  teacher: { firstName: string; lastName: string } | null;
+  studentCount: number;
+  students: { id: number; firstName: string; lastName: string }[];
 }
 
 export interface SubjectAverage {
