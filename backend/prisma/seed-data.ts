@@ -1,3 +1,20 @@
+// Both share the admin password. Phone numbers are made up, outside the range
+// used for teachers and students.
+export const ADMINS = [
+  {
+    email: 'admin@school.test',
+    firstName: 'Cristina',
+    lastName: 'Albu',
+    phone: '+44 7700 900990',
+  },
+  {
+    email: 'admin2@school.test',
+    firstName: 'Mihai',
+    lastName: 'Voicu',
+    phone: '+44 7700 900991',
+  },
+];
+
 export const SUBJECTS = [
   'Matematică',
   'Limba română',

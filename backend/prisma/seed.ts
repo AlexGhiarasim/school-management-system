@@ -4,6 +4,7 @@ import { config } from 'dotenv';
 import { parseDatabaseUrl } from '../src/database/database-url.js';
 import { PrismaClient, Role } from '../src/generated/prisma/client.js';
 import {
+  ADMINS,
   CLASS_PLANS,
   FIRST_NAMES,
   LAST_NAMES,
@@ -115,13 +116,22 @@ async function main() {
 
   await clearDatabase();
 
-  await prisma.user.create({
-    data: {
-      email: 'admin@school.test',
-      passwordHash: hashes.admin,
-      role: Role.ADMIN,
-    },
-  });
+  for (const admin of ADMINS) {
+    await prisma.user.create({
+      data: {
+        email: admin.email,
+        passwordHash: hashes.admin,
+        role: Role.ADMIN,
+        admin: {
+          create: {
+            firstName: admin.firstName,
+            lastName: admin.lastName,
+            phone: admin.phone,
+          },
+        },
+      },
+    });
+  }
 
   await prisma.subject.createMany({
     data: SUBJECTS.map((name) => ({ name })),

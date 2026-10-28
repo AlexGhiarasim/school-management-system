@@ -83,7 +83,7 @@ share another.
 
 | Role | Email | Password |
 |---|---|---|
-| Admin | `admin@school.test` | `Admin123!` |
+| Admin | `admin@school.test` (a second one: `admin2@school.test`) | `Admin123!` |
 | Teacher | `laura.marin@school.test` (class teacher of 9A, teaches Mathematics in every class and Physics in 9A) | `Teacher123!` |
 | Student | `mihai.constantin@student.school.test` | `Student123!` |
 
@@ -109,6 +109,7 @@ All endpoints are under `/api`. Lists accept `page` and `limit` and return
 | `POST /auth/change-password` | yes | yes | yes |
 | `GET /auth/me` | yes | yes | yes |
 | `GET /health` | public | public | public |
+| `GET /admins` | yes | no | no |
 | `/subjects` (read) | yes | yes | yes |
 | `/subjects` (create, update, delete) | yes | no | no |
 | `/teachers` (CRUD) | yes | no | no |

@@ -219,10 +219,10 @@ export class AuthService {
   async getCurrentUser({ id }: AuthenticatedUser): Promise<CurrentUserDto> {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id },
-      include: { teacher: true, student: true },
+      include: { admin: true, teacher: true, student: true },
     });
 
-    const profile = user.teacher ?? user.student;
+    const profile = user.admin ?? user.teacher ?? user.student;
 
     return {
       id: user.id,
