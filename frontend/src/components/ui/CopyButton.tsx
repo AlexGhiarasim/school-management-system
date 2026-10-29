@@ -29,7 +29,7 @@ export function CopyButton({ value, label, className = '' }: CopyButtonProps) {
       type="button"
       onClick={() => void copy()}
       className={`text-sm font-medium transition ${
-        copied ? 'text-emerald-700' : 'text-indigo-600 hover:text-indigo-700'
+        copied ? 'text-emerald-700' : 'text-brand-600 hover:text-brand-700'
       } focus:outline-none focus-visible:underline ${className}`}
     >
       {copied ? t('common.copied') : (label ?? t('common.copy'))}

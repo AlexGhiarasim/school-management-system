@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../components/layout/PageHeader.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { ErrorState } from '../../components/ui/ErrorState.tsx';
-import { Skeleton } from '../../components/ui/Skeleton.tsx';
+import { LoadingPanel } from '../../components/ui/LoadingPanel.tsx';
 import { useTeacherClasses } from '../../features/teacher/hooks.ts';
 import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { paths } from '../../routes/paths.ts';
@@ -28,13 +28,7 @@ export default function TeacherClassesPage() {
         </div>
       )}
 
-      {isPending && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Skeleton className="h-32" />
-          <Skeleton className="h-32" />
-          <Skeleton className="h-32" />
-        </div>
-      )}
+      {isPending && <LoadingPanel />}
 
       {data && data.length === 0 && (
         <div className={CARD}>
@@ -51,10 +45,10 @@ export default function TeacherClassesPage() {
             <li key={schoolClass.id}>
               <Link
                 to={paths.teacher.classStudents(schoolClass.id)}
-                className={`${CARD} block transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-200`}
+                className={`${CARD} block transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200`}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <p className="text-4xl font-bold tracking-tight text-indigo-600">
+                  <p className="text-4xl font-bold tracking-tight text-brand-600">
                     {schoolClass.name}
                   </p>
                   {schoolClass.isHomeroom && (
@@ -80,7 +74,7 @@ export default function TeacherClassesPage() {
                     ))}
                   </ul>
                 )}
-                <p className="mt-4 text-[15px] font-medium text-indigo-600">
+                <p className="mt-4 text-[15px] font-medium text-brand-600">
                   {t('teacher.classes.open')}
                 </p>
               </Link>

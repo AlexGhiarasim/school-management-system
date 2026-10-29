@@ -79,3 +79,21 @@ export function InboxIcon() {
     </Icon>
   );
 }
+
+export function ChevronDownIcon() {
+  return (
+    <Icon className="h-4 w-4" strokeWidth={2.4}>
+      <path d="M6 9l6 6 6-6" />
+    </Icon>
+  );
+}
+
+export function MenuIcon() {
+  return (
+    <Icon>
+      <path d="M4 7h16" />
+      <path d="M4 12h16" />
+      <path d="M4 17h16" />
+    </Icon>
+  );
+}

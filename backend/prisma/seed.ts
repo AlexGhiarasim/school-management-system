@@ -93,6 +93,7 @@ function createIdentityFactory(domain: string) {
 }
 
 async function clearDatabase() {
+  await prisma.gradeAudit.deleteMany();
   await prisma.grade.deleteMany();
   await prisma.teachingAssignment.deleteMany();
   await prisma.student.deleteMany();

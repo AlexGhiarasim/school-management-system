@@ -131,8 +131,14 @@
       "classes": "Classes",
       "subjects": "Subjects",
       "grades": "Grades",
-      "profile": "My profile"
-    }
+      "profile": "My profile",
+      "statistics": "Statistics",
+      "activity": "Activity"
+    },
+    "account": "Account menu",
+    "profile": "My profile",
+    "openMenu": "Open the menu",
+    "closeMenu": "Close the menu"
   },
   "student": {
     "profile": {
@@ -330,7 +336,8 @@
       "noResults": {
         "title": "No grades found",
         "description": "There are no grades for the chosen filters."
-      }
+      },
+      "export": "Export CSV"
     },
     "classStudents": {
       "back": "Back to the classes",
@@ -535,7 +542,8 @@
         "noClass": "No class",
         "actions": "Actions",
         "edit": "Edit",
-        "delete": "Delete"
+        "delete": "Delete",
+        "report": "Report"
       },
       "empty": {
         "title": "There are no students yet",
@@ -545,6 +553,77 @@
         "title": "No results",
         "description": "We found no students for the chosen search or filter."
       }
+    },
+    "statistics": {
+      "description": "An overview of the results of the school: averages, grade distribution and the students who are failing a subject.",
+      "kpi": {
+        "passRate": "Pass rate",
+        "students": "Students",
+        "grades": "Grades"
+      },
+      "distribution": {
+        "title": "Grade distribution",
+        "bar": "Grade {{grade}}: {{count}} grades ({{percent}})",
+        "tooltip": "grades of {{grade}} · {{percent}}",
+        "legend": {
+          "failing": "Grades below 5",
+          "fair": "Grades 5–7",
+          "good": "Grades 8–10"
+        }
+      },
+      "trend": {
+        "title": "Average per week",
+        "tooltip_one": "week of {{week}} · {{count}} grade",
+        "tooltip_other": "week of {{week}} · {{count}} grades"
+      },
+      "byClass": {
+        "title": "Average per class",
+        "students_one": "{{count}} student",
+        "students_other": "{{count}} students"
+      },
+      "bySubject": {
+        "title": "Average per subject",
+        "grades_one": "{{count}} grade",
+        "grades_other": "{{count}} grades"
+      },
+      "top": {
+        "title": "Top students"
+      },
+      "atRisk": {
+        "title": "Students failing a subject ({{count}})",
+        "none": "No student is failing a subject."
+      },
+      "empty": {
+        "title": "No grades to analyse yet",
+        "description": "The statistics appear once teachers add grades."
+      }
+    },
+    "activity": {
+      "description": "Every grade that was added, changed or deleted, with who did it and when.",
+      "actions": {
+        "CREATED": "Added",
+        "UPDATED": "Changed",
+        "DELETED": "Deleted"
+      },
+      "filter": {
+        "label": "Action",
+        "all": "All actions"
+      },
+      "table": {
+        "caption": "Changes to grades, most recent first",
+        "when": "When",
+        "actor": "By",
+        "action": "Action",
+        "grade": "Grade of",
+        "change": "Change"
+      },
+      "empty": {
+        "title": "No changes yet",
+        "description": "Grades added, changed or deleted from now on will appear here."
+      },
+      "deletedAccount": "Deleted account",
+      "gradeHistory": "History of this grade",
+      "dateChange": "date {{from}} → {{to}}"
     }
   },
   "errors": {
@@ -662,5 +741,24 @@
       "good": "good",
       "strong": "strong"
     }
+  },
+  "report": {
+    "title": "School report",
+    "description": "The grades and averages of the student, ready to print or save as PDF.",
+    "ownDescription": "Your grades and averages, ready to print or save as PDF.",
+    "open": "School report",
+    "print": "Print or save as PDF",
+    "backToStudents": "Back to students",
+    "student": "Student",
+    "class": "Class",
+    "dateOfBirth": "Date of birth",
+    "issued": "Issued on {{date}}",
+    "noGrades": "There are no grades yet.",
+    "subject": "Subject",
+    "grades": "Grades",
+    "average": "Average",
+    "overall": "Overall average",
+    "passed": "On track to pass every subject.",
+    "failing": "Failing: {{subjects}}."
   }
 }

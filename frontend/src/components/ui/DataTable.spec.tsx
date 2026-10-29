@@ -45,7 +45,7 @@ describe('DataTable', () => {
     expect(screen.getByText('Nothing to show')).toBeVisible();
   });
 
-  it('shows placeholders instead of rows while loading', () => {
+  it('shows a spinner instead of the table while loading', () => {
     render(
       <DataTable
         caption="People"
@@ -53,12 +53,12 @@ describe('DataTable', () => {
         rows={[{ id: 1, name: 'Maria' }]}
         rowKey={(row) => row.id}
         loading
-        skeletonRows={3}
       />,
     );
 
     expect(screen.queryByText('Maria')).not.toBeInTheDocument();
     expect(screen.queryByText('Nothing to show')).not.toBeInTheDocument();
-    expect(screen.getAllByRole('row')).toHaveLength(4);
+    expect(screen.getByRole('status')).toBeVisible();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
   });
 });

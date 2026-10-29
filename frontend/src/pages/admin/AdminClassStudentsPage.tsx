@@ -98,7 +98,7 @@ export default function AdminClassStudentsPage() {
     <section>
       <Link
         to={paths.admin.classes}
-        className="mb-4 inline-block text-[15px] font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
+        className="mb-4 inline-block text-[15px] font-medium text-brand-600 hover:text-brand-500 focus:outline-none focus-visible:underline"
       >
         {t('admin.classStudents.back')}
       </Link>

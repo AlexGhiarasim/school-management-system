@@ -10,14 +10,15 @@ import { useFormState, type FormError } from '../../../hooks/useFormState.ts';
 import { useSubjectName } from '../../../hooks/useSubjectName.ts';
 import { useToast } from '../../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../../lib/apiErrors.ts';
-import { formatDate } from '../../../utils/format.ts';
+import { formatDate, formatDateTime } from '../../../utils/format.ts';
 import {
   GRADE_MAX,
   GRADE_MIN,
   isValidGradeDate,
   isValidGradeValue,
 } from '../../../utils/validators.ts';
-import { useEditGrade } from '../hooks.ts';
+import { useEditGrade, useGradeChanges } from '../hooks.ts';
+import { GradeActionBadge, GradeChangeSummary } from './GradeChangeSummary.tsx';
 import type { AdminGrade, AdminSubject } from '../types.ts';
 
 const TODAY = new Date().toISOString().slice(0, 10);
@@ -46,6 +47,36 @@ function validate(values: GradeValues) {
   }
 
   return errors;
+}
+
+function GradeHistory({ gradeId }: { gradeId: number }) {
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage ?? 'ro';
+  const { data } = useGradeChanges(gradeId);
+
+  if (!data || data.length === 0) return null;
+
+  return (
+    <section className="mt-6 border-t border-slate-200 pt-5">
+      <h3 className="mb-3 text-sm font-semibold text-slate-900">
+        {t('admin.activity.gradeHistory')}
+      </h3>
+      <ol className="space-y-3">
+        {data.map((change) => (
+          <li key={change.id} className="flex items-start gap-3 text-sm">
+            <GradeActionBadge action={change.action} />
+            <span className="min-w-0">
+              <GradeChangeSummary change={change} />
+              <span className="block text-slate-500">
+                {change.actor?.name ?? t('admin.activity.deletedAccount')} ·{' '}
+                {formatDateTime(change.createdAt, language)}
+              </span>
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
 }
 
 interface GradeEditFormProps {
@@ -160,6 +191,7 @@ function GradeEditForm({
           </Button>
         </div>
       </form>
+      <GradeHistory gradeId={grade.id} />
       <ConfirmSave
         entity="grade"
         editing

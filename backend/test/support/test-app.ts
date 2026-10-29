@@ -124,6 +124,9 @@ export async function createTestContext(scope: string): Promise<TestContext> {
       subject: subject.id,
     },
     close: async () => {
+      await prisma.gradeAudit.deleteMany({
+        where: { subjectName: { startsWith: `${scope}-` } },
+      });
       await prisma.user.deleteMany({
         where: { email: { endsWith: `@${scope}.test` } },
       });

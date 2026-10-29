@@ -22,6 +22,7 @@ import { GradeBadge } from '../../features/student/components/GradeBadge.tsx';
 import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
+import { adminService } from '../../services/adminService.ts';
 import { formatDate } from '../../utils/format.ts';
 
 const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
@@ -44,8 +45,24 @@ export default function AdminGradesPage() {
   const subjects = useAllSubjects();
   const classStudents = useAllClassStudents(classId ? Number(classId) : null);
   const deleteGrade = useDeleteGrade();
+  const [exporting, setExporting] = useState(false);
   const rows = grades.data?.data ?? [];
   const filtering = classId !== '' || studentId !== '' || subjectId !== '';
+
+  async function exportCsv() {
+    setExporting(true);
+
+    try {
+      await adminService.exportGrades(
+        { classId, studentId, subjectId },
+        language,
+      );
+    } catch (error) {
+      notify(t(getApiErrorKey(error)), 'error');
+    } finally {
+      setExporting(false);
+    }
+  }
 
   async function confirmDelete() {
     if (!deleting) return;
@@ -120,6 +137,17 @@ export default function AdminGradesPage() {
       <PageHeader
         title={t('nav.admin.grades')}
         description={t('admin.grades.description')}
+        actions={
+          <Button
+            variant="secondary"
+            fullWidth={false}
+            loading={exporting}
+            disabled={rows.length === 0}
+            onClick={() => void exportCsv()}
+          >
+            {t('admin.grades.export')}
+          </Button>
+        }
       />
 
       <div className="mb-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -33,7 +33,7 @@ export function AuthCard() {
   }
 
   return (
-    <div className="w-full max-w-lg rounded-3xl bg-white/90 p-7 shadow-2xl shadow-indigo-900/10 ring-1 ring-slate-200/80 backdrop-blur">
+    <div className="w-full max-w-lg rounded-3xl bg-white/90 p-7 shadow-2xl shadow-brand-900/10 ring-1 ring-slate-200/80 backdrop-blur">
       {registrationEnabled && (
         <div
           role="tablist"
@@ -60,7 +60,7 @@ export function AuthCard() {
               tabIndex={mode === tabMode ? 0 : -1}
               onClick={() => setMode(tabMode)}
               onKeyDown={handleTabKeyDown}
-              className={`relative rounded-lg px-3 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100 ${
+              className={`relative rounded-lg px-3 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-100 ${
                 mode === tabMode
                   ? 'text-slate-900'
                   : 'text-slate-500 hover:text-slate-700'
@@ -100,7 +100,7 @@ export function AuthCard() {
                     onClick={() =>
                       setMode(panelMode === 'login' ? 'register' : 'login')
                     }
-                    className="font-semibold text-indigo-600 transition hover:text-indigo-500 hover:underline focus:outline-none focus-visible:underline"
+                    className="font-semibold text-brand-600 transition hover:text-brand-500 hover:underline focus:outline-none focus-visible:underline"
                   >
                     {t(`auth.${panelMode}.action`)}
                   </button>

@@ -13,7 +13,7 @@ import { authService } from '../services/authService.ts';
 import { EMAIL_MAX_LENGTH, isValidEmail } from '../utils/validators.ts';
 
 const LINK_CLASS =
-  'font-semibold text-indigo-600 transition hover:text-indigo-500 hover:underline focus:outline-none focus-visible:underline';
+  'font-semibold text-brand-600 transition hover:text-brand-500 hover:underline focus:outline-none focus-visible:underline';
 
 interface ForgotValues {
   email: string;

@@ -10,10 +10,17 @@ import {
   paginationArgs,
 } from '../../common/utils/pagination.util.js';
 import { PrismaService } from '../../database/prisma.service.js';
-import { Prisma, Role } from '../../generated/prisma/client.js';
+import {
+  GradeAuditAction,
+  Prisma,
+  Role,
+} from '../../generated/prisma/client.js';
 import type { CreateGradeDto } from './dto/create-grade.dto.js';
+import type { ExportGradesQueryDto } from './dto/export-grades-query.dto.js';
 import type { ListGradesQueryDto } from './dto/list-grades-query.dto.js';
 import type { UpdateGradeDto } from './dto/update-grade.dto.js';
+import { auditEntry, hasChanged } from './grade-audit.util.js';
+import { toGradesCsv } from './grades-csv.util.js';
 import { summarize } from './grades.util.js';
 
 const gradeInclude = {
@@ -26,6 +33,11 @@ type GradeWithRelations = Prisma.GradeGetPayload<{
   include: typeof gradeInclude;
 }>;
 
+type GradeFilters = Pick<
+  ListGradesQueryDto,
+  'studentId' | 'subjectId' | 'classId'
+>;
+
 function toResponse({
   date,
   studentId: _studentId,
@@ -34,6 +46,18 @@ function toResponse({
   ...grade
 }: GradeWithRelations) {
   return { ...grade, date: toDateOnly(date) };
+}
+
+function filterGrades({
+  studentId,
+  subjectId,
+  classId,
+}: GradeFilters): Prisma.GradeWhereInput {
+  return {
+    ...(studentId !== undefined && { studentId }),
+    ...(subjectId !== undefined && { subjectId }),
+    ...(classId !== undefined && { student: { classId } }),
+  };
 }
 
 @Injectable()
@@ -48,11 +72,7 @@ export class GradesService {
     }
 
     const where: Prisma.GradeWhereInput = {
-      ...(query.studentId !== undefined && { studentId: query.studentId }),
-      ...(query.subjectId !== undefined && { subjectId: query.subjectId }),
-      ...(query.classId !== undefined && {
-        student: { classId: query.classId },
-      }),
+      ...filterGrades(query),
       ...(isTeacher && (await this.teacherScope(user.teacherId ?? -1))),
     };
 
@@ -69,6 +89,37 @@ export class GradesService {
     return paginate(grades.map(toResponse), total, query);
   }
 
+  async exportCsv({ language = 'ro', ...filters }: ExportGradesQueryDto) {
+    const grades = await this.prisma.grade.findMany({
+      where: filterGrades(filters),
+      include: {
+        ...gradeInclude,
+        student: {
+          select: {
+            firstName: true,
+            lastName: true,
+            class: { select: { name: true } },
+          },
+        },
+      },
+      orderBy: [{ date: 'desc' }, { id: 'desc' }],
+    });
+
+    return toGradesCsv(
+      grades.map((grade) => ({
+        date: toDateOnly(grade.date),
+        className: grade.student.class?.name ?? null,
+        student: `${grade.student.lastName} ${grade.student.firstName}`,
+        subject: grade.subject.name,
+        value: grade.value,
+        teacher: grade.teacher
+          ? `${grade.teacher.firstName} ${grade.teacher.lastName}`
+          : null,
+      })),
+      language,
+    );
+  }
+
   async create(
     { studentId, subjectId, value, date }: CreateGradeDto,
     user: AuthenticatedUser,
@@ -81,15 +132,23 @@ export class GradesService {
       await this.assertTeaches(user.teacherId, classId, subjectId);
     }
 
-    const grade = await this.prisma.grade.create({
-      data: {
-        studentId,
-        subjectId,
-        value,
-        teacherId: user.teacherId,
-        ...(date && { date: new Date(date) }),
-      },
-      include: gradeInclude,
+    const grade = await this.prisma.$transaction(async (tx) => {
+      const created = await tx.grade.create({
+        data: {
+          studentId,
+          subjectId,
+          value,
+          teacherId: user.teacherId,
+          ...(date && { date: new Date(date) }),
+        },
+        include: gradeInclude,
+      });
+
+      await tx.gradeAudit.create({
+        data: auditEntry(GradeAuditAction.CREATED, user.id, null, created),
+      });
+
+      return created;
     });
 
     return toResponse(grade);
@@ -102,7 +161,12 @@ export class GradesService {
   ) {
     const existing = await this.prisma.grade.findUnique({
       where: { id },
-      include: { student: { select: { classId: true } } },
+      include: {
+        ...gradeInclude,
+        student: {
+          select: { id: true, firstName: true, lastName: true, classId: true },
+        },
+      },
     });
 
     if (!existing) {
@@ -125,17 +189,46 @@ export class GradesService {
       }
     }
 
-    const grade = await this.prisma.grade.update({
-      where: { id },
-      data: { subjectId, value, ...(date && { date: new Date(date) }) },
-      include: gradeInclude,
+    const grade = await this.prisma.$transaction(async (tx) => {
+      const updated = await tx.grade.update({
+        where: { id },
+        data: { subjectId, value, ...(date && { date: new Date(date) }) },
+        include: gradeInclude,
+      });
+
+      if (hasChanged(existing, updated)) {
+        await tx.gradeAudit.create({
+          data: auditEntry(
+            GradeAuditAction.UPDATED,
+            user.id,
+            existing,
+            updated,
+          ),
+        });
+      }
+
+      return updated;
     });
 
     return toResponse(grade);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.prisma.grade.delete({ where: { id } });
+  async remove(id: number, user: AuthenticatedUser): Promise<void> {
+    const existing = await this.prisma.grade.findUnique({
+      where: { id },
+      include: gradeInclude,
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Grade ${id} not found`);
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.grade.delete({ where: { id } }),
+      this.prisma.gradeAudit.create({
+        data: auditEntry(GradeAuditAction.DELETED, user.id, existing, null),
+      }),
+    ]);
   }
 
   async findOwn(user: AuthenticatedUser) {

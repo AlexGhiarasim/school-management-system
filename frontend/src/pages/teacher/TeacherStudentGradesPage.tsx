@@ -5,7 +5,7 @@ import { PageHeader } from '../../components/layout/PageHeader.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { ErrorState } from '../../components/ui/ErrorState.tsx';
-import { Skeleton } from '../../components/ui/Skeleton.tsx';
+import { LoadingPanel } from '../../components/ui/LoadingPanel.tsx';
 import { GradeFormModal } from '../../features/teacher/components/GradeFormModal.tsx';
 import { TaughtSubjectCard } from '../../features/teacher/components/TaughtSubjectCard.tsx';
 import {
@@ -72,7 +72,7 @@ export default function TeacherStudentGradesPage() {
     <section>
       <Link
         to={paths.teacher.classStudents(params.classId ?? '')}
-        className="mb-4 inline-block text-[15px] font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
+        className="mb-4 inline-block text-[15px] font-medium text-brand-600 hover:text-brand-500 focus:outline-none focus-visible:underline"
       >
         {t('teacher.studentGrades.back')}
       </Link>
@@ -110,12 +110,7 @@ export default function TeacherStudentGradesPage() {
             </div>
           )}
 
-          {grades.isPending && (
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Skeleton className="h-40" />
-              <Skeleton className="h-40" />
-            </div>
-          )}
+          {grades.isPending && <LoadingPanel />}
 
           {grades.data && (
             <div className="space-y-10">

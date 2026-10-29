@@ -60,7 +60,7 @@ export default function ClassStudentsPage() {
       render: (student) => (
         <Link
           to={paths.teacher.studentGrades(classId, student.id)}
-          className="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
+          className="font-medium text-brand-600 hover:text-brand-500 focus:outline-none focus-visible:underline"
         >
           {t('teacher.classStudents.table.viewGrades')}
         </Link>
@@ -75,7 +75,7 @@ export default function ClassStudentsPage() {
     <section>
       <Link
         to={paths.teacher.classes}
-        className="mb-4 inline-block text-[15px] font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
+        className="mb-4 inline-block text-[15px] font-medium text-brand-600 hover:text-brand-500 focus:outline-none focus-visible:underline"
       >
         {t('teacher.classStudents.back')}
       </Link>

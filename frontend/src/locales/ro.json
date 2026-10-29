@@ -132,8 +132,14 @@
       "classes": "Clase",
       "subjects": "Materii",
       "grades": "Note",
-      "profile": "Profilul meu"
-    }
+      "profile": "Profilul meu",
+      "statistics": "Statistici",
+      "activity": "Activitate"
+    },
+    "account": "Meniul contului",
+    "profile": "Profilul meu",
+    "openMenu": "Deschide meniul",
+    "closeMenu": "Închide meniul"
   },
   "student": {
     "profile": {
@@ -336,7 +342,8 @@
       "noResults": {
         "title": "Nicio notă găsită",
         "description": "Nu există note pentru filtrele alese."
-      }
+      },
+      "export": "Exportă CSV"
     },
     "classStudents": {
       "back": "Înapoi la clase",
@@ -542,7 +549,8 @@
         "noClass": "Fără clasă",
         "actions": "Acțiuni",
         "edit": "Modifică",
-        "delete": "Șterge"
+        "delete": "Șterge",
+        "report": "Situație"
       },
       "empty": {
         "title": "Nu există încă niciun elev",
@@ -552,6 +560,80 @@
         "title": "Niciun rezultat",
         "description": "Nu am găsit elevi pentru căutarea sau filtrul ales."
       }
+    },
+    "statistics": {
+      "description": "Situația generală a școlii: medii, distribuția notelor și elevii aflați în situație de corigență.",
+      "kpi": {
+        "passRate": "Promovabilitate",
+        "students": "Elevi",
+        "grades": "Note"
+      },
+      "distribution": {
+        "title": "Distribuția notelor",
+        "bar": "Nota {{grade}}: {{count}} note ({{percent}})",
+        "tooltip": "note de {{grade}} · {{percent}}",
+        "legend": {
+          "failing": "Note sub 5",
+          "fair": "Note 5–7",
+          "good": "Note 8–10"
+        }
+      },
+      "trend": {
+        "title": "Media pe săptămâni",
+        "tooltip_one": "săptămâna din {{week}} · {{count}} notă",
+        "tooltip_few": "săptămâna din {{week}} · {{count}} note",
+        "tooltip_other": "săptămâna din {{week}} · {{count}} de note"
+      },
+      "byClass": {
+        "title": "Media pe clase",
+        "students_one": "{{count}} elev",
+        "students_few": "{{count}} elevi",
+        "students_other": "{{count}} de elevi"
+      },
+      "bySubject": {
+        "title": "Media pe materii",
+        "grades_one": "{{count}} notă",
+        "grades_few": "{{count}} note",
+        "grades_other": "{{count}} de note"
+      },
+      "top": {
+        "title": "Cei mai buni elevi"
+      },
+      "atRisk": {
+        "title": "Elevi în situație de corigență ({{count}})",
+        "none": "Niciun elev nu se află în situație de corigență."
+      },
+      "empty": {
+        "title": "Încă nu sunt note de analizat",
+        "description": "Statisticile apar după ce profesorii adaugă note."
+      }
+    },
+    "activity": {
+      "description": "Fiecare notă adăugată, modificată sau ștearsă, cu cine a făcut-o și când.",
+      "actions": {
+        "CREATED": "Adăugată",
+        "UPDATED": "Modificată",
+        "DELETED": "Ștearsă"
+      },
+      "filter": {
+        "label": "Acțiune",
+        "all": "Toate acțiunile"
+      },
+      "table": {
+        "caption": "Modificările notelor, cele mai recente primele",
+        "when": "Când",
+        "actor": "De către",
+        "action": "Acțiune",
+        "grade": "Nota lui",
+        "change": "Modificare"
+      },
+      "empty": {
+        "title": "Încă nu sunt modificări",
+        "description": "Notele adăugate, modificate sau șterse de acum înainte vor apărea aici."
+      },
+      "deletedAccount": "Cont șters",
+      "gradeHistory": "Istoricul notei",
+      "dateChange": "data {{from}} → {{to}}"
     }
   },
   "errors": {
@@ -669,5 +751,24 @@
       "good": "bună",
       "strong": "puternică"
     }
+  },
+  "report": {
+    "title": "Situație școlară",
+    "description": "Notele și mediile elevului, gata de printat sau de salvat ca PDF.",
+    "ownDescription": "Notele și mediile tale, gata de printat sau de salvat ca PDF.",
+    "open": "Situație școlară",
+    "print": "Printează sau salvează PDF",
+    "backToStudents": "Înapoi la elevi",
+    "student": "Elev",
+    "class": "Clasa",
+    "dateOfBirth": "Data nașterii",
+    "issued": "Emisă la {{date}}",
+    "noGrades": "Nu există încă note.",
+    "subject": "Materie",
+    "grades": "Note",
+    "average": "Media",
+    "overall": "Media generală",
+    "passed": "În situație de promovare la toate materiile.",
+    "failing": "În situație de corigență la: {{subjects}}."
   }
 }

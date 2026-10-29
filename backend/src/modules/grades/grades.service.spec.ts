@@ -35,7 +35,7 @@ const storedGrade = {
 };
 
 function createPrisma() {
-  return {
+  const prisma = {
     student: { findUnique: vi.fn().mockResolvedValue({ classId: 2 }) },
     subject: { count: vi.fn() },
     class: {
@@ -52,11 +52,19 @@ function createPrisma() {
       findUnique: vi.fn(),
       findMany: vi.fn().mockResolvedValue([]),
       count: vi.fn().mockResolvedValue(0),
+      delete: vi.fn().mockResolvedValue(storedGrade),
     },
-    $transaction: vi.fn((operations: Promise<unknown>[]) =>
-      Promise.all(operations),
+    gradeAudit: { create: vi.fn().mockResolvedValue({}) },
+    // Supports both forms: a list of queries and a callback.
+    $transaction: vi.fn(
+      (operations: Promise<unknown>[] | ((tx: unknown) => unknown)) =>
+        typeof operations === 'function'
+          ? operations(prisma)
+          : Promise.all(operations),
     ),
   };
+
+  return prisma;
 }
 
 describe('GradesService', () => {
@@ -128,17 +136,25 @@ describe('GradesService', () => {
 
       expect(result.date).toBe('2026-10-01');
     });
+
+    it('logs the new grade with the user who gave it', async () => {
+      await service.create(dto, teacher);
+
+      expect(prisma.gradeAudit.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          action: 'CREATED',
+          actorId: 10,
+          gradeId: 100,
+          oldValue: null,
+          newValue: 9,
+          studentName: 'Ana Popa',
+          subjectName: 'Mathematics',
+        }),
+      });
+    });
   });
 
   describe('update', () => {
-    it('rejects an unknown grade', async () => {
-      prisma.grade.findUnique.mockResolvedValue(null);
-
-      await expect(
-        service.update(1, { value: 5 }, teacher),
-      ).rejects.toBeInstanceOf(NotFoundException);
-    });
-
     it('lets a teacher edit a grade they gave', async () => {
       prisma.grade.findUnique.mockResolvedValue({
         ...storedGrade,
@@ -184,6 +200,21 @@ describe('GradesService', () => {
       expect(prisma.grade.update).toHaveBeenCalled();
     });
 
+    it('logs the old and the new value', async () => {
+      prisma.grade.findUnique.mockResolvedValue({ ...storedGrade, value: 6 });
+
+      await service.update(100, { value: 9 }, admin);
+
+      expect(prisma.gradeAudit.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          action: 'UPDATED',
+          actorId: 1,
+          oldValue: 6,
+          newValue: 9,
+        }),
+      });
+    });
+
     it('rejects an unknown subject on update', async () => {
       prisma.grade.findUnique.mockResolvedValue(storedGrade);
       prisma.subject.count.mockResolvedValue(0);
@@ -191,6 +222,32 @@ describe('GradesService', () => {
       await expect(
         service.update(100, { subjectId: 99 }, admin),
       ).rejects.toBeInstanceOf(NotFoundException);
+    });
+  });
+
+  describe('remove', () => {
+    it('deletes the grade and logs what it was', async () => {
+      prisma.grade.findUnique.mockResolvedValue(storedGrade);
+
+      await service.remove(100, admin);
+
+      expect(prisma.grade.delete).toHaveBeenCalledWith({ where: { id: 100 } });
+      expect(prisma.gradeAudit.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          action: 'DELETED',
+          oldValue: 9,
+          newValue: null,
+        }),
+      });
+    });
+
+    it('rejects an unknown grade', async () => {
+      prisma.grade.findUnique.mockResolvedValue(null);
+
+      await expect(service.remove(1, admin)).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+      expect(prisma.grade.delete).not.toHaveBeenCalled();
     });
   });
 

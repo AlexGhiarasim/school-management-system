@@ -71,10 +71,10 @@ export function LoginForm() {
         placeholder={t('auth.fields.passwordPlaceholder')}
         {...field('password')}
       />
-      <p className="-mt-2 text-right text-sm">
+      <p className="mt-1 mb-3 text-right text-sm">
         <Link
           to={paths.forgotPassword}
-          className="font-medium text-slate-500 transition hover:text-indigo-600 focus:outline-none focus-visible:underline"
+          className="font-medium text-slate-500 transition hover:text-brand-600 focus:outline-none focus-visible:underline"
         >
           {t('auth.login.forgot')}
         </Link>

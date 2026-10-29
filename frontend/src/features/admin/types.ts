@@ -1,3 +1,5 @@
+import type { Role } from '../auth/types.ts';
+
 export interface AdminStudent {
   id: number;
   firstName: string;
@@ -106,4 +108,53 @@ export interface GradeEditInput {
   subjectId: number;
   value: number;
   date: string;
+}
+
+export interface StudentResult {
+  studentId: number;
+  firstName: string;
+  lastName: string;
+  className: string | null;
+  average: number;
+}
+
+export interface Statistics {
+  totals: { students: number; gradedStudents: number; grades: number };
+  passRate: number | null;
+  distribution: { value: number; count: number }[];
+  byClass: {
+    classId: number;
+    name: string;
+    average: number | null;
+    students: number;
+  }[];
+  bySubject: {
+    subjectId: number;
+    name: string;
+    average: number | null;
+    grades: number;
+  }[];
+  trend: { weekStart: string; average: number | null; grades: number }[];
+  topStudents: StudentResult[];
+  atRisk: (Omit<StudentResult, 'average'> & {
+    failingSubjects: { subject: string; average: number }[];
+  })[];
+}
+
+export type GradeAuditAction = 'CREATED' | 'UPDATED' | 'DELETED';
+
+export interface GradeChange {
+  id: number;
+  gradeId: number;
+  action: GradeAuditAction;
+  createdAt: string;
+  actor: { name: string; role: Role } | null;
+  studentId: number | null;
+  studentName: string;
+  subjectName: string;
+  previousSubjectName: string | null;
+  oldValue: number | null;
+  newValue: number | null;
+  oldDate: string | null;
+  newDate: string | null;
 }

@@ -10,6 +10,7 @@ import type {
   AdminStudent,
   AdminTeacher,
   ClassInput,
+  GradeAuditAction,
   GradeEditInput,
   GradeFilters,
   ListFilters,
@@ -32,6 +33,15 @@ export const adminKeys = {
   allTeachers: ['admin', 'teachers', 'all'] as const,
   grades: ['admin', 'grades'] as const,
   gradeList: (filters: GradeFilters) => ['admin', 'grades', filters] as const,
+  // Kept under "grades" so that every change to a grade refreshes them.
+  statistics: (classId: string) =>
+    ['admin', 'grades', 'statistics', classId] as const,
+  history: (page: number, action: string) =>
+    ['admin', 'grades', 'history', page, action] as const,
+  gradeHistory: (gradeId: number) =>
+    ['admin', 'grades', gradeId, 'history'] as const,
+  studentReport: (studentId: number) =>
+    ['admin', 'grades', 'report', studentId] as const,
   allSubjects: ['admin', 'subjects', 'all'] as const,
   allClassStudents: (classId: number) =>
     ['admin', 'classes', classId, 'students', 'all'] as const,
@@ -298,5 +308,42 @@ export function useDeleteGrade() {
   return useMutation({
     mutationFn: (id: number) => adminService.deleteGrade(id),
     onSuccess: refresh,
+  });
+}
+
+export function useStatistics(classId: string) {
+  return useQuery({
+    queryKey: adminKeys.statistics(classId),
+    queryFn: () => adminService.getStatistics(classId),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useGradeHistory(page: number, action: GradeAuditAction | '') {
+  return useQuery({
+    queryKey: adminKeys.history(page, action),
+    queryFn: () => adminService.listGradeHistory(page, action),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useGradeChanges(gradeId: number) {
+  return useQuery({
+    queryKey: adminKeys.gradeHistory(gradeId),
+    queryFn: () => adminService.getGradeHistory(gradeId),
+  });
+}
+
+export function useStudentReport(studentId: number) {
+  return useQuery({
+    queryKey: adminKeys.studentReport(studentId),
+    queryFn: async () => {
+      const [student, grades] = await Promise.all([
+        adminService.getStudent(studentId),
+        adminService.listStudentGrades(studentId),
+      ]);
+
+      return { student, grades: grades.data };
+    },
   });
 }

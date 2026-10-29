@@ -126,6 +126,10 @@ All endpoints are under `/api`. Lists accept `page` and `limit` and return
 | `PATCH /grades/:id` | yes | grades they gave | no |
 | `DELETE /grades/:id` | yes | no | no |
 | `GET /grades/me` (grades and averages) | no | no | yes |
+| `GET /grades/export` (filtered grades as CSV) | yes | no | no |
+| `GET /grades/history` (every change to grades) | yes | no | no |
+| `GET /grades/:id/history` (the changes to one grade) | yes | no | no |
+| `GET /statistics` (averages, distribution, students at risk) | yes | no | no |
 
 Authorization is enforced on the backend by a global JWT guard and a roles guard.
 Ownership rules live in the services:
@@ -146,7 +150,8 @@ backend/
     common/          Decorators, guards, filters, DTOs and helpers
     config/          Environment validation
     database/        Prisma service and module
-    modules/         auth, health, subjects, teachers, classes, students, grades
+    modules/         auth, health, subjects, teachers, classes, students, grades,
+                     statistics
   test/              End-to-end tests
 frontend/            React application
 docker/              Container initialization scripts
@@ -209,13 +214,30 @@ touches the frontend. Another workflow builds the Docker images.
   `ALLOW_PUBLIC_REGISTRATION`. Set it to `true` in `.env` to open it: a new
   student then has no class until an administrator assigns one. While it is off
   the endpoint answers 403 and the start page shows only the sign-in form.
+- **Statistics.** `GET /statistics` covers the school or one class: the pass
+  rate, the grade distribution, the average per class, per
+  subject and per week, the best students and the students at risk. A student is
+  at risk when the rounded average of a subject is below 5, the same rule as on
+  their own grades page. The numbers are computed in one pass over the grades,
+  in plain functions covered by unit tests.
+- **Grade history.** Every grade that is added, changed or deleted writes an entry
+  to `GradeAudit` in the same transaction, with who made the change and the value
+  before and after. The entry copies the names of the student and the subject, so
+  it still reads correctly after they are deleted. Administrators see the full
+  log on the Activity page and the history of one grade when they edit it.
+- **Exports.** Administrators download the filtered grades as CSV. The file starts
+  with a byte order mark so Excel shows diacritics, uses `;` in Romanian and `,`
+  in English, and escapes values that a spreadsheet would run as formulas. The
+  school report of a student is a page laid out for printing, so the browser can
+  print it or save it as PDF without an extra library.
 - **Input validation.** Names accept letters, spaces, hyphens and apostrophes (2-100 characters). Passwords need 8-72 characters with at least one letter and one digit, birth dates must be between 1900 and today, and unknown fields are rejected. The frontend applies the same rules before sending a form.
 - **Rate limiting.** Login is limited to 5 attempts per minute, the rest of the
   API to 100 requests per minute.
 
 ## Status
 
-The backend is complete and covered by tests. The frontend has the start page
-with sign in and sign up connected to the API, and a signed-in page that restores
-the session after a reload. The screens for each role are the next step. The plan
-is tracked in [docs/PLAN.md](docs/PLAN.md).
+The application is complete. Administrators manage students, teachers, classes,
+subjects and grades, follow the statistics of the school and the history of every
+grade, and export grades and school reports. Teachers grade the students of their
+classes and students see their grades, averages and school report. The original
+plan is in [docs/PLAN.md](docs/PLAN.md).

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { EmptyState } from './EmptyState.tsx';
-import { Skeleton } from './Skeleton.tsx';
+import { LoadingPanel } from './LoadingPanel.tsx';
 
 export interface Column<T> {
   key: string;
@@ -15,7 +15,6 @@ interface DataTableProps<T> {
   rows: T[];
   rowKey: (row: T) => string | number;
   loading?: boolean;
-  skeletonRows?: number;
   empty?: ReactNode;
 }
 
@@ -25,10 +24,11 @@ export function DataTable<T>({
   rows,
   rowKey,
   loading = false,
-  skeletonRows = 5,
   empty,
 }: DataTableProps<T>) {
   const showEmpty = !loading && rows.length === 0;
+
+  if (loading) return <LoadingPanel />;
 
   return (
     <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-slate-300">
@@ -48,16 +48,6 @@ export function DataTable<T>({
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
-          {loading &&
-            Array.from({ length: skeletonRows }, (_, index) => (
-              <tr key={index}>
-                {columns.map((column) => (
-                  <td key={column.key} className="px-4 py-3.5">
-                    <Skeleton className="h-4 w-3/4" />
-                  </td>
-                ))}
-              </tr>
-            ))}
           {showEmpty && (
             <tr>
               <td colSpan={columns.length}>{empty ?? <EmptyState />}</td>

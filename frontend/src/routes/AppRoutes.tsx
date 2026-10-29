@@ -8,7 +8,10 @@ import ResetPasswordPage from '../pages/ResetPasswordPage.tsx';
 import NotFoundPage from '../pages/NotFoundPage.tsx';
 import AdminClassesPage from '../pages/admin/AdminClassesPage.tsx';
 import AdminClassStudentsPage from '../pages/admin/AdminClassStudentsPage.tsx';
+import AdminActivityPage from '../pages/admin/AdminActivityPage.tsx';
 import AdminGradesPage from '../pages/admin/AdminGradesPage.tsx';
+import AdminStatisticsPage from '../pages/admin/AdminStatisticsPage.tsx';
+import AdminStudentReportPage from '../pages/admin/AdminStudentReportPage.tsx';
 import AdminStudentsPage from '../pages/admin/AdminStudentsPage.tsx';
 import AdminSubjectsPage from '../pages/admin/AdminSubjectsPage.tsx';
 import AdminTeachersPage from '../pages/admin/AdminTeachersPage.tsx';
@@ -17,6 +20,7 @@ import TeacherClassesPage from '../pages/teacher/TeacherClassesPage.tsx';
 import TeacherStudentGradesPage from '../pages/teacher/TeacherStudentGradesPage.tsx';
 import StudentGradesPage from '../pages/student/StudentGradesPage.tsx';
 import StudentProfilePage from '../pages/student/StudentProfilePage.tsx';
+import StudentReportPage from '../pages/student/StudentReportPage.tsx';
 import { PublicOnly, RequireAuth, RequireRole } from './guards.tsx';
 import { paths } from './paths.ts';
 
@@ -40,6 +44,10 @@ export function AppRoutes() {
             <Route
               path={paths.student.grades}
               element={<StudentGradesPage />}
+            />
+            <Route
+              path={paths.student.report}
+              element={<StudentReportPage />}
             />
           </Route>
 
@@ -65,6 +73,10 @@ export function AppRoutes() {
           <Route element={<RequireRole role="ADMIN" />}>
             <Route path={paths.admin.profile} element={<AdminProfilePage />} />
             <Route
+              path={paths.admin.statistics}
+              element={<AdminStatisticsPage />}
+            />
+            <Route
               path={paths.admin.students}
               element={<AdminStudentsPage />}
             />
@@ -81,7 +93,15 @@ export function AppRoutes() {
               path={paths.admin.subjects}
               element={<AdminSubjectsPage />}
             />
+            <Route
+              path={paths.admin.studentReport(':studentId')}
+              element={<AdminStudentReportPage />}
+            />
             <Route path={paths.admin.grades} element={<AdminGradesPage />} />
+            <Route
+              path={paths.admin.activity}
+              element={<AdminActivityPage />}
+            />
           </Route>
         </Route>
       </Route>

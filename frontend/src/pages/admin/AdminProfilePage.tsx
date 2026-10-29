@@ -72,7 +72,7 @@ export default function AdminProfilePage() {
                   <li key={admin.id} className="flex items-center gap-4 py-3.5">
                     <span
                       aria-hidden="true"
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-[15px] font-semibold text-indigo-700"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-[15px] font-semibold text-brand-700"
                     >
                       {admin.firstName && admin.lastName
                         ? `${admin.firstName[0]}${admin.lastName[0]}`

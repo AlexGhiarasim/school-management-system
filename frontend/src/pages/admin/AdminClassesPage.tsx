@@ -60,7 +60,7 @@ export default function AdminClassesPage() {
       render: (schoolClass) => (
         <Link
           to={paths.admin.classStudents(schoolClass.id)}
-          className="text-base font-semibold text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
+          className="text-base font-semibold text-brand-600 hover:text-brand-500 focus:outline-none focus-visible:underline"
         >
           {schoolClass.name}
         </Link>

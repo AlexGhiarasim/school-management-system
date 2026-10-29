@@ -124,7 +124,7 @@ export default function StudentProfilePage() {
                   <button
                     type="button"
                     onClick={() => setClassmatesOpen(true)}
-                    className="rounded-md font-medium text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-600"
+                    className="rounded-md font-medium text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-600"
                   >
                     {t('student.profile.classOverview.students', {
                       count: classOverview.studentCount,
@@ -190,7 +190,7 @@ export default function StudentProfilePage() {
                       {student.firstName}
                     </span>
                     {student.id === data.id && (
-                      <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">
+                      <span className="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700">
                         {t('student.profile.classOverview.you')}
                       </span>
                     )}
@@ -207,7 +207,7 @@ export default function StudentProfilePage() {
               actions={
                 <Link
                   to={paths.student.grades}
-                  className="group rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-indigo-600 shadow-sm transition-colors hover:bg-slate-100 hover:text-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="group rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-brand-600 shadow-sm transition-colors hover:bg-slate-100 hover:text-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
                 >
                   {t('student.profile.recent.viewAll')}
                   <span

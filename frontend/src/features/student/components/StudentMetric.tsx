@@ -31,7 +31,7 @@ export function StudentMetric({
           className="mt-3 h-1 overflow-hidden rounded-full bg-slate-200"
         >
           <div
-            className="h-full rounded-full bg-indigo-500"
+            className="h-full rounded-full bg-brand-500"
             style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
           />
         </div>

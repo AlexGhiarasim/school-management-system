@@ -10,7 +10,7 @@ export function AuthPageLayout({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-sky-50">
+    <div className="min-h-screen bg-gradient-to-br from-brand-50 via-white to-cyan-50">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-6 sm:px-10">
         <header className="flex items-center gap-3">
           <Link to={paths.home} className="flex items-center gap-3">
@@ -25,7 +25,7 @@ export function AuthPageLayout({ children }: { children: ReactNode }) {
         </header>
 
         <main className="flex flex-1 items-center justify-center py-8">
-          <div className="animate-rise w-full max-w-md rounded-3xl bg-white/90 p-7 shadow-2xl shadow-indigo-900/10 ring-1 ring-slate-200/80">
+          <div className="animate-rise w-full max-w-md rounded-3xl bg-white/90 p-7 shadow-2xl shadow-brand-900/10 ring-1 ring-slate-200/80">
             {children}
           </div>
         </main>

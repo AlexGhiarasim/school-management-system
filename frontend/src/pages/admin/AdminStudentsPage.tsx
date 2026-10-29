@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import { PageHeader } from '../../components/layout/PageHeader.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import { ClearFilters } from '../../components/ui/ClearFilters.tsx';
@@ -28,6 +29,7 @@ import { useDebouncedValue } from '../../hooks/useDebouncedValue.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
 import { formatDate } from '../../utils/format.ts';
+import { paths } from '../../routes/paths.ts';
 
 const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
@@ -113,7 +115,7 @@ export default function AdminStudentsPage() {
       header: t('admin.students.table.class'),
       render: (student) =>
         student.class ? (
-          <span className="rounded-lg bg-indigo-50 px-2.5 py-1 text-[13px] font-semibold text-indigo-700">
+          <span className="rounded-lg bg-brand-50 px-2.5 py-1 text-[13px] font-semibold text-brand-700">
             {student.class.name}
           </span>
         ) : (
@@ -128,6 +130,12 @@ export default function AdminStudentsPage() {
       className: 'text-right',
       render: (student) => (
         <div className="flex justify-end gap-2">
+          <Link
+            to={paths.admin.studentReport(student.id)}
+            className="inline-flex items-center rounded-xl bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-slate-300 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200"
+          >
+            {t('admin.students.table.report')}
+          </Link>
           <Button
             variant="secondary"
             fullWidth={false}

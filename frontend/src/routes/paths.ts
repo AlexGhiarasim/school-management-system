@@ -7,6 +7,7 @@ export const paths = {
   student: {
     profile: '/student',
     grades: '/student/grades',
+    report: '/student/report',
   },
   teacher: {
     profile: '/teacher/profile',
@@ -17,12 +18,16 @@ export const paths = {
   },
   admin: {
     profile: '/admin/profile',
+    statistics: '/admin/statistics',
     students: '/admin/students',
+    studentReport: (studentId: number | string) =>
+      `/admin/students/${studentId}/report`,
     teachers: '/admin/teachers',
     classes: '/admin/classes',
     classStudents: (classId: number | string) => `/admin/classes/${classId}`,
     subjects: '/admin/subjects',
     grades: '/admin/grades',
+    activity: '/admin/activity',
   },
 } as const;
 
