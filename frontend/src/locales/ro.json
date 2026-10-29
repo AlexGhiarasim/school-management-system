@@ -573,6 +573,7 @@
     "headline": "Școala ta, mai",
     "words": ["simplă", "organizată", "aproape"],
     "subtitle": "Autentifică-te sau creează un cont ca să continui.",
+    "subtitleSignInOnly": "Autentifică-te ca să continui.",
     "description": "Un spațiu simplu care ține școala organizată: informațiile importante sunt într-un singur loc, clare și la îndemână.",
     "copyright": "© {{year}} Sistem de gestiune școlară"
   },

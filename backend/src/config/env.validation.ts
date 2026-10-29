@@ -1,5 +1,6 @@
-import { plainToInstance } from 'class-transformer';
+import { plainToInstance, Transform } from 'class-transformer';
 import {
+  IsBoolean,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -69,6 +70,13 @@ class EnvironmentVariables {
 
   @IsUrl({ require_tld: false })
   APP_URL: string = 'http://localhost:5173';
+
+  // Accounts are normally created by the seed script and by administrators.
+  @Transform(({ obj, key }: { obj: Record<string, unknown>; key: string }) =>
+    obj[key] === undefined ? false : obj[key] === true || obj[key] === 'true',
+  )
+  @IsBoolean()
+  ALLOW_PUBLIC_REGISTRATION: boolean = false;
 }
 
 export function validateEnv(config: Record<string, unknown>) {

@@ -79,27 +79,67 @@ describe('Authentication (e2e)', () => {
       .expect(401);
   });
 
-  describe('registration', () => {
+  describe('registration when it is disabled (the default)', () => {
+    it('reports it in the public config', async () => {
+      const response = await http().get('/api/auth/config').expect(200);
+
+      expect(response.body).toEqual({ registrationEnabled: false });
+    });
+
+    it('refuses to create an account', async () => {
+      await http()
+        .post('/api/auth/register')
+        .send({
+          firstName: 'Maria',
+          lastName: 'Popescu',
+          email: 'closed@e2e-auth.test',
+          password: 'Password123',
+          dateOfBirth: '2010-05-17',
+        })
+        .expect(403);
+    });
+  });
+
+  describe('registration when it is enabled', () => {
+    let open: TestContext;
+    const openHttp = () => request(open.app.getHttpServer() as Server);
+
+    beforeAll(async () => {
+      process.env.ALLOW_PUBLIC_REGISTRATION = 'true';
+      open = await createTestContext('e2e-auth-open');
+    });
+
+    afterAll(async () => {
+      delete process.env.ALLOW_PUBLIC_REGISTRATION;
+      await open.close();
+    });
+
+    it('reports it in the public config', async () => {
+      const response = await openHttp().get('/api/auth/config').expect(200);
+
+      expect(response.body).toEqual({ registrationEnabled: true });
+    });
+
     const account = {
       firstName: 'Maria',
       lastName: 'Popescu',
-      email: 'Maria.Register@e2e-auth.test',
+      email: 'Maria.Register@e2e-auth-open.test',
       password: 'Password123',
       dateOfBirth: '2010-05-17',
     };
 
     it('creates a student account and signs it in', async () => {
-      const response = await http()
+      const response = await openHttp()
         .post('/api/auth/register')
         .send(account)
         .expect(201);
 
       expect(response.body.user).toMatchObject({
-        email: 'maria.register@e2e-auth.test',
+        email: 'maria.register@e2e-auth-open.test',
         role: 'STUDENT',
       });
 
-      const me = await http()
+      const me = await openHttp()
         .get('/api/auth/me')
         .set('Authorization', `Bearer ${response.body.accessToken}`)
         .expect(200);
@@ -108,27 +148,27 @@ describe('Authentication (e2e)', () => {
     });
 
     it('rejects an email that is already registered', async () => {
-      await http()
+      await openHttp()
         .post('/api/auth/register')
         .send({ ...account, email: account.email.toUpperCase() })
         .expect(409);
     });
 
     it('does not accept a role or a class from the client', async () => {
-      await http()
+      await openHttp()
         .post('/api/auth/register')
-        .send({ ...account, email: 'a@e2e-auth.test', role: 'ADMIN' })
+        .send({ ...account, email: 'a@e2e-auth-open.test', role: 'ADMIN' })
         .expect(400);
-      await http()
+      await openHttp()
         .post('/api/auth/register')
-        .send({ ...account, email: 'b@e2e-auth.test', classId: 1 })
+        .send({ ...account, email: 'b@e2e-auth-open.test', classId: 1 })
         .expect(400);
     });
 
     it('rejects invalid account data', async () => {
-      await http()
+      await openHttp()
         .post('/api/auth/register')
-        .send({ ...account, email: 'c@e2e-auth.test', password: 'short' })
+        .send({ ...account, email: 'c@e2e-auth-open.test', password: 'short' })
         .expect(400);
     });
   });

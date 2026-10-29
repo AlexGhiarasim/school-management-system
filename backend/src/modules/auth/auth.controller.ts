@@ -23,6 +23,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import { Public } from '../../common/decorators/public.decorator.js';
 import type { AuthenticatedUser } from '../../common/interfaces/authenticated-user.interface.js';
 import { AuthService } from './auth.service.js';
+import { AuthConfigDto } from './dto/auth-config.dto.js';
 import { ChangePasswordDto } from './dto/change-password.dto.js';
 import { CurrentUserDto } from './dto/current-user.dto.js';
 import { ForgotPasswordDto } from './dto/forgot-password.dto.js';
@@ -48,10 +49,23 @@ export class AuthController {
   }
 
   @Public()
+  @Get('config')
+  @ApiOperation({ summary: 'Tell the client which sign-up options are open' })
+  @ApiOkResponse({ type: AuthConfigDto })
+  getConfig(): AuthConfigDto {
+    return { registrationEnabled: this.authService.isRegistrationEnabled() };
+  }
+
+  @Public()
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('register')
-  @ApiOperation({ summary: 'Create a student account and sign in' })
+  @ApiOperation({
+    summary: 'Create a student account and sign in',
+    description:
+      'Disabled by default. Set ALLOW_PUBLIC_REGISTRATION=true to enable it.',
+  })
   @ApiCreatedResponse({ type: LoginResponseDto })
+  @ApiForbiddenResponse({ description: 'Public registration is disabled' })
   @ApiConflictResponse({ description: 'Email is already registered' })
   register(@Body() dto: RegisterDto): Promise<LoginResponseDto> {
     return this.authService.register(dto);

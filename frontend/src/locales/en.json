@@ -566,6 +566,7 @@
     "headline": "Your school, made",
     "words": ["simpler", "clearer", "closer"],
     "subtitle": "Sign in or create an account to continue.",
+    "subtitleSignInOnly": "Sign in to continue.",
     "description": "A simple space that keeps the school organized: the important information is in one place, clear and within reach.",
     "copyright": "© {{year}} School management system"
   },

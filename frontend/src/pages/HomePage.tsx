@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../components/layout/LanguageSwitcher.tsx';
 import { Logo } from '../components/layout/Logo.tsx';
+import { useRegistrationEnabled } from '../features/auth/hooks.ts';
 import { AuthCard } from '../features/auth/components/AuthCard.tsx';
 import { RotatingHeadline } from '../features/landing/components/RotatingHeadline.tsx';
 
@@ -8,6 +9,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 
 export default function HomePage() {
   const { t } = useTranslation();
+  const registrationEnabled = useRegistrationEnabled();
 
   return (
     <div className="relative min-h-screen overflow-clip bg-gradient-to-br from-indigo-50 via-white to-sky-50">
@@ -40,7 +42,11 @@ export default function HomePage() {
               className="animate-rise mt-5 max-w-md text-lg text-slate-600"
               style={{ animationDelay: '120ms' }}
             >
-              {t('landing.subtitle')}
+              {t(
+                registrationEnabled
+                  ? 'landing.subtitle'
+                  : 'landing.subtitleSignInOnly',
+              )}
             </p>
             <p
               className="animate-rise mt-6 max-w-md border-l-2 border-indigo-200 pl-4 text-sm leading-relaxed text-slate-500"

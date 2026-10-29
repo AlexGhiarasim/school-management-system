@@ -25,6 +25,7 @@ import type { JwtPayload } from './interfaces/jwt-payload.interface.js';
 
 const INVALID_CREDENTIALS = 'Invalid email or password';
 const EMAIL_TAKEN = 'Email is already registered';
+const REGISTRATION_DISABLED = 'Public registration is disabled';
 const WRONG_CURRENT_PASSWORD = 'The current password is incorrect';
 const INVALID_RESET_TOKEN = 'The reset link is invalid or has expired';
 const RESET_TOKEN_MINUTES = 60;
@@ -59,12 +60,22 @@ export class AuthService {
     return this.issueToken(user);
   }
 
+  isRegistrationEnabled(): boolean {
+    return (
+      this.configService.get<boolean>('ALLOW_PUBLIC_REGISTRATION') === true
+    );
+  }
+
   async register({
     email,
     password,
     dateOfBirth,
     ...profile
   }: RegisterDto): Promise<LoginResponseDto> {
+    if (!this.isRegistrationEnabled()) {
+      throw new ForbiddenException(REGISTRATION_DISABLED);
+    }
+
     try {
       const student = await this.prisma.student.create({
         data: {

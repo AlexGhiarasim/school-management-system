@@ -1,4 +1,8 @@
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import type { ConfigService } from '@nestjs/config';
 import type { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcryptjs';
@@ -11,13 +15,14 @@ describe('AuthService', () => {
   const findUnique = vi.fn();
   const createStudent = vi.fn();
   const signAsync = vi.fn().mockResolvedValue('signed-token');
+  const registrationEnabled = vi.fn().mockReturnValue(true);
   const service = new AuthService(
     {
       user: { findUnique },
       student: { create: createStudent },
     } as unknown as PrismaService,
     { signAsync } as unknown as JwtService,
-    {} as unknown as ConfigService,
+    { get: registrationEnabled } as unknown as ConfigService,
     {} as unknown as MailService,
   );
 
@@ -90,6 +95,16 @@ describe('AuthService', () => {
 
     beforeEach(() => {
       createStudent.mockReset();
+      registrationEnabled.mockReturnValue(true);
+    });
+
+    it('refuses to register when public registration is disabled', async () => {
+      registrationEnabled.mockReturnValue(false);
+
+      await expect(service.register(dto)).rejects.toBeInstanceOf(
+        ForbiddenException,
+      );
+      expect(createStudent).not.toHaveBeenCalled();
     });
 
     it('creates a student account and returns a token', async () => {

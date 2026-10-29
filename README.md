@@ -103,7 +103,8 @@ All endpoints are under `/api`. Lists accept `page` and `limit` and return
 | Endpoint | Admin | Teacher | Student |
 |---|---|---|---|
 | `POST /auth/login` | public | public | public |
-| `POST /auth/register` (creates a student account) | public | public | public |
+| `GET /auth/config` (tells the client whether sign-up is open) | public | public | public |
+| `POST /auth/register` (creates a student account, only when `ALLOW_PUBLIC_REGISTRATION=true`) | public | public | public |
 | `POST /auth/forgot-password` (emails a reset link) | public | public | public |
 | `POST /auth/reset-password` (sets a new password with the link token) | public | public | public |
 | `POST /auth/change-password` | yes | yes | yes |
@@ -202,6 +203,12 @@ touches the frontend. Another workflow builds the Docker images.
   local inbox, and a failed delivery is only logged. To send real emails, set
   `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM` and
   `APP_URL` in `.env` (see `.env.example`).
+- **Public registration is off by default.** Accounts come from the seed script
+  and from administrators, as the assignment describes. The student sign-up
+  (`POST /auth/register` and the "Create account" tab) stays in the code behind
+  `ALLOW_PUBLIC_REGISTRATION`. Set it to `true` in `.env` to open it: a new
+  student then has no class until an administrator assigns one. While it is off
+  the endpoint answers 403 and the start page shows only the sign-in form.
 - **Input validation.** Names accept letters, spaces, hyphens and apostrophes (2-100 characters). Passwords need 8-72 characters with at least one letter and one digit, birth dates must be between 1900 and today, and unknown fields are rejected. The frontend applies the same rules before sending a form.
 - **Rate limiting.** Login is limited to 5 attempts per minute, the rest of the
   API to 100 requests per minute.
