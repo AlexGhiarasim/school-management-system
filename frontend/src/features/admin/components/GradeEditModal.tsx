@@ -10,7 +10,7 @@ import { useFormState, type FormError } from '../../../hooks/useFormState.ts';
 import { useSubjectName } from '../../../hooks/useSubjectName.ts';
 import { useToast } from '../../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../../lib/apiErrors.ts';
-import { formatDate, formatDateTime } from '../../../utils/format.ts';
+import { formatDate, formatDateTime, fullName } from '../../../utils/format.ts';
 import {
   GRADE_MAX,
   GRADE_MIN,
@@ -135,7 +135,7 @@ function GradeEditForm({
       >
         <p className="text-sm text-slate-600">
           {t('admin.grades.editFor', {
-            name: `${grade.student.firstName} ${grade.student.lastName}`,
+            name: fullName(grade.student),
           })}
         </p>
         <SelectField

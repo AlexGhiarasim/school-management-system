@@ -18,7 +18,7 @@ import type { ClassStudent } from '../../features/teacher/types.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
 import { paths } from '../../routes/paths.ts';
-import { formatDate } from '../../utils/format.ts';
+import { formatDate, fullName } from '../../utils/format.ts';
 
 const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
@@ -174,9 +174,7 @@ export default function AdminClassStudentsPage() {
             open={removing !== null}
             title={t('admin.classStudents.remove.title')}
             message={t('admin.classStudents.remove.message', {
-              name: removing
-                ? `${removing.firstName} ${removing.lastName}`
-                : '',
+              name: removing ? fullName(removing) : '',
             })}
             confirmLabel={t('admin.classStudents.remove.confirm')}
             loading={assign.isPending}

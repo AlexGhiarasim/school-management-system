@@ -16,6 +16,9 @@ import AdminStudentsPage from '../pages/admin/AdminStudentsPage.tsx';
 import AdminSubjectsPage from '../pages/admin/AdminSubjectsPage.tsx';
 import AdminTeachersPage from '../pages/admin/AdminTeachersPage.tsx';
 import ClassStudentsPage from '../pages/teacher/ClassStudentsPage.tsx';
+import HomeroomPage from '../pages/teacher/HomeroomPage.tsx';
+import HomeroomReportPage from '../pages/teacher/HomeroomReportPage.tsx';
+import HomeroomStudentPage from '../pages/teacher/HomeroomStudentPage.tsx';
 import TeacherClassesPage from '../pages/teacher/TeacherClassesPage.tsx';
 import TeacherStudentGradesPage from '../pages/teacher/TeacherStudentGradesPage.tsx';
 import StudentGradesPage from '../pages/student/StudentGradesPage.tsx';
@@ -59,6 +62,15 @@ export function AppRoutes() {
             <Route
               path={paths.teacher.classes}
               element={<TeacherClassesPage />}
+            />
+            <Route path={paths.teacher.homeroom} element={<HomeroomPage />} />
+            <Route
+              path={paths.teacher.homeroomStudent(':studentId')}
+              element={<HomeroomStudentPage />}
+            />
+            <Route
+              path={paths.teacher.homeroomReport(':studentId')}
+              element={<HomeroomReportPage />}
             />
             <Route
               path={paths.teacher.classStudents(':classId')}

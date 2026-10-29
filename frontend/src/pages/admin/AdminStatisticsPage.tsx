@@ -11,6 +11,7 @@ import { AverageBars } from '../../features/admin/components/charts/AverageBars.
 import { GradeDistributionChart } from '../../features/admin/components/charts/GradeDistributionChart.tsx';
 import { WeeklyTrendChart } from '../../features/admin/components/charts/WeeklyTrendChart.tsx';
 import { useAdminClasses, useStatistics } from '../../features/admin/hooks.ts';
+import { AtRiskList } from '../../features/statistics/components/AtRiskList.tsx';
 import { StudentMetric } from '../../features/student/components/StudentMetric.tsx';
 import { StudentPanel } from '../../features/student/components/StudentPanel.tsx';
 import { useSubjectName } from '../../hooks/useSubjectName.ts';
@@ -167,45 +168,10 @@ export default function AdminStatisticsPage() {
               })}
               className="lg:col-span-2"
             >
-              {data.atRisk.length === 0 ? (
-                <p className="text-sm text-slate-500">
-                  {t('admin.statistics.atRisk.none')}
-                </p>
-              ) : (
-                <ul className="max-h-96 divide-y divide-slate-200 overflow-y-auto pr-1">
-                  {data.atRisk.map((student) => (
-                    <li
-                      key={student.studentId}
-                      className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3 first:pt-0 last:pb-0"
-                    >
-                      <span className="min-w-0 flex-1">
-                        <Link
-                          to={paths.admin.studentReport(student.studentId)}
-                          className="font-medium text-slate-900 hover:text-brand-600"
-                        >
-                          {name(student)}
-                        </Link>
-                        <span className="ml-2 text-sm text-slate-500">
-                          {student.className ?? '-'}
-                        </span>
-                      </span>
-                      <span className="flex flex-wrap justify-end gap-1.5">
-                        {student.failingSubjects.map(({ subject, average }) => (
-                          <span
-                            key={subject}
-                            className="inline-flex items-center gap-2 rounded-full bg-rose-50 py-0.5 pr-1 pl-3 text-sm font-medium text-rose-800"
-                          >
-                            {subjectName(subject)}
-                            <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-white px-1.5 text-xs font-semibold tabular-nums">
-                              {average}
-                            </span>
-                          </span>
-                        ))}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <AtRiskList
+                students={data.atRisk}
+                studentLink={paths.admin.studentReport}
+              />
             </StudentPanel>
           </div>
         </div>

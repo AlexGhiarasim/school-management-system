@@ -18,7 +18,12 @@ import {
 } from '../../features/student/hooks.ts';
 import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { paths } from '../../routes/paths.ts';
-import { formatDate, formatNumber } from '../../utils/format.ts';
+import {
+  formatDate,
+  formatNumber,
+  fullName,
+  initials,
+} from '../../utils/format.ts';
 
 const CARD = 'rounded-2xl border border-slate-300 bg-white p-6 shadow-sm';
 const RECENT_GRADES = 5;
@@ -64,18 +69,18 @@ export default function StudentProfilePage() {
         <div className="grid min-w-0 gap-6 lg:grid-cols-3">
           <div className="min-w-0 animate-rise lg:col-span-2 [&>div]:h-full [&>div]:ring-slate-300">
             <ProfileBanner
-              initials={`${data.firstName[0]}${data.lastName[0]}`}
-              name={`${data.firstName} ${data.lastName}`}
+              initials={initials(data)}
+              name={fullName(data)}
               subtitle={t('roles.STUDENT')}
             >
               <dl className="mt-6 grid gap-3 sm:grid-cols-2">
                 <ProfileField
-                  label={t('student.profile.fields.firstName')}
-                  value={data.firstName}
-                />
-                <ProfileField
                   label={t('student.profile.fields.lastName')}
                   value={data.lastName}
+                />
+                <ProfileField
+                  label={t('student.profile.fields.firstName')}
+                  value={data.firstName}
                 />
                 <ProfileField
                   label={t('student.profile.fields.email')}

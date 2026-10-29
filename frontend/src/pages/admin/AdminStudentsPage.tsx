@@ -28,7 +28,7 @@ import {
 import { useDebouncedValue } from '../../hooks/useDebouncedValue.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
-import { formatDate } from '../../utils/format.ts';
+import { formatDate, fullName } from '../../utils/format.ts';
 import { paths } from '../../routes/paths.ts';
 
 const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
@@ -306,7 +306,7 @@ export default function AdminStudentsPage() {
         open={deleting !== null}
         title={t('admin.students.delete.title')}
         message={t('admin.students.delete.message', {
-          name: deleting ? `${deleting.firstName} ${deleting.lastName}` : '',
+          name: deleting ? fullName(deleting) : '',
         })}
         confirmLabel={t('admin.students.delete.confirm')}
         danger

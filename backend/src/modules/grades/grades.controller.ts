@@ -52,13 +52,19 @@ export class GradesController {
   }
 
   @Get('export')
-  @Roles(Role.ADMIN)
   @Header('Content-Type', 'text/csv; charset=utf-8')
   @Header('Content-Disposition', 'attachment; filename="grades.csv"')
-  @ApiOperation({ summary: 'Download the filtered grades as a CSV file' })
+  @ApiOperation({
+    summary: 'Download the filtered grades as a CSV file',
+    description:
+      'Administrators export any grades. A class teacher exports the grades of their class, with classId.',
+  })
   @ApiProduces('text/csv')
-  exportCsv(@Query() query: ExportGradesQueryDto) {
-    return this.gradesService.exportCsv(query);
+  exportCsv(
+    @Query() query: ExportGradesQueryDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.gradesService.exportCsv(query, user);
   }
 
   @Get('history')

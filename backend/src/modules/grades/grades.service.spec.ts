@@ -147,7 +147,7 @@ describe('GradesService', () => {
           gradeId: 100,
           oldValue: null,
           newValue: 9,
-          studentName: 'Ana Popa',
+          studentName: 'Popa Ana',
           subjectName: 'Mathematics',
         }),
       });

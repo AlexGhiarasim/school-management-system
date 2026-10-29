@@ -211,7 +211,7 @@ describe('AdminGradesPage', () => {
 
     expect(
       confirmation.getByText(
-        /grade 10 in Mathematics of the student Mihai Constantin/,
+        /grade 10 in Mathematics of the student Constantin Mihai/,
       ),
     ).toBeVisible();
 

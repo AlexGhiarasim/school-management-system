@@ -4,9 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../components/layout/LanguageSwitcher.tsx';
 import { Logo } from '../components/layout/Logo.tsx';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog.tsx';
+import { useHomeroomClass } from '../features/teacher/hooks.ts';
 import { CloseIcon, MenuIcon } from '../components/ui/icons.tsx';
 import { useAuth } from '../hooks/useAuth.ts';
 import { roleProfile } from '../routes/paths.ts';
+import { fullName, initials } from '../utils/format.ts';
 import { NAV_ITEMS } from './navigation.ts';
 import { UserMenu } from './UserMenu.tsx';
 
@@ -20,20 +22,29 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 export function AppLayout() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
+  const { homeroomClass } = useHomeroomClass(user?.role === 'TEACHER');
   const [confirmingSignOut, setConfirmingSignOut] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   if (!user) return null;
 
-  const name = user.profile
-    ? `${user.profile.firstName} ${user.profile.lastName}`
+  const { profile } = user;
+  const familyNameFirst = user.role === 'STUDENT';
+  const name = profile
+    ? familyNameFirst
+      ? fullName(profile)
+      : `${profile.firstName} ${profile.lastName}`
     : user.email;
-  const initials = user.profile
-    ? `${user.profile.firstName[0]}${user.profile.lastName[0]}`
+  const userInitials = profile
+    ? familyNameFirst
+      ? initials(profile)
+      : `${profile.firstName[0]}${profile.lastName[0]}`
     : user.email[0].toUpperCase();
   // The profile has its own entry in the user menu.
   const links = NAV_ITEMS[user.role].filter(
-    (item) => item.to !== roleProfile[user.role],
+    (item) =>
+      item.to !== roleProfile[user.role] &&
+      (!item.homeroomOnly || homeroomClass),
   );
 
   return (
@@ -79,7 +90,7 @@ export function AppLayout() {
             <UserMenu
               name={name}
               email={user.email}
-              initials={initials}
+              initials={userInitials}
               role={t(`roles.${user.role}`)}
               profilePath={roleProfile[user.role]}
               onSignOut={() => setConfirmingSignOut(true)}

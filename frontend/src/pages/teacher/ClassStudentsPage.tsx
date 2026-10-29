@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, Navigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../components/layout/PageHeader.tsx';
 import { DataTable, type Column } from '../../components/ui/DataTable.tsx';
@@ -25,6 +25,10 @@ export default function ClassStudentsPage() {
   const classes = useTeacherClasses();
   const students = useClassStudents(classId, page);
   const schoolClass = classes.data?.find((item) => item.id === classId);
+
+  if (schoolClass?.isHomeroom && schoolClass.subjects.length === 0) {
+    return <Navigate to={paths.teacher.homeroom} replace />;
+  }
 
   const columns: Column<ClassStudent>[] = [
     {

@@ -35,15 +35,15 @@
   "credentials": {
     "title": "The account was created",
     "message": "Give these details to {{name}}. They can sign in with them right away.",
-    "warning": "The password cannot be seen again after you close this window. Copy it now.",
+    "warning": "The password is not shown again after you close this window. Copy it now.",
     "copyAll": "Copy all",
-    "done": "I have noted them",
+    "done": "Done",
     "generate": "Generate a password"
   },
   "account": {
     "password": {
       "title": "Change password",
-      "hint": "Your other open sessions will be signed out.",
+      "hint": "You will be signed out on your other devices.",
       "current": "Current password",
       "new": "New password",
       "submit": "Change password",
@@ -54,7 +54,7 @@
   "confirm": {
     "password": {
       "title": "Change your password?",
-      "message": "You stay signed in here, and your other open sessions will be signed out.",
+      "message": "You stay signed in here. You will be signed out on your other devices.",
       "confirm": "Yes, change"
     },
     "add": "Yes, add",
@@ -69,7 +69,7 @@
       "createTitle": "Create this class?",
       "createMessage": "The class will be added to the school.",
       "updateTitle": "Save the changes to this class?",
-      "updateMessage": "The class will be updated for everyone who sees it."
+      "updateMessage": "The changes will be visible right away."
     },
     "student": {
       "createTitle": "Add this student?",
@@ -91,7 +91,7 @@
     },
     "assign": {
       "title": "Add this student to the class?",
-      "message": "The student will be moved into {{name}} and will see its grades and classmates.",
+      "message": "The student will be added to class {{name}}.",
       "student": "Student",
       "class": "Class"
     },
@@ -123,7 +123,8 @@
     },
     "teacher": {
       "classes": "My classes",
-      "profile": "My profile"
+      "profile": "My profile",
+      "homeroom": "Class teacher"
     },
     "admin": {
       "students": "Students",
@@ -204,7 +205,7 @@
       "teaching": "What you teach"
     },
     "classes": {
-      "description": "The classes you teach. Open a class to see its students.",
+      "description": "The classes where you teach. Open a class to see its students.",
       "students_one": "{{count}} student",
       "students_other": "{{count}} students",
       "open": "View students",
@@ -212,6 +213,13 @@
       "empty": {
         "title": "You have no classes yet",
         "description": "An administrator will assign your classes. They will appear here."
+      },
+      "teachingTitle": "Classes you teach ({{count}})",
+      "noTeaching": "You do not teach in any class",
+      "homeroomCallout": {
+        "title": "You are the class teacher of {{name}}",
+        "description": "See how the class is doing, the students failing a subject and the grades in every subject.",
+        "action": "View class {{name}}"
       }
     },
     "classStudents": {
@@ -239,17 +247,11 @@
     "studentGrades": {
       "back": "Back to the class",
       "title": "Student grades",
-      "description": "You can add grades for the subjects you teach and edit the ones you gave.",
-      "homeroomDescription": "As class teacher you see every grade of the student. You can change only the grades of the subject you teach.",
-      "homeroomOnlyDescription": "As class teacher you see every grade of the student, for viewing only.",
+      "description": "Add grades for your subjects. You can edit only the grades you gave.",
       "taught_one": "The subject you teach",
       "taught_other": "The subjects you teach",
       "taughtEmpty": "No grades in this subject yet.",
       "average": "Average",
-      "overview": {
-        "title": "All subjects",
-        "readOnly": "View only"
-      },
       "add": "Add grade",
       "filter": {
         "label": "Subject",
@@ -291,6 +293,55 @@
         "gradeInvalid": "Choose a grade from 1 to 10.",
         "dateInvalid": "Enter a valid date."
       }
+    },
+    "homeroom": {
+      "title": "Class {{name}}",
+      "badge": "Class teacher",
+      "description": "How your class is doing: the results in every subject, the students failing a subject and the teachers of the class.",
+      "permissions": "As the class teacher you see the grades of every student, in every subject. You can change only the grades you gave.",
+      "export": "Export the grades of the class",
+      "back": "Back to the class",
+      "noGrades": {
+        "title": "There are no grades in the class yet",
+        "description": "The statistics appear once teachers add grades."
+      },
+      "teachers": {
+        "title": "Teachers of the class",
+        "empty": "No teacher is assigned to this class yet."
+      },
+      "roster": {
+        "title": "Students of the class ({{count}})",
+        "caption": "The students of the class, with the average and situation of each",
+        "student": "Student",
+        "average": "Average",
+        "grades": "Grades",
+        "status": "Situation",
+        "actions": "Actions",
+        "viewGrades": "Grades",
+        "report": "School report",
+        "noGrades": "No grades",
+        "passing": "On track to pass",
+        "failing_one": "Failing {{count}} subject",
+        "failing_other": "Failing {{count}} subjects"
+      },
+      "notHomeroom": {
+        "title": "You are not a class teacher",
+        "description": "This page appears once an administrator makes you the class teacher of a class.",
+        "action": "Go to my classes"
+      },
+      "student": {
+        "description": "The grades of the student in every subject, for viewing only. You can change only the grades you gave.",
+        "ownGrades": "Add grades for my subjects",
+        "back": "Back to the student",
+        "notFound": {
+          "title": "Student not found",
+          "description": "The student is not in the class you lead."
+        },
+        "empty": {
+          "title": "The student has no grades yet",
+          "description": "Grades appear here once teachers add them."
+        }
+      }
     }
   },
   "admin": {
@@ -301,7 +352,7 @@
       "you": "you"
     },
     "grades": {
-      "description": "All the grades of the school. Filter by class, student or subject and edit or delete any grade.",
+      "description": "All the grades of the school. Filter by class, student or subject.",
       "editFor": "Grade of the student {{name}}",
       "filter": {
         "class": "Class",
@@ -380,7 +431,7 @@
         },
         "noResults": {
           "title": "No results",
-          "description": "We found no students without a class for the chosen search."
+          "description": "No student without a class matches the search."
         }
       }
     },
@@ -443,7 +494,7 @@
       },
       "delete": {
         "title": "Delete the teacher",
-        "message": "Delete the teacher {{name}}? Their account is deleted, their classes are left without a teacher and the grades they gave are kept. This cannot be undone.",
+        "message": "Delete the teacher {{name}}? Their account is deleted and the class they lead is left without a class teacher. The grades they gave are kept. This cannot be undone.",
         "confirm": "Delete",
         "deleted": "The teacher was deleted."
       },
@@ -555,7 +606,7 @@
       }
     },
     "statistics": {
-      "description": "An overview of the results of the school: averages, grade distribution and the students who are failing a subject.",
+      "description": "An overview of the school's results: averages, grade distribution and the students failing a subject.",
       "kpi": {
         "passRate": "Pass rate",
         "students": "Students",
@@ -612,9 +663,9 @@
       "table": {
         "caption": "Changes to grades, most recent first",
         "when": "When",
-        "actor": "By",
+        "actor": "Made by",
         "action": "Action",
-        "grade": "Grade of",
+        "grade": "Student and subject",
         "change": "Change"
       },
       "empty": {
@@ -657,7 +708,7 @@
     },
     "login": {
       "title": "Welcome back",
-      "subtitle": "Sign in to continue to your account.",
+      "subtitle": "Sign in to your account.",
       "prompt": "Don't have an account?",
       "action": "Create one",
       "forgot": "Forgot your password?",
@@ -752,7 +803,7 @@
     "student": "Student",
     "class": "Class",
     "dateOfBirth": "Date of birth",
-    "issued": "Issued on {{date}}",
+    "issued": "Issue date: {{date}}",
     "noGrades": "There are no grades yet.",
     "subject": "Subject",
     "grades": "Grades",

@@ -12,6 +12,11 @@ export const paths = {
   teacher: {
     profile: '/teacher/profile',
     classes: '/teacher/classes',
+    homeroom: '/teacher/homeroom',
+    homeroomStudent: (studentId: number | string) =>
+      `/teacher/homeroom/students/${studentId}`,
+    homeroomReport: (studentId: number | string) =>
+      `/teacher/homeroom/students/${studentId}/report`,
     classStudents: (classId: number | string) => `/teacher/classes/${classId}`,
     studentGrades: (classId: number | string, studentId: number | string) =>
       `/teacher/classes/${classId}/students/${studentId}`,

@@ -1,5 +1,9 @@
 import { toDateOnly } from '../../common/utils/date.util.js';
-import { average, summarize } from '../grades/grades.util.js';
+import {
+  average,
+  summarize,
+  type SubjectAverage,
+} from '../grades/grades.util.js';
 
 export const GRADE_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
 export const PASSING_AVERAGE = 5;
@@ -49,6 +53,12 @@ function groupBy<T, K>(items: T[], key: (item: T) => K): Map<K, T[]> {
   return groups;
 }
 
+function failingSubjects(bySubject: SubjectAverage[]): FailingSubject[] {
+  return bySubject
+    .filter((subject) => subject.average < PASSING_AVERAGE)
+    .map(({ subject, average }) => ({ subject, average }));
+}
+
 // Uses the same rules as the grades of a student: a subject is failed when its
 // rounded average is below 5.
 function studentResults(
@@ -66,9 +76,7 @@ function studentResults(
     return {
       student,
       average: summary.average ?? 0,
-      failingSubjects: summary.bySubject
-        .filter((subject) => subject.average < PASSING_AVERAGE)
-        .map(({ subject, average }) => ({ subject, average })),
+      failingSubjects: failingSubjects(summary.bySubject),
     };
   });
 }
@@ -155,4 +163,24 @@ export function buildStatistics(students: StatStudent[], grades: StatGrade[]) {
         failingSubjects,
       })),
   };
+}
+
+// Every student of a class, also the ones without grades, with the average
+// and the subjects they fail.
+export function buildRoster(students: StatStudent[], grades: StatGrade[]) {
+  const gradesByStudent = groupBy(grades, (grade) => grade.studentId);
+
+  return students.map(({ id, firstName, lastName }) => {
+    const own = gradesByStudent.get(id) ?? [];
+    const summary = summarize(own);
+
+    return {
+      studentId: id,
+      firstName,
+      lastName,
+      average: summary.average,
+      grades: own.length,
+      failingSubjects: failingSubjects(summary.bySubject),
+    };
+  });
 }

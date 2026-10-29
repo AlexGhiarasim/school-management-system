@@ -23,7 +23,7 @@ import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
 import { adminService } from '../../services/adminService.ts';
-import { formatDate } from '../../utils/format.ts';
+import { formatDate, fullName } from '../../utils/format.ts';
 
 const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
@@ -257,9 +257,7 @@ export default function AdminGradesPage() {
         message={t('admin.grades.delete.message', {
           grade: deleting?.value ?? '',
           subject: deleting ? subjectName(deleting.subject.name) : '',
-          name: deleting
-            ? `${deleting.student.firstName} ${deleting.student.lastName}`
-            : '',
+          name: deleting ? fullName(deleting.student) : '',
         })}
         confirmLabel={t('admin.grades.delete.confirm')}
         danger

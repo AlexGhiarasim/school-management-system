@@ -11,7 +11,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import { Roles } from '../../common/decorators/roles.decorator.js';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto.js';
@@ -71,6 +71,19 @@ export class ClassesController {
     @CurrentUser() user: AuthenticatedUser,
   ) {
     return this.classesService.findTeaching(id, user);
+  }
+
+  @Get(':id/overview')
+  @Roles(Role.ADMIN, Role.TEACHER)
+  @ApiOperation({
+    summary: 'Statistics, students and teachers of a class',
+    description: 'For the class teacher of the class, or an administrator.',
+  })
+  findOverview(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.classesService.findOverview(id, user);
   }
 
   @Get(':id/students')

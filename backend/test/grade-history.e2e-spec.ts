@@ -48,7 +48,7 @@ describe('Grade history (e2e)', () => {
         action: 'CREATED',
         oldValue: null,
         newValue: 6,
-        studentName: 'Own Student',
+        studentName: 'Student Own',
         actor: { name: 'Test Teacher', role: 'TEACHER' },
       },
     ]);

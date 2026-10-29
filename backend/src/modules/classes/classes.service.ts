@@ -15,6 +15,7 @@ import type { CreateClassDto } from './dto/create-class.dto.js';
 import type { ListClassesQueryDto } from './dto/list-classes-query.dto.js';
 import type { UpdateClassDto } from './dto/update-class.dto.js';
 import type { PaginationQueryDto } from '../../common/dto/pagination-query.dto.js';
+import { buildRoster, buildStatistics } from '../statistics/statistics.util.js';
 
 const classInclude = {
   teacher: { select: { id: true, firstName: true, lastName: true } },
@@ -116,14 +117,75 @@ export class ClassesService {
       throw new NotFoundException(`Class ${id} not found`);
     }
 
+    this.assertClassTeacher(schoolClass, user);
+
+    return this.listTeaching(id);
+  }
+
+  // Everything the class teacher needs to follow the class: the statistics of
+  // the class, how every student is doing and who teaches what.
+  async findOverview(id: number, user: AuthenticatedUser) {
+    const schoolClass = await this.prisma.class.findUnique({
+      where: { id },
+      include: classInclude,
+    });
+
+    if (!schoolClass) {
+      throw new NotFoundException(`Class ${id} not found`);
+    }
+
+    this.assertClassTeacher(schoolClass, user);
+
+    const [students, grades, teaching] = await Promise.all([
+      this.prisma.student.findMany({
+        where: { classId: id },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          class: { select: { id: true, name: true } },
+        },
+        orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+      }),
+      this.prisma.grade.findMany({
+        where: { student: { classId: id } },
+        select: {
+          value: true,
+          date: true,
+          studentId: true,
+          subject: { select: { id: true, name: true } },
+        },
+      }),
+      this.listTeaching(id),
+    ]);
+
+    const { byClass: _byClass, ...statistics } = buildStatistics(
+      students,
+      grades,
+    );
+
+    return {
+      ...toResponse(schoolClass),
+      statistics,
+      students: buildRoster(students, grades),
+      teaching,
+    };
+  }
+
+  private assertClassTeacher(
+    schoolClass: { teacherId: number | null },
+    user: AuthenticatedUser,
+  ): void {
     if (
       user.role === Role.TEACHER &&
       schoolClass.teacherId !== user.teacherId
     ) {
       throw new ForbiddenException('Only the class teacher can see this');
     }
+  }
 
-    const assignments = await this.prisma.teachingAssignment.findMany({
+  private listTeaching(id: number) {
+    return this.prisma.teachingAssignment.findMany({
       where: { classId: id },
       select: {
         subject: { select: { id: true, name: true } },
@@ -131,8 +193,6 @@ export class ClassesService {
       },
       orderBy: { subject: { name: 'asc' } },
     });
-
-    return assignments;
   }
 
   private async assertCanSee(id: number, user: AuthenticatedUser) {

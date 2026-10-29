@@ -39,7 +39,7 @@ export function auditEntry(
     action,
     actorId,
     studentId: grade.studentId,
-    studentName: `${grade.student.firstName} ${grade.student.lastName}`,
+    studentName: `${grade.student.lastName} ${grade.student.firstName}`,
     subjectName: grade.subject.name,
     previousSubjectName: subjectChanged ? before.subject.name : null,
     oldValue: before?.value ?? null,

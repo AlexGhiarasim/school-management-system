@@ -118,6 +118,7 @@ All endpoints are under `/api`. Lists accept `page` and `limit` and return
 | `/classes` (CRUD) | yes | no | no |
 | `PATCH /classes/:id/teacher` | yes | no | no |
 | `GET /classes/:id/students` | yes | own classes | no |
+| `GET /classes/:id/overview` (statistics, students and teachers of a class) | yes | class teacher | no |
 | `/students` (CRUD) | yes | no | no |
 | `PATCH /students/:id/class` | yes | no | no |
 | `GET /students/me` | no | no | yes |
@@ -126,7 +127,7 @@ All endpoints are under `/api`. Lists accept `page` and `limit` and return
 | `PATCH /grades/:id` | yes | grades they gave | no |
 | `DELETE /grades/:id` | yes | no | no |
 | `GET /grades/me` (grades and averages) | no | no | yes |
-| `GET /grades/export` (filtered grades as CSV) | yes | no | no |
+| `GET /grades/export` (filtered grades as CSV) | yes | class teacher, own class | no |
 | `GET /grades/history` (every change to grades) | yes | no | no |
 | `GET /grades/:id/history` (the changes to one grade) | yes | no | no |
 | `GET /statistics` (averages, distribution, students at risk) | yes | no | no |
@@ -220,6 +221,15 @@ touches the frontend. Another workflow builds the Docker images.
   at risk when the rounded average of a subject is below 5, the same rule as on
   their own grades page. The numbers are computed in one pass over the grades,
   in plain functions covered by unit tests.
+- **Class teacher.** A teacher teaches subjects in some classes and can lead one
+  class. The teacher pages keep the two apart: "My classes" lists the classes
+  where they teach, with the subjects, and the "Class teacher" page appears only
+  for the one they lead. There they see how the class is doing (pass rate, grade
+  distribution, average per subject), the students failing a subject, who teaches
+  what, and every student with all their grades and a printable school report.
+  They can export the grades of their class as CSV. The grades of other teachers
+  stay read-only, and `GET /classes/:id/overview` and the class export answer 403
+  for any other teacher.
 - **Grade history.** Every grade that is added, changed or deleted writes an entry
   to `GradeAudit` in the same transaction, with who made the change and the value
   before and after. The entry copies the names of the student and the subject, so

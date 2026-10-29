@@ -89,7 +89,16 @@ export class GradesService {
     return paginate(grades.map(toResponse), total, query);
   }
 
-  async exportCsv({ language = 'ro', ...filters }: ExportGradesQueryDto) {
+  // An administrator exports any grades. A teacher exports the grades of the
+  // class they lead.
+  async exportCsv(
+    { language = 'ro', ...filters }: ExportGradesQueryDto,
+    user: AuthenticatedUser,
+  ) {
+    if (user.role === Role.TEACHER) {
+      await this.assertLeads(filters.classId, user.teacherId);
+    }
+
     const grades = await this.prisma.grade.findMany({
       where: filterGrades(filters),
       include: {
@@ -269,6 +278,24 @@ export class GradesService {
         })),
       ],
     };
+  }
+
+  private async assertLeads(
+    classId: number | undefined,
+    teacherId: number | null,
+  ): Promise<void> {
+    const count =
+      classId === undefined
+        ? 0
+        : await this.prisma.class.count({
+            where: { id: classId, teacherId: teacherId ?? -1 },
+          });
+
+    if (count === 0) {
+      throw new ForbiddenException(
+        'Only the class teacher can export the grades of a class',
+      );
+    }
   }
 
   private async assertSeesStudent(

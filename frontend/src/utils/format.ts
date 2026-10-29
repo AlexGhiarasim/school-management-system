@@ -44,3 +44,17 @@ export function formatDateTime(value: string, language: string): string {
     minute: '2-digit',
   }).format(date);
 }
+
+interface PersonName {
+  firstName: string;
+  lastName: string;
+}
+
+// People are written with the family name first, like "Munteanu Diana".
+export function fullName({ firstName, lastName }: PersonName): string {
+  return `${lastName} ${firstName}`;
+}
+
+export function initials({ firstName, lastName }: PersonName): string {
+  return `${lastName[0]}${firstName[0]}`;
+}
