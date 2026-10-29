@@ -16,7 +16,6 @@ export const teacherKeys = {
   // Under "grades" so that a saved grade refreshes the overview too.
   homeroom: (classId: number) =>
     ['teacher', 'grades', 'homeroom', classId] as const,
-  subjects: ['teacher', 'subjects'] as const,
   grades: ['teacher', 'grades'] as const,
   studentGrades: (studentId: number) =>
     ['teacher', 'grades', studentId] as const,
@@ -63,14 +62,6 @@ export function useAllClassStudents(classId: number) {
     queryKey: teacherKeys.allClassStudents(classId),
     queryFn: () => teacherService.getAllClassStudents(classId),
     enabled: Number.isInteger(classId),
-  });
-}
-
-export function useSubjects() {
-  return useQuery({
-    queryKey: teacherKeys.subjects,
-    queryFn: teacherService.getSubjects,
-    staleTime: 5 * 60_000,
   });
 }
 

@@ -24,8 +24,19 @@ jobs:
     env:
       DATABASE_URL: mysql://school:school@localhost:3306/school_management
       JWT_SECRET: ci-only-secret-with-at-least-32-characters
+      REDIS_URL: redis://localhost:6379
 
     services:
+      redis:
+        image: redis:7.4-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
       mysql:
         image: mysql:8.4
         env:

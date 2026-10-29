@@ -258,23 +258,8 @@
       "taughtEmpty": "Nicio notă încă la această materie.",
       "average": "Media",
       "add": "Adaugă notă",
-      "filter": {
-        "label": "Materia",
-        "all": "Toate materiile"
-      },
       "table": {
-        "caption": "Notele elevului, de la cea mai recentă",
-        "subject": "Materia",
-        "grade": "Nota",
-        "date": "Data",
-        "teacher": "Profesor",
-        "noTeacher": "Administrator",
-        "actions": "Acțiuni",
         "edit": "Modifică"
-      },
-      "empty": {
-        "title": "Elevul nu are încă nicio notă",
-        "description": "Adaugă prima notă cu butonul de mai sus."
       },
       "notFound": {
         "title": "Elevul nu a fost găsit",
@@ -378,8 +363,7 @@
         "teacher": "Profesor",
         "noTeacher": "Administrator",
         "actions": "Acțiuni",
-        "edit": "Modifică",
-        "delete": "Șterge"
+        "edit": "Modifică"
       },
       "delete": {
         "title": "Șterge nota",
@@ -477,8 +461,7 @@
         "noTeacher": "Fără diriginte",
         "students": "Elevi",
         "actions": "Acțiuni",
-        "edit": "Modifică",
-        "delete": "Șterge"
+        "edit": "Modifică"
       },
       "empty": {
         "title": "Nu există încă nicio clasă",
@@ -512,8 +495,7 @@
         "email": "Email",
         "phone": "Telefon",
         "actions": "Acțiuni",
-        "edit": "Modifică",
-        "delete": "Șterge"
+        "edit": "Modifică"
       },
       "empty": {
         "title": "Nu există încă niciun profesor",
@@ -552,8 +534,7 @@
         "caption": "Materiile școlii",
         "name": "Materia",
         "actions": "Acțiuni",
-        "edit": "Modifică",
-        "delete": "Șterge"
+        "edit": "Modifică"
       },
       "empty": {
         "title": "Nu există încă nicio materie",
@@ -588,8 +569,7 @@
       },
       "filter": {
         "label": "Clasa",
-        "all": "Toate clasele",
-        "noClass": "Fără clasă"
+        "all": "Toate clasele"
       },
       "table": {
         "caption": "Elevii școlii",
@@ -601,7 +581,6 @@
         "noClass": "Fără clasă",
         "actions": "Acțiuni",
         "edit": "Modifică",
-        "delete": "Șterge",
         "report": "Situație"
       },
       "empty": {

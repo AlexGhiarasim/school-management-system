@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { CacheService } from '../../cache/cache.service.js';
 import type { AuthenticatedUser } from '../../common/interfaces/authenticated-user.interface.js';
 import {
   paginate,
@@ -32,7 +33,10 @@ function toResponse({ _count, ...schoolClass }: ClassWithRelations) {
 
 @Injectable()
 export class ClassesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cache: CacheService,
+  ) {}
 
   async findAll(query: ListClassesQueryDto) {
     const where: Prisma.ClassWhereInput = query.search
@@ -108,20 +112,6 @@ export class ClassesService {
     return toResponse(schoolClass);
   }
 
-  // Who teaches which subject in the class. Only the class teacher (and an
-  // administrator) can see it.
-  async findTeaching(id: number, user: AuthenticatedUser) {
-    const schoolClass = await this.prisma.class.findUnique({ where: { id } });
-
-    if (!schoolClass) {
-      throw new NotFoundException(`Class ${id} not found`);
-    }
-
-    this.assertClassTeacher(schoolClass, user);
-
-    return this.listTeaching(id);
-  }
-
   // Everything the class teacher needs to follow the class: the statistics of
   // the class, how every student is doing and who teaches what.
   async findOverview(id: number, user: AuthenticatedUser) {
@@ -136,40 +126,48 @@ export class ClassesService {
 
     this.assertClassTeacher(schoolClass, user);
 
-    const [students, grades, teaching] = await Promise.all([
-      this.prisma.student.findMany({
-        where: { classId: id },
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          class: { select: { id: true, name: true } },
-        },
-        orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
-      }),
-      this.prisma.grade.findMany({
-        where: { student: { classId: id } },
-        select: {
-          value: true,
-          date: true,
-          studentId: true,
-          subject: { select: { id: true, name: true } },
-        },
-      }),
-      this.listTeaching(id),
-    ]);
+    // The class and who may see it are read every time. Only the heavy part,
+    // the grades of the whole class, comes from the cache.
+    const details = await this.cache.remember(
+      `class-overview:${id}`,
+      async () => {
+        const [students, grades, teaching] = await Promise.all([
+          this.prisma.student.findMany({
+            where: { classId: id },
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              class: { select: { id: true, name: true } },
+            },
+            orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+          }),
+          this.prisma.grade.findMany({
+            where: { student: { classId: id } },
+            select: {
+              value: true,
+              date: true,
+              studentId: true,
+              subject: { select: { id: true, name: true } },
+            },
+          }),
+          this.listTeaching(id),
+        ]);
 
-    const { byClass: _byClass, ...statistics } = buildStatistics(
-      students,
-      grades,
+        const { byClass: _byClass, ...statistics } = buildStatistics(
+          students,
+          grades,
+        );
+
+        return {
+          statistics,
+          students: buildRoster(students, grades),
+          teaching,
+        };
+      },
     );
 
-    return {
-      ...toResponse(schoolClass),
-      statistics,
-      students: buildRoster(students, grades),
-      teaching,
-    };
+    return { ...toResponse(schoolClass), ...details };
   }
 
   private assertClassTeacher(

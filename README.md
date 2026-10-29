@@ -5,7 +5,7 @@ authentication and role-based access control.
 
 ## Tech stack
 
-- Backend: NestJS 12 (TypeScript), Prisma 7, MySQL 8.4
+- Backend: NestJS 12 (TypeScript), Prisma 7, MySQL 8.4, Redis 7 (cache)
 - Frontend: React 19, Vite, Tailwind CSS, i18next (Romanian and English)
 - Auth: JWT, bcrypt, role-based access control (Admin, Teacher, Student)
 - API docs: Swagger
@@ -43,11 +43,11 @@ Prerequisites: Node.js 24, npm and Docker.
    cp .env.example .env
    ```
 
-2. Start MySQL and Mailpit (the inbox for the emails sent by the application,
-   at `http://localhost:8025`):
+2. Start MySQL, Mailpit (the inbox for the emails sent by the application, at
+   `http://localhost:8025`) and Redis (the cache, optional):
 
    ```bash
-   docker compose up -d mysql mailpit
+   docker compose up -d mysql mailpit redis
    ```
 
 3. Install, migrate, seed and start the backend:
@@ -99,6 +99,11 @@ the data.
 
 All endpoints are under `/api`. Lists accept `page` and `limit` and return
 `{ data, meta }`.
+
+A Postman collection with every endpoint is in
+[docs/postman](docs/postman/School-Management-System.postman_collection.json).
+Import it, send one of the "Login as" requests, then any other request. After
+the API changes, `npm run postman` in `backend` builds it again from Swagger.
 
 | Endpoint | Admin | Teacher | Student |
 |---|---|---|---|
@@ -215,6 +220,15 @@ touches the frontend. Another workflow builds the Docker images.
   `ALLOW_PUBLIC_REGISTRATION`. Set it to `true` in `.env` to open it: a new
   student then has no class until an administrator assigns one. While it is off
   the endpoint answers 403 and the start page shows only the sign-in form.
+- **Cache.** The statistics and the overview of a class add up thousands of
+  grades on every request, so Redis keeps the result for five minutes (about
+  120 ms without it and 9 ms with it, on the seed data). Every key carries a
+  version, and any successful change, a grade, a student or a class, raises the
+  version, which makes all the older entries unreachable at once. The class and
+  who may see it are always read from the database, so authorization never
+  depends on the cache. Redis is optional: without `REDIS_URL`, or if it goes
+  down, the application keeps working and computes the data again. Running
+  `npm run prisma:seed` clears the cache too.
 - **Statistics.** `GET /statistics` covers the school or one class: the pass
   rate, the grade distribution, the average per class, per
   subject and per week, the best students and the students at risk. A student is

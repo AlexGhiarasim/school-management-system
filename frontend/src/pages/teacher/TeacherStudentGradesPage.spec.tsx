@@ -12,7 +12,6 @@ vi.mock('../../services/teacherService.ts', () => ({
   teacherService: {
     getClasses: vi.fn(),
     getAllClassStudents: vi.fn(),
-    getSubjects: vi.fn(),
     getStudentGrades: vi.fn(),
     createGrade: vi.fn(),
     updateGrade: vi.fn(),
@@ -89,10 +88,6 @@ describe('TeacherStudentGradesPage', () => {
         },
       ],
       meta: meta(1),
-    });
-    service.getSubjects.mockResolvedValue({
-      data: [english, maths],
-      meta: meta(2),
     });
     service.getStudentGrades.mockResolvedValue({
       data: grades,

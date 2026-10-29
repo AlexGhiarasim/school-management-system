@@ -72,4 +72,24 @@ describe('Statistics and export (e2e)', () => {
       `2026-09-16,e2e-stats-own,Student Own,e2e-stats-subject,4,`,
     ]);
   });
+
+  it('shows a new grade in the statistics right away', async () => {
+    const statistics = () =>
+      http()
+        .get(`/api/statistics?classId=${context.ids.ownClass}`)
+        .set(as('admin'));
+    const before = (await statistics()).body.totals.grades as number;
+
+    await http()
+      .post('/api/grades')
+      .set(as('admin'))
+      .send({
+        studentId: context.ids.ownStudent,
+        subjectId: context.ids.subject,
+        value: 9,
+      })
+      .expect(201);
+
+    expect((await statistics()).body.totals.grades).toBe(before + 1);
+  });
 });

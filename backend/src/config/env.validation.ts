@@ -71,6 +71,11 @@ class EnvironmentVariables {
   @IsUrl({ require_tld: false })
   APP_URL: string = 'http://localhost:5173';
 
+  // Optional. Without it the application works, just without a cache.
+  @IsOptional()
+  @IsString()
+  REDIS_URL?: string;
+
   // Accounts are normally created by the seed script and by administrators.
   @Transform(({ obj, key }: { obj: Record<string, unknown>; key: string }) =>
     obj[key] === undefined ? false : obj[key] === true || obj[key] === 'true',

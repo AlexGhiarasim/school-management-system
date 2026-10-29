@@ -1,5 +1,6 @@
 ﻿import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import type { AuthenticatedUser } from '../../common/interfaces/authenticated-user.interface.js';
+import type { CacheService } from '../../cache/cache.service.js';
 import type { PrismaService } from '../../database/prisma.service.js';
 import { Role } from '../../generated/prisma/enums.js';
 import { ClassesService } from './classes.service.js';
@@ -50,7 +51,12 @@ describe('ClassesService', () => {
 
   beforeEach(() => {
     prisma = createPrisma();
-    service = new ClassesService(prisma as unknown as PrismaService);
+    service = new ClassesService(
+      prisma as unknown as PrismaService,
+      {
+        remember: (_key: string, compute: () => Promise<unknown>) => compute(),
+      } as unknown as CacheService,
+    );
   });
 
   describe('findStudents', () => {

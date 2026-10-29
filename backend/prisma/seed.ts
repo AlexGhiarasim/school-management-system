@@ -1,6 +1,7 @@
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import bcrypt from 'bcryptjs';
 import { config } from 'dotenv';
+import { Redis } from 'ioredis';
 import { parseDatabaseUrl } from '../src/database/database-url.js';
 import { PrismaClient, Role } from '../src/generated/prisma/client.js';
 import {
@@ -101,6 +102,29 @@ async function clearDatabase() {
   await prisma.teacher.deleteMany();
   await prisma.subject.deleteMany();
   await prisma.user.deleteMany();
+}
+
+// The seed changes the data behind the cache, so the cached results are dropped.
+async function clearCache() {
+  const url = process.env.REDIS_URL;
+
+  if (!url) return;
+
+  const redis = new Redis(url, {
+    lazyConnect: true,
+    maxRetriesPerRequest: 1,
+    enableOfflineQueue: false,
+    retryStrategy: () => null,
+  });
+
+  try {
+    await redis.connect();
+    await redis.incr('cache:version');
+  } catch {
+    // Without Redis there is nothing to clear.
+  } finally {
+    redis.disconnect();
+  }
 }
 
 async function main() {
@@ -221,6 +245,7 @@ async function main() {
   }
 
   await prisma.grade.createMany({ data: grades });
+  await clearCache();
 
   console.log(
     `Seeded ${teachers.length} teachers, ${CLASS_PLANS.length} classes, ` +

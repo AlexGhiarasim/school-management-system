@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { RolesGuard } from './common/guards/roles.guard.js';
+import { CacheModule } from './cache/cache.module.js';
 import { validateEnv } from './config/env.validation.js';
 import { DatabaseModule } from './database/database.module.js';
 import { AdminsModule } from './modules/admins/admins.module.js';
@@ -25,6 +26,7 @@ import { StudentsModule } from './modules/students/students.module.js';
     }),
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
     DatabaseModule,
+    CacheModule,
     AuthModule,
     AdminsModule,
     HealthModule,

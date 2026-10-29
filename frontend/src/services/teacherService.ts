@@ -2,7 +2,6 @@ import type {
   ClassStudent,
   GradeInput,
   HomeroomOverview,
-  Subject,
   TeacherClass,
   TeacherGrade,
 } from '../features/teacher/types.ts';
@@ -32,9 +31,6 @@ export const teacherService = {
 
   getAllClassStudents: (classId: number) =>
     teacherService.getClassStudents(classId, 1, MAX_PAGE_SIZE),
-
-  getSubjects: () =>
-    authedRequest<Paginated<Subject>>(`/subjects?limit=${MAX_PAGE_SIZE}`),
 
   getStudentGrades: (studentId: number) =>
     authedRequest<Paginated<TeacherGrade>>(

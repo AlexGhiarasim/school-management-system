@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 import { ToastProvider } from '../components/ui/ToastProvider.tsx';
@@ -139,10 +139,13 @@ describe('navigation', () => {
     expect(navigation).not.toHaveTextContent('Teachers');
   });
 
-  it('shows the name and role of the signed-in user', () => {
+  it('shows the name and role of the signed-in user in the user menu', () => {
     renderAt('/teacher/classes', userWith('TEACHER'));
 
-    expect(screen.getByText('Test TEACHER')).toBeInTheDocument();
-    expect(screen.getByText('Teacher')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
+    const menu = within(screen.getByRole('menu'));
+
+    expect(menu.getByText('Test TEACHER')).toBeInTheDocument();
+    expect(menu.getByText('Teacher')).toBeInTheDocument();
   });
 });

@@ -253,23 +253,8 @@
       "taughtEmpty": "No grades in this subject yet.",
       "average": "Average",
       "add": "Add grade",
-      "filter": {
-        "label": "Subject",
-        "all": "All subjects"
-      },
       "table": {
-        "caption": "The grades of the student, most recent first",
-        "subject": "Subject",
-        "grade": "Grade",
-        "date": "Date",
-        "teacher": "Teacher",
-        "noTeacher": "Administrator",
-        "actions": "Actions",
         "edit": "Edit"
-      },
-      "empty": {
-        "title": "The student has no grades yet",
-        "description": "Add the first grade with the button above."
       },
       "notFound": {
         "title": "Student not found",
@@ -371,8 +356,7 @@
         "teacher": "Teacher",
         "noTeacher": "Administrator",
         "actions": "Actions",
-        "edit": "Edit",
-        "delete": "Delete"
+        "edit": "Edit"
       },
       "delete": {
         "title": "Delete the grade",
@@ -469,8 +453,7 @@
         "noTeacher": "No class teacher",
         "students": "Students",
         "actions": "Actions",
-        "edit": "Edit",
-        "delete": "Delete"
+        "edit": "Edit"
       },
       "empty": {
         "title": "There are no classes yet",
@@ -504,8 +487,7 @@
         "email": "Email",
         "phone": "Phone",
         "actions": "Actions",
-        "edit": "Edit",
-        "delete": "Delete"
+        "edit": "Edit"
       },
       "empty": {
         "title": "There are no teachers yet",
@@ -544,8 +526,7 @@
         "caption": "The subjects of the school",
         "name": "Subject",
         "actions": "Actions",
-        "edit": "Edit",
-        "delete": "Delete"
+        "edit": "Edit"
       },
       "empty": {
         "title": "There are no subjects yet",
@@ -580,8 +561,7 @@
       },
       "filter": {
         "label": "Class",
-        "all": "All classes",
-        "noClass": "Without a class"
+        "all": "All classes"
       },
       "table": {
         "caption": "The students of the school",
@@ -593,7 +573,6 @@
         "noClass": "No class",
         "actions": "Actions",
         "edit": "Edit",
-        "delete": "Delete",
         "report": "Report"
       },
       "empty": {

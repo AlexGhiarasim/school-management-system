@@ -28,6 +28,23 @@ services:
     mem_limit: 1g
     logging: *default-logging
 
+  # Cache for the statistics. Nothing here is precious, so it is not saved to
+  # disk and the least used entries are dropped when the memory is full.
+  redis:
+    image: redis:7.4-alpine
+    container_name: school-redis
+    restart: unless-stopped
+    command: ["redis-server", "--save", "", "--maxmemory", "64mb", "--maxmemory-policy", "allkeys-lru"]
+    ports:
+      - "127.0.0.1:${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 128m
+    logging: *default-logging
+
   # Catches every email the application sends. Open http://localhost:8025.
   mailpit:
     image: axllent/mailpit:latest
@@ -61,6 +78,7 @@ services:
       NODE_ENV: production
       PORT: 3000
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}
+      REDIS_URL: redis://redis:6379
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in the .env file}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-730d}
       CORS_ORIGIN: http://localhost:${FRONTEND_PORT:-8080}
@@ -76,6 +94,8 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
+      redis:
+        condition: service_healthy
     ports:
       - "${BACKEND_PORT:-3000}:3000"
     mem_limit: 512m
