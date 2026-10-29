@@ -29,3 +29,14 @@ export async function downloadFile(
   link.click();
   URL.revokeObjectURL(url);
 }
+
+// Offers a text the application already has, such as the accounts that an
+// import has just created, as a file.
+export function downloadText(text: string, filename: string): void {
+  const url = URL.createObjectURL(new Blob([text], { type: 'text/csv' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}

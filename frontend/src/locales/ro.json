@@ -801,5 +801,122 @@
     "overall": "Media generală",
     "passed": "În situație de promovare la toate materiile.",
     "failing": "În situație de corigență la: {{subjects}}."
+  },
+  "import": {
+    "button": "Importă din fișier",
+    "title": {
+      "students": "Importă elevi dintr-un fișier",
+      "teachers": "Importă profesori dintr-un fișier",
+      "classes": "Importă clase dintr-un fișier",
+      "subjects": "Importă materii dintr-un fișier"
+    },
+    "description": "Alege un fișier CSV, de exemplu salvat din Excel sau Google Sheets. Înainte să se importe ceva, vezi cum ar arăta datele.",
+    "choose": "Alege fișierul",
+    "dropHint": "sau trage-l aici (CSV, cel mult 200 de rânduri)",
+    "template": "Descarcă un fișier model",
+    "columns": {
+      "students": "Coloane: Nume, Prenume, Email, Data nașterii (obligatorii); Telefon, Clasa, Parola (opționale). Fără parolă, aplicația generează una.",
+      "teachers": "Coloane: Nume, Prenume, Email (obligatorii); Telefon, Diriginte la clasa, Parola (opționale). Fără parolă, aplicația generează una.",
+      "classes": "Coloane: Clasa (obligatorie); Email diriginte (opțională).",
+      "subjects": "Coloană: Materia (obligatorie)."
+    },
+    "fileError": {
+      "empty": "Fișierul nu are niciun rând cu date.",
+      "tooManyRows": "Fișierul are prea multe rânduri. Poți importa cel mult {{max}} odată.",
+      "missingColumns": "Lipsesc coloanele: {{columns}}.",
+      "tooLarge": "Fișierul este prea mare."
+    },
+    "summary": "{{total}} rânduri în fișier: {{valid}} corecte, {{invalid}} cu erori.",
+    "onlyErrors": "Doar rândurile cu erori",
+    "preview": "Previzualizarea datelor",
+    "line": "Rând",
+    "status": "Verificare",
+    "ok": "Corect",
+    "skipNote": "Rândurile cu erori nu se importă. Le poți corecta în fișier și îl poți încărca din nou.",
+    "passwordNote": "Conturile fără parolă în fișier primesc o parolă generată, pe care o descarci după import.",
+    "chooseAnother": "Alege alt fișier",
+    "confirm": {
+      "students_one": "Importă {{count}} elev",
+      "students_few": "Importă {{count}} elevi",
+      "students_other": "Importă {{count}} de elevi",
+      "teachers_one": "Importă {{count}} profesor",
+      "teachers_few": "Importă {{count}} profesori",
+      "teachers_other": "Importă {{count}} de profesori",
+      "classes_one": "Importă {{count}} clasă",
+      "classes_few": "Importă {{count}} clase",
+      "classes_other": "Importă {{count}} de clase",
+      "subjects_one": "Importă {{count}} materie",
+      "subjects_few": "Importă {{count}} materii",
+      "subjects_other": "Importă {{count}} de materii"
+    },
+    "done": {
+      "students_one": "Am importat {{count}} elev",
+      "students_few": "Am importat {{count}} elevi",
+      "students_other": "Am importat {{count}} de elevi",
+      "teachers_one": "Am importat {{count}} profesor",
+      "teachers_few": "Am importat {{count}} profesori",
+      "teachers_other": "Am importat {{count}} de profesori",
+      "classes_one": "Am importat {{count}} clasă",
+      "classes_few": "Am importat {{count}} clase",
+      "classes_other": "Am importat {{count}} de clase",
+      "subjects_one": "Am importat {{count}} materie",
+      "subjects_few": "Am importat {{count}} materii",
+      "subjects_other": "Am importat {{count}} de materii"
+    },
+    "skipped_one": "{{count}} rând cu erori a fost sărit.",
+    "skipped_few": "{{count}} rânduri cu erori au fost sărite.",
+    "skipped_other": "{{count}} de rânduri cu erori au fost sărite.",
+    "generatedPasswords": "Pentru conturile fără parolă în fișier, aplicația a generat parole. Ele se văd doar acum, deci descarcă fișierul și transmite-le fiecărei persoane.",
+    "downloadAccounts": "Descarcă conturile (CSV)",
+    "accountsHeader": {
+      "name": "Nume",
+      "password": "Parola"
+    },
+    "finish": "Gata",
+    "errors": {
+      "required": "Lipsește: {{field}}",
+      "email": "Emailul nu este valid",
+      "date": "Data nu este validă",
+      "phone": "Telefonul nu este valid",
+      "password": "Parola: minim 8 caractere, cu o literă și o cifră",
+      "nameLength": "{{field}}: între 2 și 100 de caractere",
+      "nameChars": "{{field}} are caractere nepermise",
+      "tooLong": "{{field}} este prea lung",
+      "invalid": "{{field}} nu este valid",
+      "taken": "{{field}} există deja în sistem",
+      "duplicate": "{{field}} apare de mai multe ori în fișier",
+      "classNotFound": "Clasa nu există",
+      "classHasTeacher": "Clasa are deja diriginte",
+      "classRepeated": "Clasa apare la mai mulți profesori în fișier",
+      "teacherNotFound": "Nu există un profesor cu acest email",
+      "teacherLeads": "Profesorul este deja diriginte la o altă clasă",
+      "teacherRepeated": "Profesorul apare la mai multe clase în fișier"
+    },
+    "fields": {
+      "students": {
+        "lastName": "Nume",
+        "firstName": "Prenume",
+        "email": "Email",
+        "dateOfBirth": "Data nașterii",
+        "phone": "Telefon",
+        "className": "Clasa",
+        "password": "Parola"
+      },
+      "teachers": {
+        "lastName": "Nume",
+        "firstName": "Prenume",
+        "email": "Email",
+        "phone": "Telefon",
+        "homeroomClass": "Diriginte la clasa",
+        "password": "Parola"
+      },
+      "classes": {
+        "name": "Clasa",
+        "homeroomTeacher": "Email diriginte"
+      },
+      "subjects": {
+        "name": "Materia"
+      }
+    }
   }
 }

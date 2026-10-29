@@ -19,6 +19,7 @@ import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { ApiError } from '../../lib/api.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
+import { ImportButton } from '../../features/admin/components/ImportButton.tsx';
 
 const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
@@ -91,9 +92,12 @@ export default function AdminSubjectsPage() {
         title={t('nav.admin.subjects')}
         description={t('admin.subjects.description')}
         actions={
-          <Button fullWidth={false} onClick={() => setCreating(true)}>
-            {t('admin.subjects.add')}
-          </Button>
+          <>
+            <ImportButton kind="subjects" />
+            <Button fullWidth={false} onClick={() => setCreating(true)}>
+              {t('admin.subjects.add')}
+            </Button>
+          </>
         }
       />
 

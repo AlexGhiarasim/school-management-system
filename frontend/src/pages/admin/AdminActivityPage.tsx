@@ -68,6 +68,7 @@ export default function AdminActivityPage() {
     },
     {
       key: 'grade',
+      wrap: true,
       header: t('admin.activity.table.grade'),
       render: (change) => (
         <span>
@@ -82,6 +83,7 @@ export default function AdminActivityPage() {
     },
     {
       key: 'change',
+      wrap: true,
       header: t('admin.activity.table.change'),
       render: (change) => <GradeChangeSummary change={change} />,
     },

@@ -6,6 +6,7 @@ import { DataTable, type Column } from '../../components/ui/DataTable.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { ErrorState } from '../../components/ui/ErrorState.tsx';
 import { Pagination } from '../../components/ui/Pagination.tsx';
+import { PersonCell } from '../../components/ui/PersonCell.tsx';
 import {
   useClassStudents,
   useTeacherClasses,
@@ -35,26 +36,29 @@ export default function ClassStudentsPage() {
       key: 'name',
       header: t('teacher.classStudents.table.name'),
       render: (student) => (
-        <span className="font-medium text-slate-900">
-          {student.lastName} {student.firstName}
-        </span>
+        <PersonCell
+          name={`${student.lastName} ${student.firstName}`}
+          email={student.email}
+          hideEmailFrom="2xl"
+        />
       ),
     },
     {
       key: 'email',
       header: t('teacher.classStudents.table.email'),
-      className: 'hidden sm:table-cell',
+      className: 'hidden @2xl:table-cell',
       render: (student) => student.email,
     },
     {
       key: 'phone',
       header: t('teacher.classStudents.table.phone'),
-      className: 'hidden md:table-cell',
+      className: 'hidden @4xl:table-cell',
       render: (student) => student.phone ?? '-',
     },
     {
       key: 'dateOfBirth',
       header: t('teacher.classStudents.table.dateOfBirth'),
+      className: 'hidden @3xl:table-cell',
       render: (student) => formatDate(student.dateOfBirth, language),
     },
     {

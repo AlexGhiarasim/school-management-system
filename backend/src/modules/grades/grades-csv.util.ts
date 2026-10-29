@@ -19,9 +19,9 @@ const HEADERS: Record<CsvLanguage, string[]> = {
 const SEPARATORS: Record<CsvLanguage, string> = { ro: ';', en: ',' };
 
 // The byte order mark makes Excel read the file as UTF-8, so diacritics show.
-const BOM = '﻿';
+export const BOM = '﻿';
 
-function escapeField(value: string | number, separator: string): string {
+export function escapeField(value: string | number, separator: string): string {
   let text = String(value);
 
   // A leading = + - or @ would make a spreadsheet run the cell as a formula.

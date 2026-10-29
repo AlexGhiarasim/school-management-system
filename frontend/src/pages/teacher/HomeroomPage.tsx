@@ -61,7 +61,7 @@ function Roster({ overview }: { overview: HomeroomOverview }) {
     {
       key: 'grades',
       header: t('teacher.homeroom.roster.grades'),
-      className: 'hidden sm:table-cell',
+      className: 'hidden @2xl:table-cell',
       render: (student) => student.grades,
     },
     {
@@ -103,7 +103,7 @@ function Roster({ overview }: { overview: HomeroomOverview }) {
           </Link>
           <Link
             to={paths.teacher.homeroomReport(student.studentId)}
-            className={`${LINK} hidden sm:inline`}
+            className={`${LINK} hidden @2xl:inline`}
           >
             {t('teacher.homeroom.roster.report')}
           </Link>

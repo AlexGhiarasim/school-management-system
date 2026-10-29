@@ -14,6 +14,7 @@ import { TeachersModule } from './modules/teachers/teachers.module.js';
 import { ClassesModule } from './modules/classes/classes.module.js';
 import { GradesModule } from './modules/grades/grades.module.js';
 import { HealthModule } from './modules/health/health.module.js';
+import { ImportsModule } from './modules/imports/imports.module.js';
 import { StatisticsModule } from './modules/statistics/statistics.module.js';
 import { StudentsModule } from './modules/students/students.module.js';
 
@@ -36,6 +37,7 @@ import { StudentsModule } from './modules/students/students.module.js';
     StudentsModule,
     GradesModule,
     StatisticsModule,
+    ImportsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

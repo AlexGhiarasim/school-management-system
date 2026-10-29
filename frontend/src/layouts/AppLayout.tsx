@@ -134,7 +134,7 @@ export function AppLayout() {
         onCancel={() => setConfirmingSignOut(false)}
       />
 
-      <main className="mx-auto max-w-6xl px-6 py-10 sm:px-10 print:max-w-none print:p-0">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 print:max-w-none print:p-0">
         <div className="min-w-0 rounded-3xl border border-slate-300 bg-slate-100/60 p-3 shadow-sm sm:p-6 print:border-0 print:bg-transparent print:p-0 print:shadow-none">
           <Outlet />
         </div>

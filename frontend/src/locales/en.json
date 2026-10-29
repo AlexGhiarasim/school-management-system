@@ -790,5 +790,113 @@
     "overall": "Overall average",
     "passed": "On track to pass every subject.",
     "failing": "Failing: {{subjects}}."
+  },
+  "import": {
+    "button": "Import from a file",
+    "title": {
+      "students": "Import students from a file",
+      "teachers": "Import teachers from a file",
+      "classes": "Import classes from a file",
+      "subjects": "Import subjects from a file"
+    },
+    "description": "Choose a CSV file, for example saved from Excel or Google Sheets. Before anything is imported, you see how the data would look.",
+    "choose": "Choose the file",
+    "dropHint": "or drop it here (CSV, up to 200 rows)",
+    "template": "Download a template file",
+    "columns": {
+      "students": "Columns: Last name, First name, Email, Date of birth (required); Phone, Class, Password (optional). Without a password, the application generates one.",
+      "teachers": "Columns: Last name, First name, Email (required); Phone, Homeroom class, Password (optional). Without a password, the application generates one.",
+      "classes": "Columns: Class (required); Homeroom teacher email (optional).",
+      "subjects": "Column: Subject (required)."
+    },
+    "fileError": {
+      "empty": "The file has no rows of data.",
+      "tooManyRows": "The file has too many rows. You can import {{max}} at most at a time.",
+      "missingColumns": "These columns are missing: {{columns}}.",
+      "tooLarge": "The file is too large."
+    },
+    "summary": "{{total}} rows in the file: {{valid}} correct, {{invalid}} with errors.",
+    "onlyErrors": "Only the rows with errors",
+    "preview": "Preview of the data",
+    "line": "Row",
+    "status": "Check",
+    "ok": "Correct",
+    "skipNote": "The rows with errors are not imported. You can fix them in the file and upload it again.",
+    "passwordNote": "The accounts without a password in the file get a generated one, which you download after the import.",
+    "chooseAnother": "Choose another file",
+    "confirm": {
+      "students_one": "Import {{count}} student",
+      "students_other": "Import {{count}} students",
+      "teachers_one": "Import {{count}} teacher",
+      "teachers_other": "Import {{count}} teachers",
+      "classes_one": "Import {{count}} class",
+      "classes_other": "Import {{count}} classes",
+      "subjects_one": "Import {{count}} subject",
+      "subjects_other": "Import {{count}} subjects"
+    },
+    "done": {
+      "students_one": "Imported {{count}} student",
+      "students_other": "Imported {{count}} students",
+      "teachers_one": "Imported {{count}} teacher",
+      "teachers_other": "Imported {{count}} teachers",
+      "classes_one": "Imported {{count}} class",
+      "classes_other": "Imported {{count}} classes",
+      "subjects_one": "Imported {{count}} subject",
+      "subjects_other": "Imported {{count}} subjects"
+    },
+    "skipped_one": "{{count}} row with errors was skipped.",
+    "skipped_other": "{{count}} rows with errors were skipped.",
+    "generatedPasswords": "The application generated passwords for the accounts without one in the file. They are shown only now, so download the file and give them to each person.",
+    "downloadAccounts": "Download the accounts (CSV)",
+    "accountsHeader": {
+      "name": "Name",
+      "password": "Password"
+    },
+    "finish": "Done",
+    "errors": {
+      "required": "Missing: {{field}}",
+      "email": "The email is not valid",
+      "date": "The date is not valid",
+      "phone": "The phone is not valid",
+      "password": "Password: at least 8 characters, with a letter and a digit",
+      "nameLength": "{{field}}: between 2 and 100 characters",
+      "nameChars": "{{field}} has characters that are not allowed",
+      "tooLong": "{{field}} is too long",
+      "invalid": "{{field}} is not valid",
+      "taken": "{{field}} already exists",
+      "duplicate": "{{field}} appears more than once in the file",
+      "classNotFound": "The class does not exist",
+      "classHasTeacher": "The class already has a class teacher",
+      "classRepeated": "The class appears for more than one teacher in the file",
+      "teacherNotFound": "There is no teacher with this email",
+      "teacherLeads": "The teacher already leads another class",
+      "teacherRepeated": "The teacher appears for more than one class in the file"
+    },
+    "fields": {
+      "students": {
+        "lastName": "Last name",
+        "firstName": "First name",
+        "email": "Email",
+        "dateOfBirth": "Date of birth",
+        "phone": "Phone",
+        "className": "Class",
+        "password": "Password"
+      },
+      "teachers": {
+        "lastName": "Last name",
+        "firstName": "First name",
+        "email": "Email",
+        "phone": "Phone",
+        "homeroomClass": "Homeroom class",
+        "password": "Password"
+      },
+      "classes": {
+        "name": "Class",
+        "homeroomTeacher": "Homeroom teacher email"
+      },
+      "subjects": {
+        "name": "Subject"
+      }
+    }
   }
 }

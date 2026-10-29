@@ -4,6 +4,9 @@ import {
   type AdminClass,
   type AdminGrade,
   type GradeAuditAction,
+  type ImportKind,
+  type ImportPreview,
+  type ImportResult,
   type GradeChange,
   type ClassInput,
   type GradeEditInput,
@@ -114,6 +117,24 @@ export const adminService = {
 
     return authedRequest<Paginated<AdminGrade>>(`/grades?${query}`);
   },
+
+  previewImport: (kind: ImportKind, content: string) =>
+    authedRequest<ImportPreview>(`/imports/${kind}/preview`, {
+      method: 'POST',
+      body: { content },
+    }),
+
+  commitImport: (kind: ImportKind, content: string) =>
+    authedRequest<ImportResult>(`/imports/${kind}`, {
+      method: 'POST',
+      body: { content },
+    }),
+
+  downloadImportTemplate: (kind: ImportKind, language: string) =>
+    downloadFile(
+      `/imports/${kind}/template?language=${language}`,
+      `${kind}-template.csv`,
+    ),
 
   exportGrades: (
     { classId, studentId, subjectId }: Omit<GradeFilters, 'page'>,

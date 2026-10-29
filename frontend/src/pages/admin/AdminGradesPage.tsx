@@ -101,13 +101,13 @@ export default function AdminGradesPage() {
     {
       key: 'date',
       header: t('admin.grades.table.date'),
-      className: 'hidden sm:table-cell',
+      className: 'hidden @2xl:table-cell',
       render: (grade) => formatDate(grade.date, language),
     },
     {
       key: 'teacher',
       header: t('admin.grades.table.teacher'),
-      className: 'hidden md:table-cell',
+      className: 'hidden @4xl:table-cell',
       render: (grade) =>
         grade.teacher
           ? `${grade.teacher.firstName} ${grade.teacher.lastName}`

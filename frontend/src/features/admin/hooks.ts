@@ -11,6 +11,7 @@ import type {
   AdminTeacher,
   ClassInput,
   GradeAuditAction,
+  ImportKind,
   GradeEditInput,
   GradeFilters,
   ListFilters,
@@ -345,5 +346,21 @@ export function useStudentReport(studentId: number) {
 
       return { student, grades: grades.data };
     },
+  });
+}
+
+export function useImportPreview(kind: ImportKind) {
+  return useMutation({
+    mutationFn: (content: string) => adminService.previewImport(kind, content),
+  });
+}
+
+export function useImportCommit(kind: ImportKind) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (content: string) => adminService.commitImport(kind, content),
+    // An import can add students, teachers and classes, so everything reloads.
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin'] }),
   });
 }

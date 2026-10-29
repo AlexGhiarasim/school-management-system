@@ -9,6 +9,7 @@ import { DataTable, type Column } from '../../components/ui/DataTable.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { ErrorState } from '../../components/ui/ErrorState.tsx';
 import { Pagination } from '../../components/ui/Pagination.tsx';
+import { PersonCell } from '../../components/ui/PersonCell.tsx';
 import { SelectField } from '../../components/ui/SelectField.tsx';
 import { TextField } from '../../components/ui/TextField.tsx';
 import {
@@ -30,6 +31,7 @@ import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
 import { formatDate, fullName } from '../../utils/format.ts';
 import { paths } from '../../routes/paths.ts';
+import { ImportButton } from '../../features/admin/components/ImportButton.tsx';
 
 const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
@@ -87,27 +89,29 @@ export default function AdminStudentsPage() {
       key: 'name',
       header: t('admin.students.table.name'),
       render: (student) => (
-        <span className="font-medium text-slate-900">
-          {student.lastName} {student.firstName}
-        </span>
+        <PersonCell
+          name={`${student.lastName} ${student.firstName}`}
+          email={student.email}
+          hideEmailFrom="4xl"
+        />
       ),
     },
     {
       key: 'email',
       header: t('admin.students.table.email'),
-      className: 'hidden md:table-cell',
+      className: 'hidden @4xl:table-cell',
       render: (student) => student.email,
     },
     {
       key: 'phone',
       header: t('admin.students.table.phone'),
-      className: 'hidden lg:table-cell',
+      className: 'hidden @7xl:table-cell',
       render: (student) => student.phone ?? '-',
     },
     {
       key: 'dateOfBirth',
       header: t('admin.students.table.dateOfBirth'),
-      className: 'hidden sm:table-cell',
+      className: 'hidden @5xl:table-cell',
       render: (student) => formatDate(student.dateOfBirth, language),
     },
     {
@@ -155,9 +159,12 @@ export default function AdminStudentsPage() {
         title={t('nav.admin.students')}
         description={t('admin.students.description')}
         actions={
-          <Button fullWidth={false} onClick={() => setCreating(true)}>
-            {t('admin.students.add')}
-          </Button>
+          <>
+            <ImportButton kind="students" />
+            <Button fullWidth={false} onClick={() => setCreating(true)}>
+              {t('admin.students.add')}
+            </Button>
+          </>
         }
       />
 

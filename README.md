@@ -136,6 +136,9 @@ the API changes, `npm run postman` in `backend` builds it again from Swagger.
 | `GET /grades/history` (every change to grades) | yes | no | no |
 | `GET /grades/:id/history` (the changes to one grade) | yes | no | no |
 | `GET /statistics` (averages, distribution, students at risk) | yes | no | no |
+| `GET /imports/:kind/template` (a CSV file to fill in) | yes | no | no |
+| `POST /imports/:kind/preview` (checks a CSV file, saves nothing) | yes | no | no |
+| `POST /imports/:kind` (imports the valid rows) | yes | no | no |
 
 Authorization is enforced on the backend by a global JWT guard and a roles guard.
 Ownership rules live in the services:
@@ -244,6 +247,16 @@ touches the frontend. Another workflow builds the Docker images.
   They can export the grades of their class as CSV. The grades of other teachers
   stay read-only, and `GET /classes/:id/overview` and the class export answer 403
   for any other teacher.
+- **Import from a file.** Each admin section (students, teachers, classes,
+  subjects) has a quiet "Import from a file" button. The file is a CSV, with `;`
+  or `,` and UTF-8 or Windows-1250, and the headers can be Romanian or English. It
+  is first checked and shown as a table, each row with its own errors, and nothing
+  is saved until the administrator confirms. A row is checked with the same DTOs as
+  the forms, so the rules cannot differ. The rows with errors are skipped and the
+  others are saved together, in one transaction. A new account without a password
+  in the file gets a generated one, returned once so that it can be downloaded.
+  A file has 200 rows at most, because each new account costs about 0.1 s of
+  password hashing.
 - **Grade history.** Every grade that is added, changed or deleted writes an entry
   to `GradeAudit` in the same transaction, with who made the change and the value
   before and after. The entry copies the names of the student and the subject, so

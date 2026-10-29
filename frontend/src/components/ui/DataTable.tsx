@@ -7,6 +7,8 @@ export interface Column<T> {
   header: string;
   render: (row: T) => ReactNode;
   className?: string;
+  // Let long text wrap onto several lines. By default a cell stays on one line.
+  wrap?: boolean;
 }
 
 interface DataTableProps<T> {
@@ -31,7 +33,7 @@ export function DataTable<T>({
   if (loading) return <LoadingPanel />;
 
   return (
-    <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-slate-300">
+    <div className="@container overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-slate-300">
       <table className="w-full text-left text-[15px]">
         <caption className="sr-only">{caption}</caption>
         <thead className="border-b border-slate-200 bg-slate-50 text-[13px] font-semibold tracking-wide text-slate-600 uppercase">
@@ -40,7 +42,7 @@ export function DataTable<T>({
               <th
                 key={column.key}
                 scope="col"
-                className={`px-4 py-3 ${column.className ?? ''}`}
+                className={`px-4 py-3 ${column.wrap ? '' : 'whitespace-nowrap'} ${column.className ?? ''}`}
               >
                 {column.header}
               </th>
@@ -59,7 +61,7 @@ export function DataTable<T>({
                 {columns.map((column) => (
                   <td
                     key={column.key}
-                    className={`px-4 py-3.5 text-slate-700 ${column.className ?? ''}`}
+                    className={`px-4 py-3.5 text-slate-700 ${column.wrap ? '' : 'whitespace-nowrap'} ${column.className ?? ''}`}
                   >
                     {column.render(row)}
                   </td>

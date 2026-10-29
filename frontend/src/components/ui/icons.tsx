@@ -107,3 +107,13 @@ export function InfoIcon() {
     </Icon>
   );
 }
+
+export function UploadIcon() {
+  return (
+    <Icon className="h-4 w-4">
+      <path d="M12 16V4" />
+      <path d="M7 9l5-5 5 5" />
+      <path d="M5 20h14" />
+    </Icon>
+  );
+}

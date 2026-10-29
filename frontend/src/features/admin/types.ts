@@ -158,3 +158,32 @@ export interface GradeChange {
   oldDate: string | null;
   newDate: string | null;
 }
+
+export type ImportKind = 'students' | 'teachers' | 'classes' | 'subjects';
+
+export type ImportFileError =
+  | { code: 'empty' }
+  | { code: 'tooManyRows'; max: number }
+  | { code: 'missingColumns'; columns: string[] };
+
+export interface ImportRow {
+  line: number;
+  values: Record<string, string>;
+  errors: { field: string; code: string }[];
+}
+
+export interface ImportPreview {
+  fileError?: ImportFileError;
+  ignoredColumns: string[];
+  total: number;
+  valid: number;
+  invalid: number;
+  rows: ImportRow[];
+}
+
+export interface ImportResult {
+  created: number;
+  skipped: number;
+  // The accounts whose password was generated. Shown once.
+  accounts: { name: string; email: string; password: string }[];
+}
