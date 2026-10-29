@@ -131,7 +131,7 @@ describe('AdminClassStudentsPage', () => {
     );
     const confirmation = within(await dialog());
 
-    expect(confirmation.getByText(/Mihai Constantin/)).toBeVisible();
+    expect(confirmation.getByText(/Constantin Mihai/)).toBeVisible();
 
     fireEvent.click(confirmation.getByRole('button', { name: 'Remove' }));
 

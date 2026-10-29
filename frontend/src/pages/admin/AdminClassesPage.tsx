@@ -20,6 +20,7 @@ import { useDebouncedValue } from '../../hooks/useDebouncedValue.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
 import { paths } from '../../routes/paths.ts';
+import { ImportButton } from '../../features/admin/components/ImportButton.tsx';
 
 const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
@@ -60,7 +61,7 @@ export default function AdminClassesPage() {
       render: (schoolClass) => (
         <Link
           to={paths.admin.classStudents(schoolClass.id)}
-          className="text-base font-semibold text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
+          className="text-base font-semibold text-brand-600 hover:text-brand-500 focus:outline-none focus-visible:underline"
         >
           {schoolClass.name}
         </Link>
@@ -81,7 +82,7 @@ export default function AdminClassesPage() {
     {
       key: 'students',
       header: t('admin.classes.table.students'),
-      className: 'hidden sm:table-cell',
+      className: 'hidden @xl:table-cell',
       render: (schoolClass) =>
         t('admin.classes.studentCount', { count: schoolClass.studentCount }),
     },
@@ -110,9 +111,12 @@ export default function AdminClassesPage() {
         title={t('nav.admin.classes')}
         description={t('admin.classes.description')}
         actions={
-          <Button fullWidth={false} onClick={() => setCreating(true)}>
-            {t('admin.classes.add')}
-          </Button>
+          <>
+            <ImportButton kind="classes" />
+            <Button fullWidth={false} onClick={() => setCreating(true)}>
+              {t('admin.classes.add')}
+            </Button>
+          </>
         }
       />
 

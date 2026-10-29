@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../components/layout/LanguageSwitcher.tsx';
 import { Logo } from '../components/layout/Logo.tsx';
+import { useRegistrationEnabled } from '../features/auth/hooks.ts';
 import { AuthCard } from '../features/auth/components/AuthCard.tsx';
 import { RotatingHeadline } from '../features/landing/components/RotatingHeadline.tsx';
 
@@ -8,16 +9,17 @@ const CURRENT_YEAR = new Date().getFullYear();
 
 export default function HomePage() {
   const { t } = useTranslation();
+  const registrationEnabled = useRegistrationEnabled();
 
   return (
-    <div className="relative min-h-screen overflow-clip bg-gradient-to-br from-indigo-50 via-white to-sky-50">
+    <div className="relative min-h-screen overflow-clip bg-gradient-to-br from-brand-50 via-white to-cyan-50">
       <div
         aria-hidden="true"
-        className="animate-drift pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-indigo-200/40 blur-3xl"
+        className="animate-drift pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-brand-200/40 blur-3xl"
       />
       <div
         aria-hidden="true"
-        className="animate-drift pointer-events-none absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-sky-200/40 blur-3xl [animation-direction:alternate-reverse]"
+        className="animate-drift pointer-events-none absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-cyan-200/40 blur-3xl [animation-direction:alternate-reverse]"
       />
 
       <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-6 sm:px-10">
@@ -40,10 +42,14 @@ export default function HomePage() {
               className="animate-rise mt-5 max-w-md text-lg text-slate-600"
               style={{ animationDelay: '120ms' }}
             >
-              {t('landing.subtitle')}
+              {t(
+                registrationEnabled
+                  ? 'landing.subtitle'
+                  : 'landing.subtitleSignInOnly',
+              )}
             </p>
             <p
-              className="animate-rise mt-6 max-w-md border-l-2 border-indigo-200 pl-4 text-sm leading-relaxed text-slate-500"
+              className="animate-rise mt-6 max-w-md border-l-2 border-brand-200 pl-4 text-sm leading-relaxed text-slate-500"
               style={{ animationDelay: '240ms' }}
             >
               {t('landing.description')}

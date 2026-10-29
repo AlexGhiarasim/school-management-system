@@ -13,18 +13,38 @@ export const teacherKeys = {
     ['teacher', 'classes', classId, 'students', page] as const,
   allClassStudents: (classId: number) =>
     ['teacher', 'classes', classId, 'students', 'all'] as const,
-  classTeaching: (classId: number) =>
-    ['teacher', 'classes', classId, 'teaching'] as const,
-  subjects: ['teacher', 'subjects'] as const,
+  // Under "grades" so that a saved grade refreshes the overview too.
+  homeroom: (classId: number) =>
+    ['teacher', 'grades', 'homeroom', classId] as const,
   grades: ['teacher', 'grades'] as const,
   studentGrades: (studentId: number) =>
     ['teacher', 'grades', studentId] as const,
 };
 
-export function useTeacherClasses() {
+export function useTeacherClasses(enabled = true) {
   return useQuery({
     queryKey: teacherKeys.classes,
     queryFn: teacherService.getClasses,
+    enabled,
+  });
+}
+
+// The class the teacher leads, if any.
+export function useHomeroomClass(enabled = true) {
+  const classes = useTeacherClasses(enabled);
+
+  return {
+    ...classes,
+    homeroomClass: classes.data?.find((item) => item.isHomeroom),
+  };
+}
+
+export function useHomeroomOverview(classId: number | undefined) {
+  return useQuery({
+    queryKey: teacherKeys.homeroom(classId ?? -1),
+    queryFn: () => teacherService.getHomeroomOverview(classId ?? -1),
+    enabled: classId !== undefined,
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -42,23 +62,6 @@ export function useAllClassStudents(classId: number) {
     queryKey: teacherKeys.allClassStudents(classId),
     queryFn: () => teacherService.getAllClassStudents(classId),
     enabled: Number.isInteger(classId),
-  });
-}
-
-export function useClassTeaching(classId: number, enabled: boolean) {
-  return useQuery({
-    queryKey: teacherKeys.classTeaching(classId),
-    queryFn: () => teacherService.getClassTeaching(classId),
-    enabled: enabled && Number.isInteger(classId),
-    staleTime: 5 * 60_000,
-  });
-}
-
-export function useSubjects() {
-  return useQuery({
-    queryKey: teacherKeys.subjects,
-    queryFn: teacherService.getSubjects,
-    staleTime: 5 * 60_000,
   });
 }
 

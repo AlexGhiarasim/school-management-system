@@ -16,7 +16,7 @@ import { validatePassword } from '../utils/accountValidation.ts';
 import { PASSWORD_MAX_LENGTH } from '../utils/validators.ts';
 
 const LINK_CLASS =
-  'font-semibold text-indigo-600 transition hover:text-indigo-500 hover:underline focus:outline-none focus-visible:underline';
+  'font-semibold text-brand-600 transition hover:text-brand-500 hover:underline focus:outline-none focus-visible:underline';
 
 interface ResetValues {
   password: string;
@@ -70,7 +70,7 @@ export default function ResetPasswordPage() {
           </p>
           <Link
             to={paths.home}
-            className="mt-6 inline-block rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-500"
+            className="mt-6 inline-block rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition hover:bg-brand-500"
           >
             {t('auth.reset.goLogin')}
           </Link>

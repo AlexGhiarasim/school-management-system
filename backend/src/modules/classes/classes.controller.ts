@@ -11,13 +11,14 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import { Roles } from '../../common/decorators/roles.decorator.js';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto.js';
 import type { AuthenticatedUser } from '../../common/interfaces/authenticated-user.interface.js';
 import { Role } from '../../generated/prisma/enums.js';
 import { ClassesService } from './classes.service.js';
+import { AssignTeachingDto } from './dto/assign-teaching.dto.js';
 import { AssignTeacherDto } from './dto/assign-teacher.dto.js';
 import { CreateClassDto } from './dto/create-class.dto.js';
 import { ListClassesQueryDto } from './dto/list-classes-query.dto.js';
@@ -65,12 +66,45 @@ export class ClassesController {
   }
 
   @Get(':id/teaching')
+  @ApiOperation({ summary: 'Who teaches which subject in the class' })
+  findTeaching(@Param('id', ParseIntPipe) id: number) {
+    return this.classesService.findTeaching(id);
+  }
+
+  @Post(':id/teaching')
+  @ApiOperation({
+    summary: 'Let a teacher teach a subject in the class',
+    description:
+      'The teacher can then grade the students of the class in that subject. A subject has one teacher in a class.',
+  })
+  addTeaching(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: AssignTeachingDto,
+  ) {
+    return this.classesService.addTeaching(id, dto);
+  }
+
+  @Delete(':id/teaching/:assignmentId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Stop a teacher teaching a subject in the class' })
+  removeTeaching(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('assignmentId', ParseIntPipe) assignmentId: number,
+  ) {
+    return this.classesService.removeTeaching(id, assignmentId);
+  }
+
+  @Get(':id/overview')
   @Roles(Role.ADMIN, Role.TEACHER)
-  findTeaching(
+  @ApiOperation({
+    summary: 'Statistics, students and teachers of a class',
+    description: 'For the class teacher of the class, or an administrator.',
+  })
+  findOverview(
     @Param('id', ParseIntPipe) id: number,
     @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.classesService.findTeaching(id, user);
+    return this.classesService.findOverview(id, user);
   }
 
   @Get(':id/students')

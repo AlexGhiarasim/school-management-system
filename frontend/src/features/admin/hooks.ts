@@ -10,6 +10,8 @@ import type {
   AdminStudent,
   AdminTeacher,
   ClassInput,
+  GradeAuditAction,
+  ImportKind,
   GradeEditInput,
   GradeFilters,
   ListFilters,
@@ -32,7 +34,18 @@ export const adminKeys = {
   allTeachers: ['admin', 'teachers', 'all'] as const,
   grades: ['admin', 'grades'] as const,
   gradeList: (filters: GradeFilters) => ['admin', 'grades', filters] as const,
+  // Kept under "grades" so that every change to a grade refreshes them.
+  statistics: (classId: string) =>
+    ['admin', 'grades', 'statistics', classId] as const,
+  history: (page: number, action: string) =>
+    ['admin', 'grades', 'history', page, action] as const,
+  gradeHistory: (gradeId: number) =>
+    ['admin', 'grades', gradeId, 'history'] as const,
+  studentReport: (studentId: number) =>
+    ['admin', 'grades', 'report', studentId] as const,
   allSubjects: ['admin', 'subjects', 'all'] as const,
+  classTeaching: (classId: number) =>
+    ['admin', 'classes', classId, 'teaching'] as const,
   allClassStudents: (classId: number) =>
     ['admin', 'classes', classId, 'students', 'all'] as const,
   classStudents: (classId: number, page: number) =>
@@ -297,6 +310,87 @@ export function useDeleteGrade() {
 
   return useMutation({
     mutationFn: (id: number) => adminService.deleteGrade(id),
+    onSuccess: refresh,
+  });
+}
+
+export function useStatistics(classId: string) {
+  return useQuery({
+    queryKey: adminKeys.statistics(classId),
+    queryFn: () => adminService.getStatistics(classId),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useGradeHistory(page: number, action: GradeAuditAction | '') {
+  return useQuery({
+    queryKey: adminKeys.history(page, action),
+    queryFn: () => adminService.listGradeHistory(page, action),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useGradeChanges(gradeId: number) {
+  return useQuery({
+    queryKey: adminKeys.gradeHistory(gradeId),
+    queryFn: () => adminService.getGradeHistory(gradeId),
+  });
+}
+
+export function useStudentReport(studentId: number) {
+  return useQuery({
+    queryKey: adminKeys.studentReport(studentId),
+    queryFn: async () => {
+      const [student, grades] = await Promise.all([
+        adminService.getStudent(studentId),
+        adminService.listStudentGrades(studentId),
+      ]);
+
+      return { student, grades: grades.data };
+    },
+  });
+}
+
+export function useImportPreview(kind: ImportKind) {
+  return useMutation({
+    mutationFn: (content: string) => adminService.previewImport(kind, content),
+  });
+}
+
+export function useImportCommit(kind: ImportKind) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (content: string) => adminService.commitImport(kind, content),
+    // An import can add students, teachers and classes, so everything reloads.
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin'] }),
+  });
+}
+
+export function useClassTeaching(classId: number) {
+  return useQuery({
+    queryKey: adminKeys.classTeaching(classId),
+    queryFn: () => adminService.listClassTeaching(classId),
+    enabled: Number.isInteger(classId),
+  });
+}
+
+export function useAddTeaching(classId: number) {
+  const refresh = useRefresh(adminKeys.classTeaching(classId));
+
+  return useMutation({
+    mutationFn: (input: { teacherId: number; subjectId: number }) =>
+      adminService.addClassTeaching(classId, input),
+    onSuccess: refresh,
+  });
+}
+
+export function useRemoveTeaching(classId: number) {
+  const refresh = useRefresh(adminKeys.classTeaching(classId));
+
+  return useMutation({
+    mutationFn: (assignmentId: number) =>
+      adminService.removeClassTeaching(classId, assignmentId),
     onSuccess: refresh,
   });
 }

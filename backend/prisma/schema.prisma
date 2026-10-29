@@ -13,6 +13,12 @@ enum Role {
   STUDENT
 }
 
+enum GradeAuditAction {
+  CREATED
+  UPDATED
+  DELETED
+}
+
 model User {
   id           Int      @id @default(autoincrement())
   email        String   @unique
@@ -29,6 +35,7 @@ model User {
   teacher     Teacher?
   student     Student?
   resetTokens PasswordResetToken[]
+  gradeAudits GradeAudit[]
 }
 
 model Admin {
@@ -94,9 +101,10 @@ model Student {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  class  Class?  @relation(fields: [classId], references: [id], onDelete: SetNull)
-  grades Grade[]
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  class       Class?       @relation(fields: [classId], references: [id], onDelete: SetNull)
+  grades      Grade[]
+  gradeAudits GradeAudit[]
 }
 
 model Subject {
@@ -141,4 +149,28 @@ model Grade {
   subject Subject  @relation(fields: [subjectId], references: [id], onDelete: Restrict)
 
   @@index([studentId, subjectId])
+}
+
+// One entry for every change to a grade. The names are copied so the entry
+// still reads correctly after the grade, the student or the subject is deleted.
+model GradeAudit {
+  id                  Int              @id @default(autoincrement())
+  gradeId             Int
+  action              GradeAuditAction
+  actorId             Int?
+  studentId           Int?
+  studentName         String
+  subjectName         String
+  previousSubjectName String?
+  oldValue            Int?
+  newValue            Int?
+  oldDate             DateTime?        @db.Date
+  newDate             DateTime?        @db.Date
+  createdAt           DateTime         @default(now())
+
+  actor   User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  student Student? @relation(fields: [studentId], references: [id], onDelete: SetNull)
+
+  @@index([gradeId])
+  @@index([createdAt])
 }

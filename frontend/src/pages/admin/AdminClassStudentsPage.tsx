@@ -8,7 +8,9 @@ import { DataTable, type Column } from '../../components/ui/DataTable.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { ErrorState } from '../../components/ui/ErrorState.tsx';
 import { Pagination } from '../../components/ui/Pagination.tsx';
+import { PersonCell } from '../../components/ui/PersonCell.tsx';
 import { AddStudentsModal } from '../../features/admin/components/AddStudentsModal.tsx';
+import { ClassTeachingPanel } from '../../features/admin/components/ClassTeachingPanel.tsx';
 import {
   useAdminClasses,
   useAdminClassStudents,
@@ -18,7 +20,7 @@ import type { ClassStudent } from '../../features/teacher/types.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
 import { paths } from '../../routes/paths.ts';
-import { formatDate } from '../../utils/format.ts';
+import { formatDate, fullName } from '../../utils/format.ts';
 
 const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
@@ -60,21 +62,23 @@ export default function AdminClassStudentsPage() {
       key: 'name',
       header: t('admin.classStudents.table.name'),
       render: (student) => (
-        <span className="font-medium text-slate-900">
-          {student.lastName} {student.firstName}
-        </span>
+        <PersonCell
+          name={`${student.lastName} ${student.firstName}`}
+          email={student.email}
+          hideEmailFrom="2xl"
+        />
       ),
     },
     {
       key: 'email',
       header: t('admin.classStudents.table.email'),
-      className: 'hidden sm:table-cell',
+      className: 'hidden @2xl:table-cell',
       render: (student) => student.email,
     },
     {
       key: 'dateOfBirth',
       header: t('admin.classStudents.table.dateOfBirth'),
-      className: 'hidden md:table-cell',
+      className: 'hidden @4xl:table-cell',
       render: (student) => formatDate(student.dateOfBirth, language),
     },
     {
@@ -98,7 +102,7 @@ export default function AdminClassStudentsPage() {
     <section>
       <Link
         to={paths.admin.classes}
-        className="mb-4 inline-block text-[15px] font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus-visible:underline"
+        className="mb-4 inline-block text-[15px] font-medium text-brand-600 hover:text-brand-500 focus:outline-none focus-visible:underline"
       >
         {t('admin.classStudents.back')}
       </Link>
@@ -135,6 +139,13 @@ export default function AdminClassStudentsPage() {
               </Button>
             }
           />
+
+          {schoolClass && (
+            <ClassTeachingPanel
+              classId={classId}
+              className={schoolClass.name}
+            />
+          )}
 
           {students.isError ? (
             <div className={CARD}>
@@ -174,9 +185,7 @@ export default function AdminClassStudentsPage() {
             open={removing !== null}
             title={t('admin.classStudents.remove.title')}
             message={t('admin.classStudents.remove.message', {
-              name: removing
-                ? `${removing.firstName} ${removing.lastName}`
-                : '',
+              name: removing ? fullName(removing) : '',
             })}
             confirmLabel={t('admin.classStudents.remove.confirm')}
             loading={assign.isPending}

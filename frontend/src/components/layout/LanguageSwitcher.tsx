@@ -17,9 +17,9 @@ export function LanguageSwitcher() {
           type="button"
           aria-pressed={current === language}
           onClick={() => void i18n.changeLanguage(language)}
-          className={`rounded-lg px-3 py-1.5 text-sm font-semibold uppercase transition focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100 ${
+          className={`rounded-lg px-3 py-1.5 text-sm font-semibold uppercase transition focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-100 ${
             current === language
-              ? 'bg-indigo-600 text-white shadow'
+              ? 'bg-brand-600 text-white shadow'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >

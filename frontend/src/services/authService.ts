@@ -1,12 +1,15 @@
 import { apiRequest } from '../lib/api.ts';
 import { authedRequest } from '../lib/authedRequest.ts';
 import type {
+  AuthConfig,
   CurrentUser,
   LoginResponse,
   RegisterPayload,
 } from '../features/auth/types.ts';
 
 export const authService = {
+  getConfig: () => apiRequest<AuthConfig>('/auth/config'),
+
   login: (email: string, password: string) =>
     apiRequest<LoginResponse>('/auth/login', {
       method: 'POST',

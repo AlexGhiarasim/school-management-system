@@ -30,3 +30,7 @@ export interface RegisterPayload {
   dateOfBirth: string;
   password: string;
 }
+
+export interface AuthConfig {
+  registrationEnabled: boolean;
+}

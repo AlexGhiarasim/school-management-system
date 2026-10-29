@@ -1,12 +1,12 @@
 import type {
   ClassStudent,
-  ClassTeaching,
   GradeInput,
-  Subject,
+  HomeroomOverview,
   TeacherClass,
   TeacherGrade,
 } from '../features/teacher/types.ts';
 import { authedRequest } from '../lib/authedRequest.ts';
+import { downloadFile } from '../lib/downloadFile.ts';
 import type { Paginated } from '../types/api.ts';
 
 const PAGE_SIZE = 20;
@@ -20,14 +20,17 @@ export const teacherService = {
       `/classes/${classId}/students?page=${page}&limit=${limit}`,
     ),
 
-  getClassTeaching: (classId: number) =>
-    authedRequest<ClassTeaching[]>(`/classes/${classId}/teaching`),
+  getHomeroomOverview: (classId: number) =>
+    authedRequest<HomeroomOverview>(`/classes/${classId}/overview`),
+
+  exportClassGrades: (classId: number, language: string) =>
+    downloadFile(
+      `/grades/export?classId=${classId}&language=${language}`,
+      'grades.csv',
+    ),
 
   getAllClassStudents: (classId: number) =>
     teacherService.getClassStudents(classId, 1, MAX_PAGE_SIZE),
-
-  getSubjects: () =>
-    authedRequest<Paginated<Subject>>(`/subjects?limit=${MAX_PAGE_SIZE}`),
 
   getStudentGrades: (studentId: number) =>
     authedRequest<Paginated<TeacherGrade>>(

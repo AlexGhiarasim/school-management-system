@@ -36,15 +36,15 @@
   "credentials": {
     "title": "Contul a fost creat",
     "message": "Transmite aceste date lui {{name}}. Se poate autentifica imediat cu ele.",
-    "warning": "Parola nu mai poate fi văzută după ce închizi fereastra, deci copiaz-o acum.",
+    "warning": "Parola nu se mai afișează după ce închizi fereastra. Copiaz-o acum.",
     "copyAll": "Copiază tot",
-    "done": "Am notat",
+    "done": "Gata",
     "generate": "Generează o parolă"
   },
   "account": {
     "password": {
       "title": "Schimbă parola",
-      "hint": "Celelalte sesiuni deschise vor fi deconectate.",
+      "hint": "Vei fi deconectat de pe celelalte dispozitive.",
       "current": "Parola curentă",
       "new": "Parola nouă",
       "submit": "Schimbă parola",
@@ -55,7 +55,7 @@
   "confirm": {
     "password": {
       "title": "Schimbi parola?",
-      "message": "Rămâi autentificat aici, iar celelalte sesiuni deschise vor fi deconectate.",
+      "message": "Rămâi conectat aici. Pe celelalte dispozitive vei fi deconectat.",
       "confirm": "Da, schimbă"
     },
     "add": "Da, adaugă",
@@ -68,9 +68,9 @@
     },
     "class": {
       "createTitle": "Creezi această clasă?",
-      "createMessage": "Clasa va fi adăugată în școală.",
+      "createMessage": "Clasa va fi adăugată.",
       "updateTitle": "Salvezi modificările clasei?",
-      "updateMessage": "Clasa va fi actualizată pentru toți cei care o văd."
+      "updateMessage": "Modificările vor fi vizibile imediat."
     },
     "student": {
       "createTitle": "Adaugi acest elev?",
@@ -92,7 +92,7 @@
     },
     "assign": {
       "title": "Adaugi elevul în această clasă?",
-      "message": "Elevul va fi mutat în {{name}} și își va vedea colegii acolo.",
+      "message": "Elevul va fi adăugat în clasa {{name}}.",
       "student": "Elev",
       "class": "Clasa"
     },
@@ -108,7 +108,13 @@
     "Istorie": "Istorie",
     "Geografie": "Geografie",
     "Informatică": "Informatică",
-    "Educație fizică": "Educație fizică"
+    "Educație fizică": "Educație fizică",
+    "Limba franceză": "Limba franceză",
+    "Religie": "Religie",
+    "Educație socială": "Educație socială",
+    "Logică și argumentare": "Logică și argumentare",
+    "Filosofie": "Filosofie",
+    "Economie": "Economie"
   },
   "nav": {
     "main": "Navigare principală",
@@ -124,7 +130,8 @@
     },
     "teacher": {
       "classes": "Clasele mele",
-      "profile": "Profilul meu"
+      "profile": "Profilul meu",
+      "homeroom": "Dirigenție"
     },
     "admin": {
       "students": "Elevi",
@@ -132,8 +139,14 @@
       "classes": "Clase",
       "subjects": "Materii",
       "grades": "Note",
-      "profile": "Profilul meu"
-    }
+      "profile": "Profilul meu",
+      "statistics": "Statistici",
+      "activity": "Activitate"
+    },
+    "account": "Meniul contului",
+    "profile": "Profilul meu",
+    "openMenu": "Deschide meniul",
+    "closeMenu": "Închide meniul"
   },
   "student": {
     "profile": {
@@ -201,7 +214,7 @@
       "teaching": "Ce predai"
     },
     "classes": {
-      "description": "Clasele pe care le predai. Deschide o clasă ca să îi vezi elevii.",
+      "description": "Clasele la care predai. Deschide o clasă ca să vezi elevii.",
       "students_one": "{{count}} elev",
       "students_few": "{{count}} elevi",
       "students_other": "{{count}} de elevi",
@@ -210,6 +223,13 @@
       "empty": {
         "title": "Nu ai încă nicio clasă",
         "description": "Un administrator îți va aloca clasele. Ele vor apărea aici."
+      },
+      "teachingTitle": "Clasele la care predai ({{count}})",
+      "noTeaching": "Nu predai la nicio clasă",
+      "homeroomCallout": {
+        "title": "Ești diriginte la clasa {{name}}",
+        "description": "Vezi situația clasei, elevii în situație de corigență și notele la toate materiile.",
+        "action": "Vezi clasa {{name}}"
       }
     },
     "classStudents": {
@@ -237,36 +257,15 @@
     "studentGrades": {
       "back": "Înapoi la clasă",
       "title": "Notele elevului",
-      "description": "Poți adăuga note la materiile pe care le predai și le poți modifica pe cele date de tine.",
-      "homeroomDescription": "Ca diriginte vezi toate notele elevului. Le poți modifica doar pe cele de la materia pe care o predai.",
-      "homeroomOnlyDescription": "Ca diriginte vezi toate notele elevului, doar pentru vizualizare.",
+      "description": "Adaugă note la materiile tale. Poți modifica doar notele date de tine.",
       "taught_one": "Materia pe care o predai",
       "taught_few": "Materiile pe care le predai",
       "taught_other": "Materiile pe care le predai",
       "taughtEmpty": "Nicio notă încă la această materie.",
       "average": "Media",
-      "overview": {
-        "title": "Toate materiile",
-        "readOnly": "Doar vizualizare"
-      },
       "add": "Adaugă notă",
-      "filter": {
-        "label": "Materia",
-        "all": "Toate materiile"
-      },
       "table": {
-        "caption": "Notele elevului, de la cea mai recentă",
-        "subject": "Materia",
-        "grade": "Nota",
-        "date": "Data",
-        "teacher": "Profesor",
-        "noTeacher": "Administrator",
-        "actions": "Acțiuni",
         "edit": "Modifică"
-      },
-      "empty": {
-        "title": "Elevul nu are încă nicio notă",
-        "description": "Adaugă prima notă cu butonul de mai sus."
       },
       "notFound": {
         "title": "Elevul nu a fost găsit",
@@ -290,6 +289,56 @@
         "gradeInvalid": "Alege o notă de la 1 la 10.",
         "dateInvalid": "Introdu o dată validă."
       }
+    },
+    "homeroom": {
+      "title": "Clasa {{name}}",
+      "badge": "Diriginte",
+      "description": "Situația clasei tale: rezultatele la toate materiile, elevii în situație de corigență și profesorii clasei.",
+      "permissions": "Ca diriginte vezi notele tuturor elevilor, la toate materiile. Poți modifica doar notele pe care le-ai dat tu.",
+      "export": "Exportă notele clasei",
+      "back": "Înapoi la clasă",
+      "noGrades": {
+        "title": "Încă nu sunt note în clasă",
+        "description": "Statisticile apar după ce profesorii adaugă note."
+      },
+      "teachers": {
+        "title": "Profesorii clasei",
+        "empty": "Încă nu este alocat niciun profesor la această clasă."
+      },
+      "roster": {
+        "title": "Elevii clasei ({{count}})",
+        "caption": "Elevii clasei, cu media și situația fiecăruia",
+        "student": "Elev",
+        "average": "Media",
+        "grades": "Note",
+        "status": "Situația",
+        "actions": "Acțiuni",
+        "viewGrades": "Note",
+        "report": "Situație școlară",
+        "noGrades": "Fără note",
+        "passing": "În situație de promovare",
+        "failing_one": "Corigent la {{count}} materie",
+        "failing_few": "Corigent la {{count}} materii",
+        "failing_other": "Corigent la {{count}} de materii"
+      },
+      "notHomeroom": {
+        "title": "Nu ești diriginte",
+        "description": "Această pagină apare după ce un administrator te alocă diriginte unei clase.",
+        "action": "Mergi la clasele mele"
+      },
+      "student": {
+        "description": "Notele elevului la toate materiile, doar pentru vizualizare. Poți modifica doar notele pe care le-ai dat tu.",
+        "ownGrades": "Adaugă note la materiile mele",
+        "back": "Înapoi la elev",
+        "notFound": {
+          "title": "Elevul nu a fost găsit",
+          "description": "Elevul nu face parte din clasa la care ești diriginte."
+        },
+        "empty": {
+          "title": "Elevul nu are încă nicio notă",
+          "description": "Notele vor apărea aici după ce profesorii le adaugă."
+        }
+      }
     }
   },
   "admin": {
@@ -301,7 +350,7 @@
       "you": "tu"
     },
     "grades": {
-      "description": "Toate notele școlii. Filtrează după clasă, elev sau materie și modifică sau șterge orice notă.",
+      "description": "Toate notele școlii. Filtrează după clasă, elev sau materie.",
       "editFor": "Nota elevului {{name}}",
       "filter": {
         "class": "Clasa",
@@ -320,8 +369,7 @@
         "teacher": "Profesor",
         "noTeacher": "Administrator",
         "actions": "Acțiuni",
-        "edit": "Modifică",
-        "delete": "Șterge"
+        "edit": "Modifică"
       },
       "delete": {
         "title": "Șterge nota",
@@ -336,7 +384,8 @@
       "noResults": {
         "title": "Nicio notă găsită",
         "description": "Nu există note pentru filtrele alese."
-      }
+      },
+      "export": "Exportă CSV"
     },
     "classStudents": {
       "back": "Înapoi la clase",
@@ -379,8 +428,23 @@
         },
         "noResults": {
           "title": "Niciun rezultat",
-          "description": "Nu am găsit elevi fără clasă pentru căutarea aleasă."
+          "description": "Niciun elev fără clasă nu se potrivește căutării."
         }
+      },
+      "teaching": {
+        "title": "Profesorii clasei",
+        "description": "Un profesor poate pune note doar la materiile care îi sunt atribuite aici, elevilor din această clasă. O materie are un singur profesor în clasă.",
+        "empty": "Nicio materie nu are încă profesor în această clasă, deci nimeni nu poate pune note.",
+        "subject": "Materia",
+        "teacher": "Profesorul",
+        "chooseSubject": "Alege materia",
+        "chooseTeacher": "Alege profesorul",
+        "assign": "Atribuie",
+        "added": "Profesorul a fost atribuit materiei.",
+        "removed": "Profesorul a fost scos de la materie.",
+        "remove": "Scoate",
+        "removeTitle": "Scoți profesorul de la materie?",
+        "removeMessage": "{{teacher}} nu va mai putea pune note la {{subject}} în clasa {{class}}. Notele date de el rămân."
       }
     },
     "classes": {
@@ -418,8 +482,7 @@
         "noTeacher": "Fără diriginte",
         "students": "Elevi",
         "actions": "Acțiuni",
-        "edit": "Modifică",
-        "delete": "Șterge"
+        "edit": "Modifică"
       },
       "empty": {
         "title": "Nu există încă nicio clasă",
@@ -443,7 +506,7 @@
       },
       "delete": {
         "title": "Șterge profesorul",
-        "message": "Ștergi profesorul {{name}}? Se șterge contul lui, clasele lui rămân fără profesor, iar notele date de el rămân. Acțiunea nu poate fi anulată.",
+        "message": "Ștergi profesorul {{name}}? Contul lui se șterge, iar clasa pe care o conduce rămâne fără diriginte. Notele date de el rămân. Acțiunea nu poate fi anulată.",
         "confirm": "Șterge",
         "deleted": "Profesorul a fost șters."
       },
@@ -453,8 +516,7 @@
         "email": "Email",
         "phone": "Telefon",
         "actions": "Acțiuni",
-        "edit": "Modifică",
-        "delete": "Șterge"
+        "edit": "Modifică"
       },
       "empty": {
         "title": "Nu există încă niciun profesor",
@@ -493,8 +555,7 @@
         "caption": "Materiile școlii",
         "name": "Materia",
         "actions": "Acțiuni",
-        "edit": "Modifică",
-        "delete": "Șterge"
+        "edit": "Modifică"
       },
       "empty": {
         "title": "Nu există încă nicio materie",
@@ -517,7 +578,7 @@
       },
       "delete": {
         "title": "Șterge elevul",
-        "message": "Ștergi elevul {{name}}? Se vor șterge și contul și toate notele lui. Acțiunea nu poate fi anulată.",
+        "message": "Ștergi elevul {{name}}? Se vor șterge contul și toate notele lui. Acțiunea nu poate fi anulată.",
         "confirm": "Șterge",
         "deleted": "Elevul a fost șters."
       },
@@ -529,8 +590,7 @@
       },
       "filter": {
         "label": "Clasa",
-        "all": "Toate clasele",
-        "noClass": "Fără clasă"
+        "all": "Toate clasele"
       },
       "table": {
         "caption": "Elevii școlii",
@@ -542,7 +602,7 @@
         "noClass": "Fără clasă",
         "actions": "Acțiuni",
         "edit": "Modifică",
-        "delete": "Șterge"
+        "report": "Situație"
       },
       "empty": {
         "title": "Nu există încă niciun elev",
@@ -552,15 +612,90 @@
         "title": "Niciun rezultat",
         "description": "Nu am găsit elevi pentru căutarea sau filtrul ales."
       }
+    },
+    "statistics": {
+      "description": "Situația generală a școlii: medii, distribuția notelor și elevii aflați în situație de corigență.",
+      "kpi": {
+        "passRate": "Promovabilitate",
+        "students": "Elevi",
+        "grades": "Note"
+      },
+      "distribution": {
+        "title": "Distribuția notelor",
+        "bar": "Nota {{grade}}: {{count}} note ({{percent}})",
+        "tooltip": "note de {{grade}} · {{percent}}",
+        "legend": {
+          "failing": "Note sub 5",
+          "fair": "Note 5–7",
+          "good": "Note 8–10"
+        }
+      },
+      "trend": {
+        "title": "Media pe săptămâni",
+        "tooltip_one": "săptămâna de la {{week}} · {{count}} notă",
+        "tooltip_few": "săptămâna de la {{week}} · {{count}} note",
+        "tooltip_other": "săptămâna de la {{week}} · {{count}} de note"
+      },
+      "byClass": {
+        "title": "Media pe clase",
+        "students_one": "{{count}} elev",
+        "students_few": "{{count}} elevi",
+        "students_other": "{{count}} de elevi"
+      },
+      "bySubject": {
+        "title": "Media pe materii",
+        "grades_one": "{{count}} notă",
+        "grades_few": "{{count}} note",
+        "grades_other": "{{count}} de note"
+      },
+      "top": {
+        "title": "Cei mai buni elevi"
+      },
+      "atRisk": {
+        "title": "Elevi în situație de corigență ({{count}})",
+        "none": "Niciun elev nu se află în situație de corigență."
+      },
+      "empty": {
+        "title": "Încă nu sunt note de analizat",
+        "description": "Statisticile apar după ce profesorii adaugă note."
+      }
+    },
+    "activity": {
+      "description": "Fiecare notă adăugată, modificată sau ștearsă, cu cine a făcut-o și când.",
+      "actions": {
+        "CREATED": "Adăugată",
+        "UPDATED": "Modificată",
+        "DELETED": "Ștearsă"
+      },
+      "filter": {
+        "label": "Acțiune",
+        "all": "Toate acțiunile"
+      },
+      "table": {
+        "caption": "Modificările notelor, cele mai recente primele",
+        "when": "Când",
+        "actor": "Făcută de",
+        "action": "Acțiune",
+        "grade": "Elev și materie",
+        "change": "Modificare"
+      },
+      "empty": {
+        "title": "Încă nu sunt modificări",
+        "description": "Notele adăugate, modificate sau șterse de acum înainte vor apărea aici."
+      },
+      "deletedAccount": "Cont șters",
+      "gradeHistory": "Istoricul notei",
+      "dateChange": "data {{from}} → {{to}}"
     }
   },
   "errors": {
     "network": "Nu ne putem conecta la server. Încearcă din nou.",
     "invalid": "Datele nu sunt valide. Verifică câmpurile.",
-    "forbidden": "Nu ai voie să faci această acțiune.",
+    "forbidden": "Nu ai permisiunea pentru această acțiune.",
     "notFound": "Elementul nu a fost găsit.",
     "tooManyRequests": "Prea multe încercări. Încearcă din nou peste un minut.",
-    "unexpected": "A apărut o eroare. Încearcă din nou."
+    "unexpected": "A apărut o eroare. Încearcă din nou.",
+    "conflict": "Există deja o înregistrare cu aceste date."
   },
   "pages": {
     "notFound": {
@@ -573,6 +708,7 @@
     "headline": "Școala ta, mai",
     "words": ["simplă", "organizată", "aproape"],
     "subtitle": "Autentifică-te sau creează un cont ca să continui.",
+    "subtitleSignInOnly": "Autentifică-te ca să continui.",
     "description": "Un spațiu simplu care ține școala organizată: informațiile importante sunt într-un singur loc, clare și la îndemână.",
     "copyright": "© {{year}} Sistem de gestiune școlară"
   },
@@ -584,7 +720,7 @@
     },
     "login": {
       "title": "Bine ai revenit",
-      "subtitle": "Autentifică-te pentru a continua către contul tău.",
+      "subtitle": "Autentifică-te ca să intri în cont.",
       "prompt": "Nu ai cont?",
       "action": "Creează unul",
       "forgot": "Ai uitat parola?",
@@ -602,7 +738,7 @@
     },
     "reset": {
       "title": "Alege o parolă nouă",
-      "subtitle": "Folosește o parolă pe care nu o ai în altă parte.",
+      "subtitle": "Alege o parolă pe care nu o folosești în altă parte.",
       "newPassword": "Parola nouă",
       "submit": "Salvează parola",
       "submitting": "Se salvează",
@@ -667,6 +803,142 @@
       "fair": "medie",
       "good": "bună",
       "strong": "puternică"
+    }
+  },
+  "report": {
+    "title": "Situație școlară",
+    "description": "Notele și mediile elevului, gata de printat sau de salvat ca PDF.",
+    "ownDescription": "Notele și mediile tale, gata de printat sau de salvat ca PDF.",
+    "open": "Situație școlară",
+    "print": "Printează sau salvează PDF",
+    "backToStudents": "Înapoi la elevi",
+    "student": "Elev",
+    "class": "Clasa",
+    "dateOfBirth": "Data nașterii",
+    "issued": "Data emiterii: {{date}}",
+    "noGrades": "Nu există încă note.",
+    "subject": "Materie",
+    "grades": "Note",
+    "average": "Media",
+    "overall": "Media generală",
+    "passed": "În situație de promovare la toate materiile.",
+    "failing": "În situație de corigență la: {{subjects}}."
+  },
+  "import": {
+    "button": "Importă din fișier",
+    "title": {
+      "students": "Importă elevi dintr-un fișier",
+      "teachers": "Importă profesori dintr-un fișier",
+      "classes": "Importă clase dintr-un fișier",
+      "subjects": "Importă materii dintr-un fișier"
+    },
+    "description": "Alege un fișier CSV, de exemplu salvat din Excel sau Google Sheets. Înainte să se importe ceva, vezi cum ar arăta datele.",
+    "choose": "Alege fișierul",
+    "dropHint": "sau trage-l aici (CSV, cel mult 200 de rânduri)",
+    "template": "Descarcă un fișier model",
+    "columns": {
+      "students": "Coloane: Nume, Prenume, Email, Data nașterii (obligatorii); Telefon, Clasa, Parola (opționale). Fără parolă, aplicația generează una.",
+      "teachers": "Coloane: Nume, Prenume, Email (obligatorii); Telefon, Diriginte la clasa, Parola (opționale). Fără parolă, aplicația generează una.",
+      "classes": "Coloane: Clasa (obligatorie); Email diriginte (opțională).",
+      "subjects": "Coloană: Materia (obligatorie)."
+    },
+    "fileError": {
+      "empty": "Fișierul nu are niciun rând cu date.",
+      "tooManyRows": "Fișierul are prea multe rânduri. Poți importa cel mult {{max}} odată.",
+      "missingColumns": "Lipsesc coloanele: {{columns}}.",
+      "tooLarge": "Fișierul este prea mare."
+    },
+    "summary": "{{total}} rânduri în fișier: {{valid}} corecte, {{invalid}} cu erori.",
+    "onlyErrors": "Doar rândurile cu erori",
+    "preview": "Previzualizarea datelor",
+    "line": "Rând",
+    "status": "Verificare",
+    "ok": "Corect",
+    "skipNote": "Rândurile cu erori nu se importă. Le poți corecta în fișier și îl poți încărca din nou.",
+    "passwordNote": "Conturile fără parolă în fișier primesc o parolă generată, pe care o descarci după import.",
+    "chooseAnother": "Alege alt fișier",
+    "confirm": {
+      "students_one": "Importă {{count}} elev",
+      "students_few": "Importă {{count}} elevi",
+      "students_other": "Importă {{count}} de elevi",
+      "teachers_one": "Importă {{count}} profesor",
+      "teachers_few": "Importă {{count}} profesori",
+      "teachers_other": "Importă {{count}} de profesori",
+      "classes_one": "Importă {{count}} clasă",
+      "classes_few": "Importă {{count}} clase",
+      "classes_other": "Importă {{count}} de clase",
+      "subjects_one": "Importă {{count}} materie",
+      "subjects_few": "Importă {{count}} materii",
+      "subjects_other": "Importă {{count}} de materii"
+    },
+    "done": {
+      "students_one": "Am importat {{count}} elev",
+      "students_few": "Am importat {{count}} elevi",
+      "students_other": "Am importat {{count}} de elevi",
+      "teachers_one": "Am importat {{count}} profesor",
+      "teachers_few": "Am importat {{count}} profesori",
+      "teachers_other": "Am importat {{count}} de profesori",
+      "classes_one": "Am importat {{count}} clasă",
+      "classes_few": "Am importat {{count}} clase",
+      "classes_other": "Am importat {{count}} de clase",
+      "subjects_one": "Am importat {{count}} materie",
+      "subjects_few": "Am importat {{count}} materii",
+      "subjects_other": "Am importat {{count}} de materii"
+    },
+    "skipped_one": "{{count}} rând cu erori a fost sărit.",
+    "skipped_few": "{{count}} rânduri cu erori au fost sărite.",
+    "skipped_other": "{{count}} de rânduri cu erori au fost sărite.",
+    "generatedPasswords": "Pentru conturile fără parolă în fișier, aplicația a generat parole. Ele se văd doar acum, deci descarcă fișierul și transmite-le fiecărei persoane.",
+    "downloadAccounts": "Descarcă conturile (CSV)",
+    "accountsHeader": {
+      "name": "Nume",
+      "password": "Parola"
+    },
+    "finish": "Gata",
+    "errors": {
+      "required": "Lipsește: {{field}}",
+      "email": "Emailul nu este valid",
+      "date": "Data nu este validă",
+      "phone": "Telefonul nu este valid",
+      "password": "Parola: minim 8 caractere, cu o literă și o cifră",
+      "nameLength": "{{field}}: între 2 și 100 de caractere",
+      "nameChars": "{{field}} are caractere nepermise",
+      "tooLong": "{{field}} este prea lung",
+      "invalid": "{{field}} nu este valid",
+      "taken": "{{field}} există deja în sistem",
+      "duplicate": "{{field}} apare de mai multe ori în fișier",
+      "classNotFound": "Clasa nu există",
+      "classHasTeacher": "Clasa are deja diriginte",
+      "classRepeated": "Clasa apare la mai mulți profesori în fișier",
+      "teacherNotFound": "Nu există un profesor cu acest email",
+      "teacherLeads": "Profesorul este deja diriginte la o altă clasă",
+      "teacherRepeated": "Profesorul apare la mai multe clase în fișier"
+    },
+    "fields": {
+      "students": {
+        "lastName": "Nume",
+        "firstName": "Prenume",
+        "email": "Email",
+        "dateOfBirth": "Data nașterii",
+        "phone": "Telefon",
+        "className": "Clasa",
+        "password": "Parola"
+      },
+      "teachers": {
+        "lastName": "Nume",
+        "firstName": "Prenume",
+        "email": "Email",
+        "phone": "Telefon",
+        "homeroomClass": "Diriginte la clasa",
+        "password": "Parola"
+      },
+      "classes": {
+        "name": "Clasa",
+        "homeroomTeacher": "Email diriginte"
+      },
+      "subjects": {
+        "name": "Materia"
+      }
     }
   }
 }

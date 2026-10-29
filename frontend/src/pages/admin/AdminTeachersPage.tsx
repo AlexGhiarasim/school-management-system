@@ -7,6 +7,7 @@ import { DataTable, type Column } from '../../components/ui/DataTable.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { ErrorState } from '../../components/ui/ErrorState.tsx';
 import { Pagination } from '../../components/ui/Pagination.tsx';
+import { PersonCell } from '../../components/ui/PersonCell.tsx';
 import { TextField } from '../../components/ui/TextField.tsx';
 import {
   CredentialsDialog,
@@ -21,6 +22,7 @@ import type { AdminTeacher } from '../../features/admin/types.ts';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { getApiErrorKey } from '../../lib/apiErrors.ts';
+import { ImportButton } from '../../features/admin/components/ImportButton.tsx';
 
 const CARD = 'rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-300';
 
@@ -59,21 +61,23 @@ export default function AdminTeachersPage() {
       key: 'name',
       header: t('admin.teachers.table.name'),
       render: (teacher) => (
-        <span className="font-medium text-slate-900">
-          {teacher.lastName} {teacher.firstName}
-        </span>
+        <PersonCell
+          name={`${teacher.lastName} ${teacher.firstName}`}
+          email={teacher.email}
+          hideEmailFrom="2xl"
+        />
       ),
     },
     {
       key: 'email',
       header: t('admin.teachers.table.email'),
-      className: 'hidden sm:table-cell',
+      className: 'hidden @2xl:table-cell',
       render: (teacher) => teacher.email,
     },
     {
       key: 'phone',
       header: t('admin.teachers.table.phone'),
-      className: 'hidden md:table-cell',
+      className: 'hidden @4xl:table-cell',
       render: (teacher) => teacher.phone ?? '-',
     },
     {
@@ -101,9 +105,12 @@ export default function AdminTeachersPage() {
         title={t('nav.admin.teachers')}
         description={t('admin.teachers.description')}
         actions={
-          <Button fullWidth={false} onClick={() => setCreating(true)}>
-            {t('admin.teachers.add')}
-          </Button>
+          <>
+            <ImportButton kind="teachers" />
+            <Button fullWidth={false} onClick={() => setCreating(true)}>
+              {t('admin.teachers.add')}
+            </Button>
+          </>
         }
       />
 

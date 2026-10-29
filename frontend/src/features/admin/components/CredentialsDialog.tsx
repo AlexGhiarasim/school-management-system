@@ -63,7 +63,7 @@ function CredentialsContent({
               aria-label={
                 visible ? t('common.hidePassword') : t('common.showPassword')
               }
-              className="text-slate-400 transition hover:text-slate-700 focus:outline-none focus-visible:text-indigo-600"
+              className="text-slate-400 transition hover:text-slate-700 focus:outline-none focus-visible:text-brand-600"
             >
               {visible ? <EyeOffIcon /> : <EyeIcon />}
             </button>

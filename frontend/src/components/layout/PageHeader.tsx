@@ -31,7 +31,7 @@ export function PageHeader({
       <div>
         {badge ? (
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-700">
+            <span className="rounded-full bg-brand-50 px-3 py-1 text-sm font-semibold text-brand-700">
               {badge}
             </span>
             {heading}

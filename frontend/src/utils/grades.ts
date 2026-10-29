@@ -39,8 +39,20 @@ export function overallAverage(subjects: SubjectAverage[]): number | null {
   return Math.round((sum / subjects.length) * 100) / 100;
 }
 
+export type GradeBand = 'failing' | 'fair' | 'good';
+
+export function gradeBand(value: number): GradeBand {
+  if (value < FAILING_GRADE) return 'failing';
+  if (value < GOOD_GRADE) return 'fair';
+  return 'good';
+}
+
+const TONES: Record<GradeBand, string> = {
+  failing: 'bg-rose-50 text-rose-800',
+  fair: 'bg-amber-50 text-amber-800',
+  good: 'bg-emerald-50 text-emerald-800',
+};
+
 export function gradeTone(value: number): string {
-  if (value < FAILING_GRADE) return 'bg-rose-50 text-rose-800';
-  if (value < GOOD_GRADE) return 'bg-amber-50 text-amber-800';
-  return 'bg-emerald-50 text-emerald-800';
+  return TONES[gradeBand(value)];
 }

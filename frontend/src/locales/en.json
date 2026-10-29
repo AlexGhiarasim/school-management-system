@@ -35,15 +35,15 @@
   "credentials": {
     "title": "The account was created",
     "message": "Give these details to {{name}}. They can sign in with them right away.",
-    "warning": "The password cannot be seen again after you close this window. Copy it now.",
+    "warning": "The password is not shown again after you close this window. Copy it now.",
     "copyAll": "Copy all",
-    "done": "I have noted them",
+    "done": "Done",
     "generate": "Generate a password"
   },
   "account": {
     "password": {
       "title": "Change password",
-      "hint": "Your other open sessions will be signed out.",
+      "hint": "You will be signed out on your other devices.",
       "current": "Current password",
       "new": "New password",
       "submit": "Change password",
@@ -54,7 +54,7 @@
   "confirm": {
     "password": {
       "title": "Change your password?",
-      "message": "You stay signed in here, and your other open sessions will be signed out.",
+      "message": "You stay signed in here. You will be signed out on your other devices.",
       "confirm": "Yes, change"
     },
     "add": "Yes, add",
@@ -69,7 +69,7 @@
       "createTitle": "Create this class?",
       "createMessage": "The class will be added to the school.",
       "updateTitle": "Save the changes to this class?",
-      "updateMessage": "The class will be updated for everyone who sees it."
+      "updateMessage": "The changes will be visible right away."
     },
     "student": {
       "createTitle": "Add this student?",
@@ -91,7 +91,7 @@
     },
     "assign": {
       "title": "Add this student to the class?",
-      "message": "The student will be moved into {{name}} and will see its grades and classmates.",
+      "message": "The student will be added to class {{name}}.",
       "student": "Student",
       "class": "Class"
     },
@@ -107,7 +107,13 @@
     "Istorie": "History",
     "Geografie": "Geography",
     "Informatică": "Computer Science",
-    "Educație fizică": "Physical Education"
+    "Educație fizică": "Physical Education",
+    "Limba franceză": "French",
+    "Religie": "Religion",
+    "Educație socială": "Social education",
+    "Logică și argumentare": "Logic and argumentation",
+    "Filosofie": "Philosophy",
+    "Economie": "Economics"
   },
   "nav": {
     "main": "Main navigation",
@@ -123,7 +129,8 @@
     },
     "teacher": {
       "classes": "My classes",
-      "profile": "My profile"
+      "profile": "My profile",
+      "homeroom": "Class teacher"
     },
     "admin": {
       "students": "Students",
@@ -131,8 +138,14 @@
       "classes": "Classes",
       "subjects": "Subjects",
       "grades": "Grades",
-      "profile": "My profile"
-    }
+      "profile": "My profile",
+      "statistics": "Statistics",
+      "activity": "Activity"
+    },
+    "account": "Account menu",
+    "profile": "My profile",
+    "openMenu": "Open the menu",
+    "closeMenu": "Close the menu"
   },
   "student": {
     "profile": {
@@ -198,7 +211,7 @@
       "teaching": "What you teach"
     },
     "classes": {
-      "description": "The classes you teach. Open a class to see its students.",
+      "description": "The classes where you teach. Open a class to see its students.",
       "students_one": "{{count}} student",
       "students_other": "{{count}} students",
       "open": "View students",
@@ -206,6 +219,13 @@
       "empty": {
         "title": "You have no classes yet",
         "description": "An administrator will assign your classes. They will appear here."
+      },
+      "teachingTitle": "Classes you teach ({{count}})",
+      "noTeaching": "You do not teach in any class",
+      "homeroomCallout": {
+        "title": "You are the class teacher of {{name}}",
+        "description": "See how the class is doing, the students failing a subject and the grades in every subject.",
+        "action": "View class {{name}}"
       }
     },
     "classStudents": {
@@ -233,35 +253,14 @@
     "studentGrades": {
       "back": "Back to the class",
       "title": "Student grades",
-      "description": "You can add grades for the subjects you teach and edit the ones you gave.",
-      "homeroomDescription": "As class teacher you see every grade of the student. You can change only the grades of the subject you teach.",
-      "homeroomOnlyDescription": "As class teacher you see every grade of the student, for viewing only.",
+      "description": "Add grades for your subjects. You can edit only the grades you gave.",
       "taught_one": "The subject you teach",
       "taught_other": "The subjects you teach",
       "taughtEmpty": "No grades in this subject yet.",
       "average": "Average",
-      "overview": {
-        "title": "All subjects",
-        "readOnly": "View only"
-      },
       "add": "Add grade",
-      "filter": {
-        "label": "Subject",
-        "all": "All subjects"
-      },
       "table": {
-        "caption": "The grades of the student, most recent first",
-        "subject": "Subject",
-        "grade": "Grade",
-        "date": "Date",
-        "teacher": "Teacher",
-        "noTeacher": "Administrator",
-        "actions": "Actions",
         "edit": "Edit"
-      },
-      "empty": {
-        "title": "The student has no grades yet",
-        "description": "Add the first grade with the button above."
       },
       "notFound": {
         "title": "Student not found",
@@ -285,6 +284,55 @@
         "gradeInvalid": "Choose a grade from 1 to 10.",
         "dateInvalid": "Enter a valid date."
       }
+    },
+    "homeroom": {
+      "title": "Class {{name}}",
+      "badge": "Class teacher",
+      "description": "How your class is doing: the results in every subject, the students failing a subject and the teachers of the class.",
+      "permissions": "As the class teacher you see the grades of every student, in every subject. You can change only the grades you gave.",
+      "export": "Export the grades of the class",
+      "back": "Back to the class",
+      "noGrades": {
+        "title": "There are no grades in the class yet",
+        "description": "The statistics appear once teachers add grades."
+      },
+      "teachers": {
+        "title": "Teachers of the class",
+        "empty": "No teacher is assigned to this class yet."
+      },
+      "roster": {
+        "title": "Students of the class ({{count}})",
+        "caption": "The students of the class, with the average and situation of each",
+        "student": "Student",
+        "average": "Average",
+        "grades": "Grades",
+        "status": "Situation",
+        "actions": "Actions",
+        "viewGrades": "Grades",
+        "report": "School report",
+        "noGrades": "No grades",
+        "passing": "On track to pass",
+        "failing_one": "Failing {{count}} subject",
+        "failing_other": "Failing {{count}} subjects"
+      },
+      "notHomeroom": {
+        "title": "You are not a class teacher",
+        "description": "This page appears once an administrator makes you the class teacher of a class.",
+        "action": "Go to my classes"
+      },
+      "student": {
+        "description": "The grades of the student in every subject, for viewing only. You can change only the grades you gave.",
+        "ownGrades": "Add grades for my subjects",
+        "back": "Back to the student",
+        "notFound": {
+          "title": "Student not found",
+          "description": "The student is not in the class you lead."
+        },
+        "empty": {
+          "title": "The student has no grades yet",
+          "description": "Grades appear here once teachers add them."
+        }
+      }
     }
   },
   "admin": {
@@ -295,7 +343,7 @@
       "you": "you"
     },
     "grades": {
-      "description": "All the grades of the school. Filter by class, student or subject and edit or delete any grade.",
+      "description": "All the grades of the school. Filter by class, student or subject.",
       "editFor": "Grade of the student {{name}}",
       "filter": {
         "class": "Class",
@@ -314,8 +362,7 @@
         "teacher": "Teacher",
         "noTeacher": "Administrator",
         "actions": "Actions",
-        "edit": "Edit",
-        "delete": "Delete"
+        "edit": "Edit"
       },
       "delete": {
         "title": "Delete the grade",
@@ -330,7 +377,8 @@
       "noResults": {
         "title": "No grades found",
         "description": "There are no grades for the chosen filters."
-      }
+      },
+      "export": "Export CSV"
     },
     "classStudents": {
       "back": "Back to the classes",
@@ -373,8 +421,23 @@
         },
         "noResults": {
           "title": "No results",
-          "description": "We found no students without a class for the chosen search."
+          "description": "No student without a class matches the search."
         }
+      },
+      "teaching": {
+        "title": "Teachers of the class",
+        "description": "A teacher can grade only the subjects given to them here, for the students of this class. A subject has one teacher in a class.",
+        "empty": "No subject has a teacher in this class yet, so nobody can grade.",
+        "subject": "Subject",
+        "teacher": "Teacher",
+        "chooseSubject": "Choose the subject",
+        "chooseTeacher": "Choose the teacher",
+        "assign": "Assign",
+        "added": "The teacher was assigned to the subject.",
+        "removed": "The teacher was removed from the subject.",
+        "remove": "Remove",
+        "removeTitle": "Remove the teacher from the subject?",
+        "removeMessage": "{{teacher}} will no longer be able to grade {{subject}} in class {{class}}. The grades they gave are kept."
       }
     },
     "classes": {
@@ -411,8 +474,7 @@
         "noTeacher": "No class teacher",
         "students": "Students",
         "actions": "Actions",
-        "edit": "Edit",
-        "delete": "Delete"
+        "edit": "Edit"
       },
       "empty": {
         "title": "There are no classes yet",
@@ -436,7 +498,7 @@
       },
       "delete": {
         "title": "Delete the teacher",
-        "message": "Delete the teacher {{name}}? Their account is deleted, their classes are left without a teacher and the grades they gave are kept. This cannot be undone.",
+        "message": "Delete the teacher {{name}}? Their account is deleted and the class they lead is left without a class teacher. The grades they gave are kept. This cannot be undone.",
         "confirm": "Delete",
         "deleted": "The teacher was deleted."
       },
@@ -446,8 +508,7 @@
         "email": "Email",
         "phone": "Phone",
         "actions": "Actions",
-        "edit": "Edit",
-        "delete": "Delete"
+        "edit": "Edit"
       },
       "empty": {
         "title": "There are no teachers yet",
@@ -486,8 +547,7 @@
         "caption": "The subjects of the school",
         "name": "Subject",
         "actions": "Actions",
-        "edit": "Edit",
-        "delete": "Delete"
+        "edit": "Edit"
       },
       "empty": {
         "title": "There are no subjects yet",
@@ -522,8 +582,7 @@
       },
       "filter": {
         "label": "Class",
-        "all": "All classes",
-        "noClass": "Without a class"
+        "all": "All classes"
       },
       "table": {
         "caption": "The students of the school",
@@ -535,7 +594,7 @@
         "noClass": "No class",
         "actions": "Actions",
         "edit": "Edit",
-        "delete": "Delete"
+        "report": "Report"
       },
       "empty": {
         "title": "There are no students yet",
@@ -545,6 +604,77 @@
         "title": "No results",
         "description": "We found no students for the chosen search or filter."
       }
+    },
+    "statistics": {
+      "description": "An overview of the school's results: averages, grade distribution and the students failing a subject.",
+      "kpi": {
+        "passRate": "Pass rate",
+        "students": "Students",
+        "grades": "Grades"
+      },
+      "distribution": {
+        "title": "Grade distribution",
+        "bar": "Grade {{grade}}: {{count}} grades ({{percent}})",
+        "tooltip": "grades of {{grade}} · {{percent}}",
+        "legend": {
+          "failing": "Grades below 5",
+          "fair": "Grades 5–7",
+          "good": "Grades 8–10"
+        }
+      },
+      "trend": {
+        "title": "Average per week",
+        "tooltip_one": "week of {{week}} · {{count}} grade",
+        "tooltip_other": "week of {{week}} · {{count}} grades"
+      },
+      "byClass": {
+        "title": "Average per class",
+        "students_one": "{{count}} student",
+        "students_other": "{{count}} students"
+      },
+      "bySubject": {
+        "title": "Average per subject",
+        "grades_one": "{{count}} grade",
+        "grades_other": "{{count}} grades"
+      },
+      "top": {
+        "title": "Top students"
+      },
+      "atRisk": {
+        "title": "Students failing a subject ({{count}})",
+        "none": "No student is failing a subject."
+      },
+      "empty": {
+        "title": "No grades to analyse yet",
+        "description": "The statistics appear once teachers add grades."
+      }
+    },
+    "activity": {
+      "description": "Every grade that was added, changed or deleted, with who did it and when.",
+      "actions": {
+        "CREATED": "Added",
+        "UPDATED": "Changed",
+        "DELETED": "Deleted"
+      },
+      "filter": {
+        "label": "Action",
+        "all": "All actions"
+      },
+      "table": {
+        "caption": "Changes to grades, most recent first",
+        "when": "When",
+        "actor": "Made by",
+        "action": "Action",
+        "grade": "Student and subject",
+        "change": "Change"
+      },
+      "empty": {
+        "title": "No changes yet",
+        "description": "Grades added, changed or deleted from now on will appear here."
+      },
+      "deletedAccount": "Deleted account",
+      "gradeHistory": "History of this grade",
+      "dateChange": "date {{from}} → {{to}}"
     }
   },
   "errors": {
@@ -553,7 +683,8 @@
     "forbidden": "You are not allowed to do this.",
     "notFound": "The item was not found.",
     "tooManyRequests": "Too many attempts. Please try again in a minute.",
-    "unexpected": "Something went wrong. Please try again."
+    "unexpected": "Something went wrong. Please try again.",
+    "conflict": "This already exists."
   },
   "pages": {
     "notFound": {
@@ -566,6 +697,7 @@
     "headline": "Your school, made",
     "words": ["simpler", "clearer", "closer"],
     "subtitle": "Sign in or create an account to continue.",
+    "subtitleSignInOnly": "Sign in to continue.",
     "description": "A simple space that keeps the school organized: the important information is in one place, clear and within reach.",
     "copyright": "© {{year}} School management system"
   },
@@ -577,7 +709,7 @@
     },
     "login": {
       "title": "Welcome back",
-      "subtitle": "Sign in to continue to your account.",
+      "subtitle": "Sign in to your account.",
       "prompt": "Don't have an account?",
       "action": "Create one",
       "forgot": "Forgot your password?",
@@ -660,6 +792,133 @@
       "fair": "fair",
       "good": "good",
       "strong": "strong"
+    }
+  },
+  "report": {
+    "title": "School report",
+    "description": "The grades and averages of the student, ready to print or save as PDF.",
+    "ownDescription": "Your grades and averages, ready to print or save as PDF.",
+    "open": "School report",
+    "print": "Print or save as PDF",
+    "backToStudents": "Back to students",
+    "student": "Student",
+    "class": "Class",
+    "dateOfBirth": "Date of birth",
+    "issued": "Issue date: {{date}}",
+    "noGrades": "There are no grades yet.",
+    "subject": "Subject",
+    "grades": "Grades",
+    "average": "Average",
+    "overall": "Overall average",
+    "passed": "On track to pass every subject.",
+    "failing": "Failing: {{subjects}}."
+  },
+  "import": {
+    "button": "Import from a file",
+    "title": {
+      "students": "Import students from a file",
+      "teachers": "Import teachers from a file",
+      "classes": "Import classes from a file",
+      "subjects": "Import subjects from a file"
+    },
+    "description": "Choose a CSV file, for example saved from Excel or Google Sheets. Before anything is imported, you see how the data would look.",
+    "choose": "Choose the file",
+    "dropHint": "or drop it here (CSV, up to 200 rows)",
+    "template": "Download a template file",
+    "columns": {
+      "students": "Columns: Last name, First name, Email, Date of birth (required); Phone, Class, Password (optional). Without a password, the application generates one.",
+      "teachers": "Columns: Last name, First name, Email (required); Phone, Homeroom class, Password (optional). Without a password, the application generates one.",
+      "classes": "Columns: Class (required); Homeroom teacher email (optional).",
+      "subjects": "Column: Subject (required)."
+    },
+    "fileError": {
+      "empty": "The file has no rows of data.",
+      "tooManyRows": "The file has too many rows. You can import {{max}} at most at a time.",
+      "missingColumns": "These columns are missing: {{columns}}.",
+      "tooLarge": "The file is too large."
+    },
+    "summary": "{{total}} rows in the file: {{valid}} correct, {{invalid}} with errors.",
+    "onlyErrors": "Only the rows with errors",
+    "preview": "Preview of the data",
+    "line": "Row",
+    "status": "Check",
+    "ok": "Correct",
+    "skipNote": "The rows with errors are not imported. You can fix them in the file and upload it again.",
+    "passwordNote": "The accounts without a password in the file get a generated one, which you download after the import.",
+    "chooseAnother": "Choose another file",
+    "confirm": {
+      "students_one": "Import {{count}} student",
+      "students_other": "Import {{count}} students",
+      "teachers_one": "Import {{count}} teacher",
+      "teachers_other": "Import {{count}} teachers",
+      "classes_one": "Import {{count}} class",
+      "classes_other": "Import {{count}} classes",
+      "subjects_one": "Import {{count}} subject",
+      "subjects_other": "Import {{count}} subjects"
+    },
+    "done": {
+      "students_one": "Imported {{count}} student",
+      "students_other": "Imported {{count}} students",
+      "teachers_one": "Imported {{count}} teacher",
+      "teachers_other": "Imported {{count}} teachers",
+      "classes_one": "Imported {{count}} class",
+      "classes_other": "Imported {{count}} classes",
+      "subjects_one": "Imported {{count}} subject",
+      "subjects_other": "Imported {{count}} subjects"
+    },
+    "skipped_one": "{{count}} row with errors was skipped.",
+    "skipped_other": "{{count}} rows with errors were skipped.",
+    "generatedPasswords": "The application generated passwords for the accounts without one in the file. They are shown only now, so download the file and give them to each person.",
+    "downloadAccounts": "Download the accounts (CSV)",
+    "accountsHeader": {
+      "name": "Name",
+      "password": "Password"
+    },
+    "finish": "Done",
+    "errors": {
+      "required": "Missing: {{field}}",
+      "email": "The email is not valid",
+      "date": "The date is not valid",
+      "phone": "The phone is not valid",
+      "password": "Password: at least 8 characters, with a letter and a digit",
+      "nameLength": "{{field}}: between 2 and 100 characters",
+      "nameChars": "{{field}} has characters that are not allowed",
+      "tooLong": "{{field}} is too long",
+      "invalid": "{{field}} is not valid",
+      "taken": "{{field}} already exists",
+      "duplicate": "{{field}} appears more than once in the file",
+      "classNotFound": "The class does not exist",
+      "classHasTeacher": "The class already has a class teacher",
+      "classRepeated": "The class appears for more than one teacher in the file",
+      "teacherNotFound": "There is no teacher with this email",
+      "teacherLeads": "The teacher already leads another class",
+      "teacherRepeated": "The teacher appears for more than one class in the file"
+    },
+    "fields": {
+      "students": {
+        "lastName": "Last name",
+        "firstName": "First name",
+        "email": "Email",
+        "dateOfBirth": "Date of birth",
+        "phone": "Phone",
+        "className": "Class",
+        "password": "Password"
+      },
+      "teachers": {
+        "lastName": "Last name",
+        "firstName": "First name",
+        "email": "Email",
+        "phone": "Phone",
+        "homeroomClass": "Homeroom class",
+        "password": "Password"
+      },
+      "classes": {
+        "name": "Class",
+        "homeroomTeacher": "Homeroom teacher email"
+      },
+      "subjects": {
+        "name": "Subject"
+      }
     }
   }
 }

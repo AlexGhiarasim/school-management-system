@@ -25,7 +25,7 @@ export function ProfileBanner({
         <div className="flex items-start gap-4">
           <span
             aria-hidden="true"
-            className="-mt-9 flex h-[4.5rem] w-[4.5rem] shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xl font-semibold text-indigo-700 shadow-md ring-4 ring-white"
+            className="-mt-9 flex h-[4.5rem] w-[4.5rem] shrink-0 items-center justify-center rounded-full bg-brand-100 text-xl font-semibold text-brand-700 shadow-md ring-4 ring-white"
           >
             {initials}
           </span>

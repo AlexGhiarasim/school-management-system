@@ -79,3 +79,41 @@ export function InboxIcon() {
     </Icon>
   );
 }
+
+export function ChevronDownIcon() {
+  return (
+    <Icon className="h-4 w-4" strokeWidth={2.4}>
+      <path d="M6 9l6 6 6-6" />
+    </Icon>
+  );
+}
+
+export function MenuIcon() {
+  return (
+    <Icon>
+      <path d="M4 7h16" />
+      <path d="M4 12h16" />
+      <path d="M4 17h16" />
+    </Icon>
+  );
+}
+
+export function InfoIcon() {
+  return (
+    <Icon>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v5" />
+      <path d="M12 8h.01" />
+    </Icon>
+  );
+}
+
+export function UploadIcon() {
+  return (
+    <Icon className="h-4 w-4">
+      <path d="M12 16V4" />
+      <path d="M7 9l5-5 5 5" />
+      <path d="M5 20h14" />
+    </Icon>
+  );
+}

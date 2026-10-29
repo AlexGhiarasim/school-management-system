@@ -6,9 +6,18 @@ interface ModalProps {
   title: string;
   children: ReactNode;
   wide?: boolean;
+  // For content with a table, like the preview of an import.
+  extraWide?: boolean;
 }
 
-export function Modal({ open, onClose, title, children, wide }: ModalProps) {
+export function Modal({
+  open,
+  onClose,
+  title,
+  children,
+  wide,
+  extraWide,
+}: ModalProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -30,7 +39,7 @@ export function Modal({ open, onClose, title, children, wide }: ModalProps) {
       onClick={(event) => {
         if (event.target === dialog.current) onClose();
       }}
-      className={`m-auto w-full ${wide ? 'max-w-2xl' : 'max-w-lg'} rounded-2xl bg-white p-0 shadow-2xl ring-1 ring-slate-200 backdrop:bg-slate-900/40`}
+      className={`m-auto w-full ${extraWide ? 'max-w-4xl' : wide ? 'max-w-2xl' : 'max-w-lg'} rounded-2xl bg-white p-0 shadow-2xl ring-1 ring-slate-200 backdrop:bg-slate-900/40`}
     >
       {open && (
         <div className="p-6">

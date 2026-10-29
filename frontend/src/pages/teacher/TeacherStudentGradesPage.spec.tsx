@@ -12,8 +12,6 @@ vi.mock('../../services/teacherService.ts', () => ({
   teacherService: {
     getClasses: vi.fn(),
     getAllClassStudents: vi.fn(),
-    getClassTeaching: vi.fn(),
-    getSubjects: vi.fn(),
     getStudentGrades: vi.fn(),
     createGrade: vi.fn(),
     updateGrade: vi.fn(),
@@ -72,7 +70,6 @@ function dialog() {
 describe('TeacherStudentGradesPage', () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    service.getClassTeaching.mockResolvedValue([]);
     service.getClasses.mockResolvedValue([
       {
         id: 3,
@@ -92,10 +89,6 @@ describe('TeacherStudentGradesPage', () => {
       ],
       meta: meta(1),
     });
-    service.getSubjects.mockResolvedValue({
-      data: [english, maths],
-      meta: meta(2),
-    });
     service.getStudentGrades.mockResolvedValue({
       data: grades,
       meta: meta(3),
@@ -106,30 +99,12 @@ describe('TeacherStudentGradesPage', () => {
     renderPage(<TeacherStudentGradesPage />, options);
 
     expect(
-      await screen.findByRole('heading', { name: 'Mihai Constantin' }),
+      await screen.findByRole('heading', { name: 'Constantin Mihai' }),
     ).toBeVisible();
     expect(
       await screen.findByRole('article', { name: 'English' }),
     ).toBeVisible();
     expect(screen.getByRole('article', { name: 'Mathematics' })).toBeVisible();
-  });
-
-  it('shows a class teacher every subject, without any edit button', async () => {
-    service.getClasses.mockResolvedValue([
-      {
-        id: 3,
-        name: '9A',
-        studentCount: 1,
-        isHomeroom: true,
-        subjects: [],
-      },
-    ]);
-    renderPage(<TeacherStudentGradesPage />, options);
-
-    expect(await screen.findByText('All subjects')).toBeVisible();
-    expect(screen.getByText('View only')).toBeVisible();
-    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull();
-    expect(screen.queryByRole('button', { name: 'Add grade' })).toBeNull();
   });
 
   it('lets the teacher edit only the grades they gave', async () => {

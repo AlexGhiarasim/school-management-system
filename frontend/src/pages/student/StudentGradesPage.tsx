@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import { PageHeader } from '../../components/layout/PageHeader.tsx';
 import { DataTable, type Column } from '../../components/ui/DataTable.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { ErrorState } from '../../components/ui/ErrorState.tsx';
 import { Pagination } from '../../components/ui/Pagination.tsx';
 import { SelectField } from '../../components/ui/SelectField.tsx';
-import { Skeleton } from '../../components/ui/Skeleton.tsx';
+import { LoadingPanel } from '../../components/ui/LoadingPanel.tsx';
 import { GradeBadge } from '../../features/student/components/GradeBadge.tsx';
 import { SubjectAverages } from '../../features/student/components/SubjectAverages.tsx';
 import { StudentPanel } from '../../features/student/components/StudentPanel.tsx';
@@ -14,6 +15,7 @@ import { StudentMetric } from '../../features/student/components/StudentMetric.t
 import { useStudentGrades } from '../../features/student/hooks.ts';
 import type { StudentGrade } from '../../features/student/types.ts';
 import { useSubjectName } from '../../hooks/useSubjectName.ts';
+import { paths } from '../../routes/paths.ts';
 import { formatDate, formatNumber } from '../../utils/format.ts';
 
 const PAGE_SIZE = 10;
@@ -70,6 +72,17 @@ export default function StudentGradesPage() {
       <PageHeader
         title={t('nav.student.grades')}
         description={t('student.grades.description')}
+        actions={
+          data &&
+          data.grades.length > 0 && (
+            <Link
+              to={paths.student.report}
+              className="inline-flex items-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-slate-300 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200"
+            >
+              {t('report.open')}
+            </Link>
+          )
+        }
       />
 
       {isError && (
@@ -78,13 +91,7 @@ export default function StudentGradesPage() {
         </div>
       )}
 
-      {isPending && (
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Skeleton className="h-28" />
-          <Skeleton className="h-28" />
-          <Skeleton className="h-28" />
-        </div>
-      )}
+      {isPending && <LoadingPanel />}
 
       {data && data.grades.length === 0 && (
         <div className={CARD}>
@@ -121,6 +128,13 @@ export default function StudentGradesPage() {
             <SubjectAverages
               subjects={data.bySubject}
               grades={data.grades}
+              teachers={Object.fromEntries(
+                data.grades.flatMap(({ subject, teacher }) =>
+                  teacher
+                    ? [[subject.id, `${teacher.firstName} ${teacher.lastName}`]]
+                    : [],
+                ),
+              )}
               framed
             />
           </StudentPanel>

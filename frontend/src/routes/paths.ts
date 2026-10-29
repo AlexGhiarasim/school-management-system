@@ -7,22 +7,32 @@ export const paths = {
   student: {
     profile: '/student',
     grades: '/student/grades',
+    report: '/student/report',
   },
   teacher: {
     profile: '/teacher/profile',
     classes: '/teacher/classes',
+    homeroom: '/teacher/homeroom',
+    homeroomStudent: (studentId: number | string) =>
+      `/teacher/homeroom/students/${studentId}`,
+    homeroomReport: (studentId: number | string) =>
+      `/teacher/homeroom/students/${studentId}/report`,
     classStudents: (classId: number | string) => `/teacher/classes/${classId}`,
     studentGrades: (classId: number | string, studentId: number | string) =>
       `/teacher/classes/${classId}/students/${studentId}`,
   },
   admin: {
     profile: '/admin/profile',
+    statistics: '/admin/statistics',
     students: '/admin/students',
+    studentReport: (studentId: number | string) =>
+      `/admin/students/${studentId}/report`,
     teachers: '/admin/teachers',
     classes: '/admin/classes',
     classStudents: (classId: number | string) => `/admin/classes/${classId}`,
     subjects: '/admin/subjects',
     grades: '/admin/grades',
+    activity: '/admin/activity',
   },
 } as const;
 

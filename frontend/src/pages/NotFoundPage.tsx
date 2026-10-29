@@ -9,11 +9,11 @@ export default function NotFoundPage() {
   const { user } = useAuth();
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-sky-50 px-6 text-center">
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-brand-50 via-white to-cyan-50 px-6 text-center">
       <div className="absolute top-6 right-6">
         <LanguageSwitcher />
       </div>
-      <p className="text-6xl font-bold tracking-tight text-indigo-600">404</p>
+      <p className="text-6xl font-bold tracking-tight text-brand-600">404</p>
       <h1 className="mt-4 text-2xl font-semibold text-slate-900">
         {t('pages.notFound.title')}
       </h1>
@@ -22,7 +22,7 @@ export default function NotFoundPage() {
       </p>
       <Link
         to={user ? roleHome[user.role] : paths.home}
-        className="mt-8 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-500 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-200"
+        className="mt-8 rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition hover:bg-brand-500 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200"
       >
         {t('pages.notFound.back')}
       </Link>

@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { fireEvent, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { MemoryRouter } from 'react-router';
 import type { StudentGrades } from '../../features/student/types.ts';
 import { studentService } from '../../services/studentService.ts';
 import { renderWithQuery } from '../../test/renderWithQuery.tsx';
@@ -52,7 +53,11 @@ describe('StudentGradesPage', () => {
 
   it('shows the overall average and the totals', async () => {
     getGrades.mockResolvedValue(grades);
-    renderWithQuery(<StudentGradesPage />);
+    renderWithQuery(
+      <MemoryRouter>
+        <StudentGradesPage />
+      </MemoryRouter>,
+    );
 
     const average = (await screen.findByText('Overall average')).parentElement;
     expect(average).toHaveTextContent('8.00');
@@ -64,7 +69,11 @@ describe('StudentGradesPage', () => {
 
   it('shows the average of every subject with its number of grades', async () => {
     getGrades.mockResolvedValue(grades);
-    renderWithQuery(<StudentGradesPage />);
+    renderWithQuery(
+      <MemoryRouter>
+        <StudentGradesPage />
+      </MemoryRouter>,
+    );
 
     const maths = await screen.findByRole('progressbar', {
       name: 'Mathematics',
@@ -77,7 +86,11 @@ describe('StudentGradesPage', () => {
 
   it('shows every grade of a subject with its date inside the subject card', async () => {
     getGrades.mockResolvedValue(grades);
-    renderWithQuery(<StudentGradesPage />);
+    renderWithQuery(
+      <MemoryRouter>
+        <StudentGradesPage />
+      </MemoryRouter>,
+    );
 
     const maths = await screen.findByRole('progressbar', {
       name: 'Mathematics',
@@ -93,7 +106,11 @@ describe('StudentGradesPage', () => {
 
   it('lists every grade and names an administrator when there is no teacher', async () => {
     getGrades.mockResolvedValue(grades);
-    renderWithQuery(<StudentGradesPage />);
+    renderWithQuery(
+      <MemoryRouter>
+        <StudentGradesPage />
+      </MemoryRouter>,
+    );
 
     const table = await screen.findByRole('table');
 
@@ -104,7 +121,11 @@ describe('StudentGradesPage', () => {
 
   it('narrows the table to the chosen subject', async () => {
     getGrades.mockResolvedValue(grades);
-    renderWithQuery(<StudentGradesPage />);
+    renderWithQuery(
+      <MemoryRouter>
+        <StudentGradesPage />
+      </MemoryRouter>,
+    );
 
     const table = await screen.findByRole('table');
     fireEvent.change(screen.getByLabelText('Subject'), {
@@ -124,7 +145,11 @@ describe('StudentGradesPage', () => {
         id: index + 1,
       })),
     });
-    renderWithQuery(<StudentGradesPage />);
+    renderWithQuery(
+      <MemoryRouter>
+        <StudentGradesPage />
+      </MemoryRouter>,
+    );
 
     const table = await screen.findByRole('table');
     expect(within(table).getAllByRole('row')).toHaveLength(11);
@@ -136,7 +161,11 @@ describe('StudentGradesPage', () => {
 
   it('tells the student when there are no grades yet', async () => {
     getGrades.mockResolvedValue({ average: null, bySubject: [], grades: [] });
-    renderWithQuery(<StudentGradesPage />);
+    renderWithQuery(
+      <MemoryRouter>
+        <StudentGradesPage />
+      </MemoryRouter>,
+    );
 
     expect(await screen.findByText('You have no grades yet')).toBeVisible();
     expect(screen.queryByRole('table')).not.toBeInTheDocument();
@@ -145,7 +174,11 @@ describe('StudentGradesPage', () => {
   it('shows an error and loads the grades again on retry', async () => {
     getGrades.mockRejectedValueOnce(new Error('offline'));
     getGrades.mockResolvedValueOnce(grades);
-    renderWithQuery(<StudentGradesPage />);
+    renderWithQuery(
+      <MemoryRouter>
+        <StudentGradesPage />
+      </MemoryRouter>,
+    );
 
     expect(await screen.findByRole('alert')).toBeVisible();
 

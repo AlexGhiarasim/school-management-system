@@ -29,7 +29,7 @@ export function RotatingHeadline() {
       <button
         type="button"
         onClick={() => setIndex((current) => current + 1)}
-        className="inline-grid cursor-pointer text-left text-indigo-600"
+        className="inline-grid cursor-pointer text-left text-brand-600"
       >
         <span className="sr-only">{word}.</span>
         {words.map((item) => (

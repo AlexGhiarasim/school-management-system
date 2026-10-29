@@ -15,7 +15,7 @@ export function ClearFilters({ visible, onClear }: ClearFiltersProps) {
     <button
       type="button"
       onClick={onClear}
-      className="animate-fade-in -mt-2 mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 transition hover:text-indigo-700 focus:outline-none focus-visible:underline"
+      className="animate-fade-in -mt-2 mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition hover:text-brand-700 focus:outline-none focus-visible:underline"
     >
       <svg
         aria-hidden="true"

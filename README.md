@@ -5,7 +5,7 @@ authentication and role-based access control.
 
 ## Tech stack
 
-- Backend: NestJS 12 (TypeScript), Prisma 7, MySQL 8.4
+- Backend: NestJS 12 (TypeScript), Prisma 7, MySQL 8.4, Redis 7 (cache)
 - Frontend: React 19, Vite, Tailwind CSS, i18next (Romanian and English)
 - Auth: JWT, bcrypt, role-based access control (Admin, Teacher, Student)
 - API docs: Swagger
@@ -43,11 +43,11 @@ Prerequisites: Node.js 24, npm and Docker.
    cp .env.example .env
    ```
 
-2. Start MySQL and Mailpit (the inbox for the emails sent by the application,
-   at `http://localhost:8025`):
+2. Start MySQL, Mailpit (the inbox for the emails sent by the application, at
+   `http://localhost:8025`) and Redis (the cache, optional):
 
    ```bash
-   docker compose up -d mysql mailpit
+   docker compose up -d mysql mailpit redis
    ```
 
 3. Install, migrate, seed and start the backend:
@@ -77,19 +77,25 @@ The application is then available at `http://localhost:5173`. Set `VITE_API_URL`
 
 ## Test accounts
 
-The seed script creates one admin, 10 teachers, 6 classes, 123 students, 10
-subjects and about 4800 grades. All teachers share one password and all students
-share another.
+The seed script creates a school of 24 classes, 9A to 12F, with 26 to 32 students
+each (730 in all, and 4 without a class), 46 teachers, 16 subjects and about
+19,400 grades. Each year has 13 subjects, the same core plus one that changes
+(social education in the 9th, logic in the 10th, philosophy in the 11th and
+economics in the 12th). Every class has a class teacher who teaches in it, and
+every subject of a class has one teacher. The grades are dated on weekdays,
+from 1 September to 29 October: one to three in a subject, mostly 7 to 10, with
+two or three students in each class failing a subject and a single 2 in the
+whole school. The same data is created every time. All teachers share one
+password and all students share another.
 
 | Role | Email | Password |
 |---|---|---|
 | Admin | `admin@school.test` (a second one: `admin2@school.test`) | `Admin123!` |
-| Teacher | `laura.marin@school.test` (class teacher of 9A, teaches Mathematics in every class and Physics in 9A) | `Teacher123!` |
-| Student | `mihai.constantin@student.school.test` | `Student123!` |
+| Teacher | `laura.marin@school.test` (class teacher of 9A, teaches Mathematics in 9A to 9D) | `Teacher123!` |
+| Student | `mihai.constantin@student.school.test` (class 9A) | `Student123!` |
 
-Students and teachers also get a made-up phone number (the administrator has
-none). They use a range reserved for fiction, such as `+44 7700 900123`, and are
-not in a Romanian format.
+Everyone also gets a made-up phone number, from a range reserved for fiction, such
+as `+44 7700 900123`, not in a Romanian format.
 
 Other accounts follow the same pattern: teachers use `@school.test` and students
 use `@student.school.test`. Run `npm run prisma:seed` again at any time to reset
@@ -100,10 +106,16 @@ the data.
 All endpoints are under `/api`. Lists accept `page` and `limit` and return
 `{ data, meta }`.
 
+A Postman collection with every endpoint is in
+[docs/postman](docs/postman/School-Management-System.postman_collection.json).
+Import it, send one of the "Login as" requests, then any other request. After
+the API changes, `npm run postman` in `backend` builds it again from Swagger.
+
 | Endpoint | Admin | Teacher | Student |
 |---|---|---|---|
 | `POST /auth/login` | public | public | public |
-| `POST /auth/register` (creates a student account) | public | public | public |
+| `GET /auth/config` (tells the client whether sign-up is open) | public | public | public |
+| `POST /auth/register` (creates a student account, only when `ALLOW_PUBLIC_REGISTRATION=true`) | public | public | public |
 | `POST /auth/forgot-password` (emails a reset link) | public | public | public |
 | `POST /auth/reset-password` (sets a new password with the link token) | public | public | public |
 | `POST /auth/change-password` | yes | yes | yes |
@@ -117,6 +129,10 @@ All endpoints are under `/api`. Lists accept `page` and `limit` and return
 | `/classes` (CRUD) | yes | no | no |
 | `PATCH /classes/:id/teacher` | yes | no | no |
 | `GET /classes/:id/students` | yes | own classes | no |
+| `GET /classes/:id/teaching` (who teaches which subject in a class) | yes | no | no |
+| `POST /classes/:id/teaching` (gives a teacher a subject in a class) | yes | no | no |
+| `DELETE /classes/:id/teaching/:assignmentId` | yes | no | no |
+| `GET /classes/:id/overview` (statistics, students and teachers of a class) | yes | class teacher | no |
 | `/students` (CRUD) | yes | no | no |
 | `PATCH /students/:id/class` | yes | no | no |
 | `GET /students/me` | no | no | yes |
@@ -125,12 +141,22 @@ All endpoints are under `/api`. Lists accept `page` and `limit` and return
 | `PATCH /grades/:id` | yes | grades they gave | no |
 | `DELETE /grades/:id` | yes | no | no |
 | `GET /grades/me` (grades and averages) | no | no | yes |
+| `GET /grades/export` (filtered grades as CSV) | yes | class teacher, own class | no |
+| `GET /grades/history` (every change to grades) | yes | no | no |
+| `GET /grades/:id/history` (the changes to one grade) | yes | no | no |
+| `GET /statistics` (averages, distribution, students at risk) | yes | no | no |
+| `GET /imports/:kind/template` (a CSV file to fill in) | yes | no | no |
+| `POST /imports/:kind/preview` (checks a CSV file, saves nothing) | yes | no | no |
+| `POST /imports/:kind` (imports the valid rows) | yes | no | no |
 
 Authorization is enforced on the backend by a global JWT guard and a roles guard.
 Ownership rules live in the services:
 
 - A teacher teaches subjects in classes (`TeachingAssignment`). They can grade and
-  see only those subjects, for the students of those classes.
+  see only those subjects, for the students of those classes. An administrator
+  gives them a subject from the page of the class, under "Teachers of the class",
+  and a subject has one teacher in a class. Until then a new teacher has nothing
+  to grade.
 - The class teacher (`Class.teacherId`) also sees every grade of the class, but can
   change only the grades they gave.
 - A teacher can edit only the grades they gave.
@@ -145,7 +171,8 @@ backend/
     common/          Decorators, guards, filters, DTOs and helpers
     config/          Environment validation
     database/        Prisma service and module
-    modules/         auth, health, subjects, teachers, classes, students, grades
+    modules/         auth, health, subjects, teachers, classes, students, grades,
+                     statistics
   test/              End-to-end tests
 frontend/            React application
 docker/              Container initialization scripts
@@ -202,13 +229,64 @@ touches the frontend. Another workflow builds the Docker images.
   local inbox, and a failed delivery is only logged. To send real emails, set
   `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM` and
   `APP_URL` in `.env` (see `.env.example`).
+- **Public registration is off by default.** Accounts come from the seed script
+  and from administrators, as the assignment describes. The student sign-up
+  (`POST /auth/register` and the "Create account" tab) stays in the code behind
+  `ALLOW_PUBLIC_REGISTRATION`. Set it to `true` in `.env` to open it: a new
+  student then has no class until an administrator assigns one. While it is off
+  the endpoint answers 403 and the start page shows only the sign-in form.
+- **Cache.** The statistics and the overview of a class add up thousands of
+  grades on every request, so Redis keeps the result for five minutes (about
+  120 ms without it and 9 ms with it, on the seed data). Every key carries a
+  version, and any successful change, a grade, a student or a class, raises the
+  version, which makes all the older entries unreachable at once. The class and
+  who may see it are always read from the database, so authorization never
+  depends on the cache. Redis is optional: without `REDIS_URL`, or if it goes
+  down, the application keeps working and computes the data again. Running
+  `npm run prisma:seed` clears the cache too.
+- **Statistics.** `GET /statistics` covers the school or one class: the pass
+  rate, the grade distribution, the average per class, per
+  subject and per week, the best students and the students at risk. A student is
+  at risk when the rounded average of a subject is below 5, the same rule as on
+  their own grades page. The numbers are computed in one pass over the grades,
+  in plain functions covered by unit tests.
+- **Class teacher.** A teacher teaches subjects in some classes and can lead one
+  class. The teacher pages keep the two apart: "My classes" lists the classes
+  where they teach, with the subjects, and the "Class teacher" page appears only
+  for the one they lead. There they see how the class is doing (pass rate, grade
+  distribution, average per subject), the students failing a subject, who teaches
+  what, and every student with all their grades and a printable school report.
+  They can export the grades of their class as CSV. The grades of other teachers
+  stay read-only, and `GET /classes/:id/overview` and the class export answer 403
+  for any other teacher.
+- **Import from a file.** Each admin section (students, teachers, classes,
+  subjects) has a quiet "Import from a file" button. The file is a CSV, with `;`
+  or `,` and UTF-8 or Windows-1250, and the headers can be Romanian or English. It
+  is first checked and shown as a table, each row with its own errors, and nothing
+  is saved until the administrator confirms. A row is checked with the same DTOs as
+  the forms, so the rules cannot differ. The rows with errors are skipped and the
+  others are saved together, in one transaction. A new account without a password
+  in the file gets a generated one, returned once so that it can be downloaded.
+  A file has 200 rows at most, because each new account costs about 0.1 s of
+  password hashing.
+- **Grade history.** Every grade that is added, changed or deleted writes an entry
+  to `GradeAudit` in the same transaction, with who made the change and the value
+  before and after. The entry copies the names of the student and the subject, so
+  it still reads correctly after they are deleted. Administrators see the full
+  log on the Activity page and the history of one grade when they edit it.
+- **Exports.** Administrators download the filtered grades as CSV. The file starts
+  with a byte order mark so Excel shows diacritics, uses `;` in Romanian and `,`
+  in English, and escapes values that a spreadsheet would run as formulas. The
+  school report of a student is a page laid out for printing, so the browser can
+  print it or save it as PDF without an extra library.
 - **Input validation.** Names accept letters, spaces, hyphens and apostrophes (2-100 characters). Passwords need 8-72 characters with at least one letter and one digit, birth dates must be between 1900 and today, and unknown fields are rejected. The frontend applies the same rules before sending a form.
 - **Rate limiting.** Login is limited to 5 attempts per minute, the rest of the
   API to 100 requests per minute.
 
 ## Status
 
-The backend is complete and covered by tests. The frontend has the start page
-with sign in and sign up connected to the API, and a signed-in page that restores
-the session after a reload. The screens for each role are the next step. The plan
-is tracked in [docs/PLAN.md](docs/PLAN.md).
+The application is complete. Administrators manage students, teachers, classes,
+subjects and grades, follow the statistics of the school and the history of every
+grade, and export grades and school reports. Teachers grade the students of their
+classes and students see their grades, averages and school report. The original
+plan is in [docs/PLAN.md](docs/PLAN.md).

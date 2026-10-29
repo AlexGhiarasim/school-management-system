@@ -18,7 +18,12 @@ import {
 } from '../../features/student/hooks.ts';
 import { useSubjectName } from '../../hooks/useSubjectName.ts';
 import { paths } from '../../routes/paths.ts';
-import { formatDate, formatNumber } from '../../utils/format.ts';
+import {
+  formatDate,
+  formatNumber,
+  fullName,
+  initials,
+} from '../../utils/format.ts';
 
 const CARD = 'rounded-2xl border border-slate-300 bg-white p-6 shadow-sm';
 const RECENT_GRADES = 5;
@@ -64,18 +69,18 @@ export default function StudentProfilePage() {
         <div className="grid min-w-0 gap-6 lg:grid-cols-3">
           <div className="min-w-0 animate-rise lg:col-span-2 [&>div]:h-full [&>div]:ring-slate-300">
             <ProfileBanner
-              initials={`${data.firstName[0]}${data.lastName[0]}`}
-              name={`${data.firstName} ${data.lastName}`}
+              initials={initials(data)}
+              name={fullName(data)}
               subtitle={t('roles.STUDENT')}
             >
               <dl className="mt-6 grid gap-3 sm:grid-cols-2">
                 <ProfileField
-                  label={t('student.profile.fields.firstName')}
-                  value={data.firstName}
-                />
-                <ProfileField
                   label={t('student.profile.fields.lastName')}
                   value={data.lastName}
+                />
+                <ProfileField
+                  label={t('student.profile.fields.firstName')}
+                  value={data.firstName}
                 />
                 <ProfileField
                   label={t('student.profile.fields.email')}
@@ -124,7 +129,7 @@ export default function StudentProfilePage() {
                   <button
                     type="button"
                     onClick={() => setClassmatesOpen(true)}
-                    className="rounded-md font-medium text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-600"
+                    className="rounded-md font-medium text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-600"
                   >
                     {t('student.profile.classOverview.students', {
                       count: classOverview.studentCount,
@@ -190,7 +195,7 @@ export default function StudentProfilePage() {
                       {student.firstName}
                     </span>
                     {student.id === data.id && (
-                      <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">
+                      <span className="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700">
                         {t('student.profile.classOverview.you')}
                       </span>
                     )}
@@ -207,7 +212,7 @@ export default function StudentProfilePage() {
               actions={
                 <Link
                   to={paths.student.grades}
-                  className="group rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-indigo-600 shadow-sm transition-colors hover:bg-slate-100 hover:text-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="group rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-brand-600 shadow-sm transition-colors hover:bg-slate-100 hover:text-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
                 >
                   {t('student.profile.recent.viewAll')}
                   <span

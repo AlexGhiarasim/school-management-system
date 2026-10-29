@@ -79,57 +79,24 @@ describe('Authentication (e2e)', () => {
       .expect(401);
   });
 
-  describe('registration', () => {
-    const account = {
-      firstName: 'Maria',
-      lastName: 'Popescu',
-      email: 'Maria.Register@e2e-auth.test',
-      password: 'Password123',
-      dateOfBirth: '2010-05-17',
-    };
+  describe('registration when it is disabled (the default)', () => {
+    it('reports it in the public config', async () => {
+      const response = await http().get('/api/auth/config').expect(200);
 
-    it('creates a student account and signs it in', async () => {
-      const response = await http()
-        .post('/api/auth/register')
-        .send(account)
-        .expect(201);
-
-      expect(response.body.user).toMatchObject({
-        email: 'maria.register@e2e-auth.test',
-        role: 'STUDENT',
-      });
-
-      const me = await http()
-        .get('/api/auth/me')
-        .set('Authorization', `Bearer ${response.body.accessToken}`)
-        .expect(200);
-
-      expect(me.body.profile.firstName).toBe('Maria');
+      expect(response.body).toEqual({ registrationEnabled: false });
     });
 
-    it('rejects an email that is already registered', async () => {
+    it('refuses to create an account', async () => {
       await http()
         .post('/api/auth/register')
-        .send({ ...account, email: account.email.toUpperCase() })
-        .expect(409);
-    });
-
-    it('does not accept a role or a class from the client', async () => {
-      await http()
-        .post('/api/auth/register')
-        .send({ ...account, email: 'a@e2e-auth.test', role: 'ADMIN' })
-        .expect(400);
-      await http()
-        .post('/api/auth/register')
-        .send({ ...account, email: 'b@e2e-auth.test', classId: 1 })
-        .expect(400);
-    });
-
-    it('rejects invalid account data', async () => {
-      await http()
-        .post('/api/auth/register')
-        .send({ ...account, email: 'c@e2e-auth.test', password: 'short' })
-        .expect(400);
+        .send({
+          firstName: 'Maria',
+          lastName: 'Popescu',
+          email: 'closed@e2e-auth.test',
+          password: 'Password123',
+          dateOfBirth: '2010-05-17',
+        })
+        .expect(403);
     });
   });
 });

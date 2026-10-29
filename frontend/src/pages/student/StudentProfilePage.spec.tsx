@@ -94,7 +94,7 @@ describe('StudentProfilePage', () => {
     getProfile.mockResolvedValue(profile);
     renderWithQuery(<StudentProfilePage />);
 
-    expect(await screen.findByText('Mihai Constantin')).toBeVisible();
+    expect(await screen.findByText('Constantin Mihai')).toBeVisible();
     expect(
       screen.getByText('mihai.constantin@student.school.test'),
     ).toBeVisible();
@@ -120,7 +120,7 @@ describe('StudentProfilePage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
 
-    expect(await screen.findByText('Mihai Constantin')).toBeVisible();
+    expect(await screen.findByText('Constantin Mihai')).toBeVisible();
     expect(getProfile).toHaveBeenCalledTimes(2);
   });
 });

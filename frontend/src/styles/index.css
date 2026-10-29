@@ -1,6 +1,19 @@
 @import 'tailwindcss';
 
 @theme {
+  /* The brand color. Change these steps to re-theme the whole application. */
+  --color-brand-50: #f0fdfa;
+  --color-brand-100: #ccfbf1;
+  --color-brand-200: #99f6e4;
+  --color-brand-300: #5eead4;
+  --color-brand-400: #2dd4bf;
+  --color-brand-500: #0d9488;
+  --color-brand-600: #0f766e;
+  --color-brand-700: #115e59;
+  --color-brand-800: #134e4a;
+  --color-brand-900: #134e4a;
+  --color-brand-950: #042f2e;
+
   --animate-fade-in: fade-in 0.3s ease-out;
   --animate-rise: fade-in 0.7s ease-out both;
   --animate-drift: drift 20s ease-in-out infinite alternate;
@@ -46,5 +59,13 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* No margin means the browser leaves out its own header and footer (date,
+   title, address and page number). The documents keep their spacing instead. */
+@media print {
+  @page {
+    margin: 0;
   }
 }

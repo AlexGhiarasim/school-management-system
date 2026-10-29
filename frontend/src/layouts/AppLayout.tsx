@@ -3,49 +3,82 @@ import { NavLink, Outlet } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../components/layout/LanguageSwitcher.tsx';
 import { Logo } from '../components/layout/Logo.tsx';
-import { Button } from '../components/ui/Button.tsx';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog.tsx';
+import { useHomeroomClass } from '../features/teacher/hooks.ts';
+import { CloseIcon, MenuIcon } from '../components/ui/icons.tsx';
 import { useAuth } from '../hooks/useAuth.ts';
+import { roleProfile } from '../routes/paths.ts';
+import { fullName, initials } from '../utils/format.ts';
 import { NAV_ITEMS } from './navigation.ts';
+import { UserMenu } from './UserMenu.tsx';
+
+const linkClass = ({ isActive }: { isActive: boolean }) =>
+  `relative whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-100 ${
+    isActive
+      ? 'text-slate-900 after:absolute after:inset-x-3 after:-bottom-[13px] after:h-0.5 after:rounded-full after:bg-brand-600'
+      : 'text-slate-500 hover:text-slate-900'
+  }`;
 
 export function AppLayout() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
+  const { homeroomClass } = useHomeroomClass(user?.role === 'TEACHER');
   const [confirmingSignOut, setConfirmingSignOut] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   if (!user) return null;
 
-  const name = user.profile
-    ? `${user.profile.firstName} ${user.profile.lastName}`
+  const { profile } = user;
+  const familyNameFirst = user.role === 'STUDENT';
+  const name = profile
+    ? familyNameFirst
+      ? fullName(profile)
+      : `${profile.firstName} ${profile.lastName}`
     : user.email;
+  const userInitials = profile
+    ? familyNameFirst
+      ? initials(profile)
+      : `${profile.firstName[0]}${profile.lastName[0]}`
+    : user.email[0].toUpperCase();
+  // The profile has its own entry in the user menu.
+  const links = NAV_ITEMS[user.role].filter(
+    (item) =>
+      item.to !== roleProfile[user.role] &&
+      (!item.homeroomOnly || homeroomClass),
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-      <header className="sticky top-0 z-30 border-b border-gray-200 bg-gray-100 shadow-sm">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-6 py-4 sm:px-10">
+      <header className="sticky top-0 z-30 border-b border-gray-200 bg-gray-100 shadow-sm print:hidden">
+        <div className="flex h-16 items-center gap-3 px-4 sm:px-6 lg:px-8">
+          <button
+            type="button"
+            aria-label={t(menuOpen ? 'nav.closeMenu' : 'nav.openMenu')}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
+            onClick={() => setMenuOpen((open) => !open)}
+            className="rounded-lg p-2 text-slate-600 transition hover:bg-gray-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-100 lg:hidden"
+          >
+            {menuOpen ? <CloseIcon /> : <MenuIcon />}
+          </button>
+
           <div className="flex items-center gap-3">
             <Logo className="h-9 w-9" />
-            <span className="hidden text-base font-semibold tracking-tight text-slate-900 sm:inline xl:max-2xl:hidden">
+            <span className="hidden text-base font-semibold tracking-tight whitespace-nowrap text-slate-900 2xl:inline">
               {t('common.appName')}
             </span>
           </div>
 
           <nav
             aria-label={t('nav.main')}
-            className="order-last -mx-6 -mb-1 flex w-[calc(100%+3rem)] gap-1 overflow-x-auto overflow-y-hidden border-t border-slate-100 px-6 pt-2 sm:-mx-10 sm:w-[calc(100%+5rem)] sm:px-10 xl:order-none xl:mx-0 xl:mb-0 xl:w-auto xl:border-0 xl:px-0 xl:pt-0"
+            className="ml-4 hidden items-center gap-1 lg:flex"
           >
-            {NAV_ITEMS[user.role].map((item) => (
+            {links.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end={item.end ?? true}
-                className={({ isActive }) =>
-                  `relative whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100 ${
-                    isActive
-                      ? 'text-slate-900 after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:bg-indigo-600'
-                      : 'text-slate-500 hover:text-slate-900'
-                  }`
-                }
+                className={linkClass}
               >
                 {t(item.labelKey)}
               </NavLink>
@@ -54,29 +87,42 @@ export function AppLayout() {
 
           <div className="ml-auto flex items-center gap-3">
             <LanguageSwitcher />
-            <div className="hidden text-right leading-tight md:block xl:max-2xl:hidden">
-              <p className="text-sm font-medium text-slate-900">{name}</p>
-              <p className="text-xs text-slate-500">
-                {t(`roles.${user.role}`)}
-              </p>
-            </div>
-            <span
-              title={`${name} (${t(`roles.${user.role}`)})`}
-              className="hidden h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-700 xl:max-2xl:flex"
-            >
-              {user.profile
-                ? `${user.profile.firstName[0]}${user.profile.lastName[0]}`
-                : user.email[0].toUpperCase()}
-            </span>
-            <Button
-              variant="secondary"
-              fullWidth={false}
-              onClick={() => setConfirmingSignOut(true)}
-            >
-              {t('nav.signOut')}
-            </Button>
+            <UserMenu
+              name={name}
+              email={user.email}
+              initials={userInitials}
+              role={t(`roles.${user.role}`)}
+              profilePath={roleProfile[user.role]}
+              onSignOut={() => setConfirmingSignOut(true)}
+            />
           </div>
         </div>
+
+        {menuOpen && (
+          <nav
+            id="mobile-nav"
+            aria-label={t('nav.main')}
+            className="animate-fade-in grid gap-1 border-t border-gray-200 px-4 py-3 sm:px-6 lg:hidden"
+          >
+            {links.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end ?? true}
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `rounded-lg px-3 py-2.5 text-sm font-medium transition focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-100 ${
+                    isActive
+                      ? 'bg-white text-brand-700 shadow-sm ring-1 ring-slate-200'
+                      : 'text-slate-600 hover:bg-gray-200'
+                  }`
+                }
+              >
+                {t(item.labelKey)}
+              </NavLink>
+            ))}
+          </nav>
+        )}
       </header>
 
       <ConfirmDialog
@@ -88,8 +134,8 @@ export function AppLayout() {
         onCancel={() => setConfirmingSignOut(false)}
       />
 
-      <main className="mx-auto max-w-6xl px-6 py-10 sm:px-10">
-        <div className="min-w-0 rounded-3xl border border-slate-300 bg-slate-100/60 p-3 shadow-sm sm:p-6">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 print:max-w-none print:p-0">
+        <div className="min-w-0 rounded-3xl border border-slate-300 bg-slate-100/60 p-3 shadow-sm sm:p-6 print:border-0 print:bg-transparent print:p-0 print:shadow-none">
           <Outlet />
         </div>
       </main>

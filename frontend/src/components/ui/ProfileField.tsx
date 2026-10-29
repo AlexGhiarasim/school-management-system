@@ -49,7 +49,7 @@ export function ProfileField({
             className={`absolute -top-5 right-0 text-xs font-medium transition ${
               copied
                 ? 'text-emerald-700'
-                : 'text-slate-400 opacity-0 group-hover:opacity-100 hover:text-indigo-600 focus-visible:opacity-100'
+                : 'text-slate-400 opacity-0 group-hover:opacity-100 hover:text-brand-600 focus-visible:opacity-100'
             }`}
           >
             {copied ? t('common.copied') : t('common.copy')}

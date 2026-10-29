@@ -3,6 +3,11 @@ import {
   type AdminAccount,
   type AdminClass,
   type AdminGrade,
+  type GradeAuditAction,
+  type ImportKind,
+  type ImportPreview,
+  type ImportResult,
+  type GradeChange,
   type ClassInput,
   type GradeEditInput,
   type GradeFilters,
@@ -10,15 +15,18 @@ import {
   type AdminSubject,
   type AdminTeacher,
   type ListFilters,
+  type Statistics,
   type NewStudentInput,
   type NewTeacherInput,
   type StudentFilters,
+  type TeachingAssignment,
   type StudentInput,
   type SubjectInput,
   type TeacherInput,
 } from '../features/admin/types.ts';
 import type { ClassStudent } from '../features/teacher/types.ts';
 import { authedRequest } from '../lib/authedRequest.ts';
+import { downloadFile } from '../lib/downloadFile.ts';
 import type { Paginated } from '../types/api.ts';
 
 const PAGE_SIZE = 20;
@@ -90,6 +98,23 @@ export const adminService = {
   deleteClass: (id: number) =>
     authedRequest<null>(`/classes/${id}`, { method: 'DELETE' }),
 
+  listClassTeaching: (classId: number) =>
+    authedRequest<TeachingAssignment[]>(`/classes/${classId}/teaching`),
+
+  addClassTeaching: (
+    classId: number,
+    input: { teacherId: number; subjectId: number },
+  ) =>
+    authedRequest<TeachingAssignment>(`/classes/${classId}/teaching`, {
+      method: 'POST',
+      body: input,
+    }),
+
+  removeClassTeaching: (classId: number, assignmentId: number) =>
+    authedRequest<null>(`/classes/${classId}/teaching/${assignmentId}`, {
+      method: 'DELETE',
+    }),
+
   listAllTeachers: () =>
     authedRequest<Paginated<AdminTeacher>>(`/teachers?limit=${MAX_PAGE_SIZE}`),
 
@@ -110,6 +135,63 @@ export const adminService = {
 
     return authedRequest<Paginated<AdminGrade>>(`/grades?${query}`);
   },
+
+  previewImport: (kind: ImportKind, content: string) =>
+    authedRequest<ImportPreview>(`/imports/${kind}/preview`, {
+      method: 'POST',
+      body: { content },
+    }),
+
+  commitImport: (kind: ImportKind, content: string) =>
+    authedRequest<ImportResult>(`/imports/${kind}`, {
+      method: 'POST',
+      body: { content },
+    }),
+
+  downloadImportTemplate: (kind: ImportKind, language: string) =>
+    downloadFile(
+      `/imports/${kind}/template?language=${language}`,
+      `${kind}-template.csv`,
+    ),
+
+  exportGrades: (
+    { classId, studentId, subjectId }: Omit<GradeFilters, 'page'>,
+    language: string,
+  ) => {
+    const query = new URLSearchParams({ language });
+
+    if (classId) query.set('classId', classId);
+    if (studentId) query.set('studentId', studentId);
+    if (subjectId) query.set('subjectId', subjectId);
+
+    return downloadFile(`/grades/export?${query}`, 'grades.csv');
+  },
+
+  getStatistics: (classId: string) =>
+    authedRequest<Statistics>(
+      classId ? `/statistics?classId=${classId}` : '/statistics',
+    ),
+
+  listGradeHistory: (page: number, action: GradeAuditAction | '') => {
+    const query = new URLSearchParams({
+      page: String(page),
+      limit: String(PAGE_SIZE),
+    });
+
+    if (action) query.set('action', action);
+
+    return authedRequest<Paginated<GradeChange>>(`/grades/history?${query}`);
+  },
+
+  getGradeHistory: (gradeId: number) =>
+    authedRequest<GradeChange[]>(`/grades/${gradeId}/history`),
+
+  getStudent: (id: number) => authedRequest<AdminStudent>(`/students/${id}`),
+
+  listStudentGrades: (studentId: number) =>
+    authedRequest<Paginated<AdminGrade>>(
+      `/grades?studentId=${studentId}&limit=${MAX_PAGE_SIZE}`,
+    ),
 
   updateGrade: (id: number, input: GradeEditInput) =>
     authedRequest<AdminGrade>(`/grades/${id}`, {

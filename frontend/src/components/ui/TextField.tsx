@@ -53,7 +53,7 @@ export function TextField({
             aria-label={
               visible ? t('common.hidePassword') : t('common.showPassword')
             }
-            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-xl text-slate-400 transition hover:text-slate-700 focus:outline-none focus-visible:text-indigo-600"
+            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-xl text-slate-400 transition hover:text-slate-700 focus:outline-none focus-visible:text-brand-600"
           >
             {visible ? <EyeOffIcon /> : <EyeIcon />}
           </button>
