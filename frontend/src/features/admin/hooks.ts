@@ -44,6 +44,8 @@ export const adminKeys = {
   studentReport: (studentId: number) =>
     ['admin', 'grades', 'report', studentId] as const,
   allSubjects: ['admin', 'subjects', 'all'] as const,
+  classTeaching: (classId: number) =>
+    ['admin', 'classes', classId, 'teaching'] as const,
   allClassStudents: (classId: number) =>
     ['admin', 'classes', classId, 'students', 'all'] as const,
   classStudents: (classId: number, page: number) =>
@@ -362,5 +364,33 @@ export function useImportCommit(kind: ImportKind) {
     mutationFn: (content: string) => adminService.commitImport(kind, content),
     // An import can add students, teachers and classes, so everything reloads.
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin'] }),
+  });
+}
+
+export function useClassTeaching(classId: number) {
+  return useQuery({
+    queryKey: adminKeys.classTeaching(classId),
+    queryFn: () => adminService.listClassTeaching(classId),
+    enabled: Number.isInteger(classId),
+  });
+}
+
+export function useAddTeaching(classId: number) {
+  const refresh = useRefresh(adminKeys.classTeaching(classId));
+
+  return useMutation({
+    mutationFn: (input: { teacherId: number; subjectId: number }) =>
+      adminService.addClassTeaching(classId, input),
+    onSuccess: refresh,
+  });
+}
+
+export function useRemoveTeaching(classId: number) {
+  const refresh = useRefresh(adminKeys.classTeaching(classId));
+
+  return useMutation({
+    mutationFn: (assignmentId: number) =>
+      adminService.removeClassTeaching(classId, assignmentId),
+    onSuccess: refresh,
   });
 }

@@ -159,6 +159,12 @@ export interface GradeChange {
   newDate: string | null;
 }
 
+export interface TeachingAssignment {
+  id: number;
+  subject: { id: number; name: string };
+  teacher: { id: number; firstName: string; lastName: string };
+}
+
 export type ImportKind = 'students' | 'teachers' | 'classes' | 'subjects';
 
 export type ImportFileError =

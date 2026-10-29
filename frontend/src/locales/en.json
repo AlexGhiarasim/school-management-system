@@ -107,7 +107,13 @@
     "Istorie": "History",
     "Geografie": "Geography",
     "Informatică": "Computer Science",
-    "Educație fizică": "Physical Education"
+    "Educație fizică": "Physical Education",
+    "Limba franceză": "French",
+    "Religie": "Religion",
+    "Educație socială": "Social education",
+    "Logică și argumentare": "Logic and argumentation",
+    "Filosofie": "Philosophy",
+    "Economie": "Economics"
   },
   "nav": {
     "main": "Main navigation",
@@ -417,6 +423,21 @@
           "title": "No results",
           "description": "No student without a class matches the search."
         }
+      },
+      "teaching": {
+        "title": "Teachers of the class",
+        "description": "A teacher can grade only the subjects given to them here, for the students of this class. A subject has one teacher in a class.",
+        "empty": "No subject has a teacher in this class yet, so nobody can grade.",
+        "subject": "Subject",
+        "teacher": "Teacher",
+        "chooseSubject": "Choose the subject",
+        "chooseTeacher": "Choose the teacher",
+        "assign": "Assign",
+        "added": "The teacher was assigned to the subject.",
+        "removed": "The teacher was removed from the subject.",
+        "remove": "Remove",
+        "removeTitle": "Remove the teacher from the subject?",
+        "removeMessage": "{{teacher}} will no longer be able to grade {{subject}} in class {{class}}. The grades they gave are kept."
       }
     },
     "classes": {
@@ -662,7 +683,8 @@
     "forbidden": "You are not allowed to do this.",
     "notFound": "The item was not found.",
     "tooManyRequests": "Too many attempts. Please try again in a minute.",
-    "unexpected": "Something went wrong. Please try again."
+    "unexpected": "Something went wrong. Please try again.",
+    "conflict": "This already exists."
   },
   "pages": {
     "notFound": {

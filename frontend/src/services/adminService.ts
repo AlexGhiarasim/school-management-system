@@ -19,6 +19,7 @@ import {
   type NewStudentInput,
   type NewTeacherInput,
   type StudentFilters,
+  type TeachingAssignment,
   type StudentInput,
   type SubjectInput,
   type TeacherInput,
@@ -96,6 +97,23 @@ export const adminService = {
 
   deleteClass: (id: number) =>
     authedRequest<null>(`/classes/${id}`, { method: 'DELETE' }),
+
+  listClassTeaching: (classId: number) =>
+    authedRequest<TeachingAssignment[]>(`/classes/${classId}/teaching`),
+
+  addClassTeaching: (
+    classId: number,
+    input: { teacherId: number; subjectId: number },
+  ) =>
+    authedRequest<TeachingAssignment>(`/classes/${classId}/teaching`, {
+      method: 'POST',
+      body: input,
+    }),
+
+  removeClassTeaching: (classId: number, assignmentId: number) =>
+    authedRequest<null>(`/classes/${classId}/teaching/${assignmentId}`, {
+      method: 'DELETE',
+    }),
 
   listAllTeachers: () =>
     authedRequest<Paginated<AdminTeacher>>(`/teachers?limit=${MAX_PAGE_SIZE}`),

@@ -128,6 +128,13 @@ export default function StudentGradesPage() {
             <SubjectAverages
               subjects={data.bySubject}
               grades={data.grades}
+              teachers={Object.fromEntries(
+                data.grades.flatMap(({ subject, teacher }) =>
+                  teacher
+                    ? [[subject.id, `${teacher.firstName} ${teacher.lastName}`]]
+                    : [],
+                ),
+              )}
               framed
             />
           </StudentPanel>

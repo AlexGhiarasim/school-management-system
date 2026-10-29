@@ -18,6 +18,7 @@ export interface ClassStudent {
 }
 
 export interface ClassTeaching {
+  id: number;
   subject: { id: number; name: string };
   teacher: { id: number; firstName: string; lastName: string };
 }

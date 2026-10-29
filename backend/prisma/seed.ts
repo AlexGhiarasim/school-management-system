@@ -6,14 +6,20 @@ import { parseDatabaseUrl } from '../src/database/database-url.js';
 import { PrismaClient, Role } from '../src/generated/prisma/client.js';
 import {
   ADMINS,
-  CLASS_PLANS,
+  CLASS_SIZE,
+  CLASS_TEACHER_PRIORITY,
   FIRST_NAMES,
+  FIRST_STUDENT,
+  FIRST_TEACHER,
+  GRADE_COUNT_WEIGHTS,
+  GRADE_LEVELS,
+  GRADE_WEIGHTS,
+  GRADING_PERIOD,
   LAST_NAMES,
-  STUDENTS_PER_CLASS,
-  SUBJECT_OVERRIDES,
-  SUBJECT_TEACHERS,
-  SUBJECTS,
-  TEACHER_COUNT,
+  SECTIONS,
+  SKILL_WEIGHTS,
+  SUBJECT_GROUPS,
+  SUBJECTS_BY_GRADE,
   UNASSIGNED_STUDENTS,
 } from './seed-data.js';
 
@@ -25,8 +31,10 @@ const PASSWORDS = {
   student: 'Student123!',
 };
 
-const GRADES_PER_SUBJECT = { min: 3, max: 5 };
-const GRADING_PERIOD = { from: new Date('2026-09-15'), days: 38 };
+const CHUNK = 2000;
+
+const FIRST_STUDENT_EMAIL =
+  `${FIRST_STUDENT.firstName}.${FIRST_STUDENT.lastName}@student.school.test`.toLowerCase();
 
 const prisma = new PrismaClient({
   adapter: new PrismaMariaDb(parseDatabaseUrl(process.env.DATABASE_URL ?? '')),
@@ -43,6 +51,7 @@ function createRandom(seed: number) {
   };
 }
 
+// The same seed gives the same school every time.
 const random = createRandom(2026);
 
 function randomInt(min: number, max: number) {
@@ -53,18 +62,44 @@ function pick<T>(items: T[]): T {
   return items[randomInt(0, items.length - 1)];
 }
 
-function randomGrade() {
-  const roll = random();
-  if (roll < 0.05) return randomInt(1, 4);
-  if (roll < 0.2) return randomInt(5, 6);
-  if (roll < 0.5) return randomInt(7, 8);
-  return randomInt(9, 10);
+function weighted<T>(options: readonly (readonly [T, number])[]): T {
+  const total = options.reduce((sum, [, weight]) => sum + weight, 0);
+  let roll = random() * total;
+
+  for (const [value, weight] of options) {
+    roll -= weight;
+    if (roll < 0) return value;
+  }
+
+  return options[options.length - 1][0];
 }
 
-function randomDate(from: Date, days: number) {
-  const date = new Date(from);
-  date.setUTCDate(date.getUTCDate() + randomInt(0, days));
-  return date;
+// A few distinct items, in their original order.
+function sample<T>(items: T[], count: number): T[] {
+  const chosen = new Set<number>();
+
+  while (chosen.size < Math.min(count, items.length)) {
+    chosen.add(randomInt(0, items.length - 1));
+  }
+
+  return [...chosen].sort((a, b) => a - b).map((index) => items[index]);
+}
+
+function weekdays(from: string, to: string): Date[] {
+  const days: Date[] = [];
+  const end = new Date(`${to}T00:00:00Z`);
+
+  for (
+    const day = new Date(`${from}T00:00:00Z`);
+    day <= end;
+    day.setUTCDate(day.getUTCDate() + 1)
+  ) {
+    if (day.getUTCDay() !== 0 && day.getUTCDay() !== 6) {
+      days.push(new Date(day));
+    }
+  }
+
+  return days;
 }
 
 // Made-up numbers from a range reserved for fiction, not in a Romanian format.
@@ -78,10 +113,22 @@ function nextPhone() {
 function createIdentityFactory(domain: string) {
   const used = new Set<string>();
 
-  return () => {
-    const firstName = pick(FIRST_NAMES);
-    const lastName = pick(LAST_NAMES);
-    const base = `${firstName}.${lastName}`.toLowerCase();
+  return (fixed?: { firstName: string; lastName: string }) => {
+    let firstName = fixed?.firstName ?? pick(FIRST_NAMES);
+    let lastName = fixed?.lastName ?? pick(LAST_NAMES);
+    let base = `${firstName}.${lastName}`.toLowerCase();
+
+    // A different name is tried a few times before a number is added.
+    for (
+      let attempt = 0;
+      !fixed && attempt < 6 && used.has(`${base}@${domain}`);
+      attempt++
+    ) {
+      firstName = pick(FIRST_NAMES);
+      lastName = pick(LAST_NAMES);
+      base = `${firstName}.${lastName}`.toLowerCase();
+    }
+
     let email = `${base}@${domain}`;
 
     for (let suffix = 2; used.has(email); suffix++) {
@@ -93,15 +140,10 @@ function createIdentityFactory(domain: string) {
   };
 }
 
-async function clearDatabase() {
-  await prisma.gradeAudit.deleteMany();
-  await prisma.grade.deleteMany();
-  await prisma.teachingAssignment.deleteMany();
-  await prisma.student.deleteMany();
-  await prisma.class.deleteMany();
-  await prisma.teacher.deleteMany();
-  await prisma.subject.deleteMany();
-  await prisma.user.deleteMany();
+async function inChunks<T>(items: T[], save: (chunk: T[]) => Promise<unknown>) {
+  for (let index = 0; index < items.length; index += CHUNK) {
+    await save(items.slice(index, index + CHUNK));
+  }
 }
 
 // The seed changes the data behind the cache, so the cached results are dropped.
@@ -126,6 +168,62 @@ async function clearCache() {
     redis.disconnect();
   }
 }
+
+async function clearDatabase() {
+  await prisma.gradeAudit.deleteMany();
+  await prisma.grade.deleteMany();
+  await prisma.teachingAssignment.deleteMany();
+  await prisma.student.deleteMany();
+  await prisma.class.deleteMany();
+  await prisma.teacher.deleteMany();
+  await prisma.subject.deleteMany();
+  await prisma.user.deleteMany();
+}
+
+interface Person {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+interface TeacherPlan extends Person {
+  group: number;
+}
+
+interface StudentPlan extends Person {
+  classIndex: number | null;
+  birthYear: number;
+  skill: keyof typeof GRADE_WEIGHTS;
+}
+
+interface GradeRow {
+  studentId: number;
+  teacherId: number;
+  subjectId: number;
+  value: number;
+  date: Date;
+}
+
+// Failing a subject means a rounded average below 5, as in the application.
+const average = (values: number[]) =>
+  values.reduce((sum, value) => sum + value, 0) / values.length;
+
+const FAILING_PATTERNS: Record<number, number[][]> = {
+  1: [[4]],
+  2: [
+    [4, 4],
+    [3, 5],
+    [5, 3],
+    [4, 3],
+  ],
+  3: [
+    [4, 5, 4],
+    [3, 5, 5],
+    [4, 4, 5],
+    [5, 4, 3],
+  ],
+  4: [[4, 4, 5, 4]],
+};
 
 async function main() {
   if (process.argv.includes('--if-empty') && (await prisma.user.count()) > 0) {
@@ -158,99 +256,287 @@ async function main() {
     });
   }
 
+  const classPlans = GRADE_LEVELS.flatMap((grade) =>
+    SECTIONS.map((section) => ({ name: `${grade}${section}`, grade })),
+  );
+  const subjectNames = [...new Set(Object.values(SUBJECTS_BY_GRADE).flat())];
+
   await prisma.subject.createMany({
-    data: SUBJECTS.map((name) => ({ name })),
+    data: subjectNames.map((name) => ({ name })),
   });
-  const subjects = await prisma.subject.findMany();
+  const subjectId = new Map(
+    (await prisma.subject.findMany()).map(({ id, name }) => [name, id]),
+  );
 
+  // --- Teachers: a few for every group of subjects.
   const teacherIdentity = createIdentityFactory('school.test');
-  const teachers: { id: number }[] = [];
-  for (let index = 0; index < TEACHER_COUNT; index++) {
-    const { firstName, lastName, email } = teacherIdentity();
-    teachers.push(
-      await prisma.teacher.create({
-        data: {
-          firstName,
-          lastName,
-          phone: nextPhone(),
-          user: {
-            create: { email, passwordHash: hashes.teacher, role: Role.TEACHER },
-          },
-        },
-      }),
-    );
-  }
-
-  const studentIdentity = createIdentityFactory('student.school.test');
-  const createStudent = async (birthYear: number, classId?: number) => {
-    const { firstName, lastName, email } = studentIdentity();
-    return prisma.student.create({
-      data: {
-        firstName,
-        lastName,
-        phone: nextPhone(),
-        dateOfBirth: new Date(
-          Date.UTC(birthYear, randomInt(0, 11), randomInt(1, 28)),
+  const teacherPlans: TeacherPlan[] = SUBJECT_GROUPS.flatMap(
+    ({ teachers }, group) =>
+      Array.from({ length: teachers }, (_, index) => ({
+        group,
+        ...teacherIdentity(
+          group === 0 && index === 0 ? FIRST_TEACHER : undefined,
         ),
-        class: classId ? { connect: { id: classId } } : undefined,
-        user: {
-          create: { email, passwordHash: hashes.student, role: Role.STUDENT },
-        },
-      },
+      })),
+  );
+
+  await prisma.user.createMany({
+    data: teacherPlans.map(({ email }) => ({
+      email,
+      passwordHash: hashes.teacher,
+      role: Role.TEACHER,
+    })),
+  });
+  const userIds = new Map(
+    (await prisma.user.findMany({ select: { id: true, email: true } })).map(
+      ({ id, email }) => [email, id],
+    ),
+  );
+  await prisma.teacher.createMany({
+    data: teacherPlans.map(({ firstName, lastName, email }) => ({
+      firstName,
+      lastName,
+      phone: nextPhone(),
+      userId: userIds.get(email) ?? 0,
+    })),
+  });
+  const teacherByEmail = new Map(
+    (
+      await prisma.teacher.findMany({
+        select: { id: true, user: { select: { email: true } } },
+      })
+    ).map(({ id, user }) => [user.email, id]),
+  );
+
+  // The teachers of a group each take a block of neighbouring classes.
+  const groupOfSubject = new Map(
+    SUBJECT_GROUPS.flatMap(({ subjects }, group) =>
+      subjects.map((name) => [name, group] as const),
+    ),
+  );
+  const teachersOfGroup = SUBJECT_GROUPS.map((_, group) =>
+    teacherPlans.filter((plan) => plan.group === group),
+  );
+  const teacherFor = (classIndex: number, subject: string) => {
+    const pool = teachersOfGroup[groupOfSubject.get(subject) ?? 0];
+    const teacher =
+      pool[Math.floor((classIndex * pool.length) / classPlans.length)];
+
+    return teacherByEmail.get(teacher.email) ?? 0;
+  };
+  const subjectsOf = (classIndex: number) =>
+    SUBJECTS_BY_GRADE[classPlans[classIndex].grade];
+
+  // --- Every class gets a class teacher who teaches in it, never twice.
+  const priority = CLASS_TEACHER_PRIORITY.map(
+    (name) => groupOfSubject.get(name) ?? 0,
+  );
+  const classTeachers = new Set<number>();
+  const classTeacherOf = classPlans.map((_, classIndex) => {
+    for (let step = 0; step < priority.length; step++) {
+      const subject = subjectsOf(classIndex).find(
+        (name) =>
+          groupOfSubject.get(name) ===
+          priority[(classIndex + step) % priority.length],
+      );
+      const teacherId = subject ? teacherFor(classIndex, subject) : 0;
+
+      if (teacherId && !classTeachers.has(teacherId)) {
+        classTeachers.add(teacherId);
+        return teacherId;
+      }
+    }
+
+    throw new Error(
+      `No class teacher is left for ${classPlans[classIndex].name}`,
+    );
+  });
+
+  await prisma.class.createMany({
+    data: classPlans.map(({ name }, index) => ({
+      name,
+      teacherId: classTeacherOf[index],
+    })),
+  });
+  const classId = new Map(
+    (await prisma.class.findMany()).map(({ id, name }) => [name, id]),
+  );
+
+  await prisma.teachingAssignment.createMany({
+    data: classPlans.flatMap(({ name }, classIndex) =>
+      subjectsOf(classIndex).map((subject) => ({
+        classId: classId.get(name) ?? 0,
+        subjectId: subjectId.get(subject) ?? 0,
+        teacherId: teacherFor(classIndex, subject),
+      })),
+    ),
+  });
+
+  // --- Students: 26 to 32 in each class, and a few without a class.
+  const studentIdentity = createIdentityFactory('student.school.test');
+  const studentPlans: StudentPlan[] = [];
+  const newStudent = (
+    classIndex: number | null,
+    grade: number,
+    fixed?: typeof FIRST_STUDENT,
+  ) => {
+    // Most students are the age of their year, a few are a year older.
+    const birthYear = 2011 - (grade - 9) - (random() < 0.12 ? 1 : 0);
+
+    studentPlans.push({
+      ...studentIdentity(fixed),
+      classIndex,
+      birthYear,
+      skill: weighted(SKILL_WEIGHTS),
     });
   };
 
-  const grades = [];
-  for (const plan of CLASS_PLANS) {
-    const schoolClass = await prisma.class.create({
-      data: { name: plan.name, teacherId: teachers[plan.teacherIndex].id },
-    });
+  classPlans.forEach(({ grade }, classIndex) => {
+    const size = randomInt(CLASS_SIZE.min, CLASS_SIZE.max);
 
-    const teacherOf = (subjectName: string) =>
-      teachers[
-        SUBJECT_OVERRIDES.find(
-          (item) =>
-            item.className === plan.name && item.subject === subjectName,
-        )?.teacherIndex ?? SUBJECT_TEACHERS[subjectName]
-      ];
-
-    await prisma.teachingAssignment.createMany({
-      data: subjects.map((subject) => ({
-        classId: schoolClass.id,
-        subjectId: subject.id,
-        teacherId: teacherOf(subject.name).id,
-      })),
-    });
-
-    for (let index = 0; index < STUDENTS_PER_CLASS; index++) {
-      const student = await createStudent(plan.birthYear, schoolClass.id);
-
-      for (const subject of subjects) {
-        const count = randomInt(GRADES_PER_SUBJECT.min, GRADES_PER_SUBJECT.max);
-        for (let n = 0; n < count; n++) {
-          grades.push({
-            studentId: student.id,
-            teacherId: teacherOf(subject.name).id,
-            subjectId: subject.id,
-            value: randomGrade(),
-            date: randomDate(GRADING_PERIOD.from, GRADING_PERIOD.days),
-          });
-        }
-      }
+    for (let index = 0; index < size; index++) {
+      newStudent(
+        classIndex,
+        grade,
+        classIndex === 0 && index === 0 ? FIRST_STUDENT : undefined,
+      );
     }
-  }
+  });
 
   for (let index = 0; index < UNASSIGNED_STUDENTS; index++) {
-    await createStudent(2011);
+    newStudent(null, 9);
   }
 
-  await prisma.grade.createMany({ data: grades });
+  await inChunks(studentPlans, (chunk) =>
+    prisma.user.createMany({
+      data: chunk.map(({ email }) => ({
+        email,
+        passwordHash: hashes.student,
+        role: Role.STUDENT,
+      })),
+    }),
+  );
+  const studentUserIds = new Map(
+    (
+      await prisma.user.findMany({
+        where: { role: Role.STUDENT },
+        select: { id: true, email: true },
+      })
+    ).map(({ id, email }) => [email, id]),
+  );
+  await inChunks(studentPlans, (chunk) =>
+    prisma.student.createMany({
+      data: chunk.map(
+        ({ firstName, lastName, email, classIndex, birthYear }) => ({
+          firstName,
+          lastName,
+          phone: nextPhone(),
+          dateOfBirth: new Date(
+            Date.UTC(birthYear, randomInt(0, 11), randomInt(1, 28)),
+          ),
+          classId:
+            classIndex === null
+              ? null
+              : classId.get(classPlans[classIndex].name),
+          userId: studentUserIds.get(email) ?? 0,
+        }),
+      ),
+    }),
+  );
+  const studentId = new Map(
+    (
+      await prisma.student.findMany({
+        select: { id: true, user: { select: { email: true } } },
+      })
+    ).map(({ id, user }) => [user.email, id]),
+  );
+
+  // --- Grades: weekdays from 1 September to the last day, 1 to 3 in a subject.
+  const days = weekdays(GRADING_PERIOD.from, GRADING_PERIOD.to);
+  const grades: GradeRow[] = [];
+  const twoClass = randomInt(0, classPlans.length - 1);
+  let twoGiven = false;
+
+  classPlans.forEach((_, classIndex) => {
+    const students = studentPlans.filter(
+      (plan) => plan.classIndex === classIndex,
+    );
+    const subjects = subjectsOf(classIndex);
+
+    // Two or three students fail one subject, a few of them two.
+    const failing = new Map<string, string[]>();
+    for (const student of sample(
+      students.filter(({ email }) => email !== FIRST_STUDENT_EMAIL),
+      randomInt(2, 3),
+    )) {
+      failing.set(student.email, sample(subjects, random() < 0.2 ? 2 : 1));
+    }
+
+    for (const subject of subjects) {
+      const teacherId = teacherFor(classIndex, subject);
+      // The teacher grades the class on a few days, most students on each.
+      const gradingDays = sample(days, randomInt(4, 6));
+
+      for (const student of students) {
+        const count = weighted(GRADE_COUNT_WEIGHTS);
+        const dates = sample(gradingDays, count);
+        let values = dates.map(() => weighted(GRADE_WEIGHTS[student.skill]));
+
+        if (failing.get(student.email)?.includes(subject)) {
+          if (classIndex === twoClass && !twoGiven) {
+            // The only 2 of the school.
+            values = [2, 6];
+            twoGiven = true;
+          } else {
+            values = pick(FAILING_PATTERNS[dates.length]);
+          }
+        } else if (dates.length >= 2) {
+          // A rare low grade, kept where the average stays 5 or more.
+          const low = random() < 0.008 ? 4 : random() < 0.0025 ? 3 : null;
+          const index = randomInt(0, values.length - 1);
+          const changed = values.map((value, at) =>
+            at === index && low ? low : value,
+          );
+
+          if (low && Math.round(average(changed)) >= 5) values = changed;
+        }
+
+        // One grade for each date, also when a pattern changed their number.
+        const used =
+          values.length === dates.length
+            ? dates
+            : sample(gradingDays, values.length);
+        values.forEach((value, at) =>
+          grades.push({
+            studentId: studentId.get(student.email) ?? 0,
+            teacherId,
+            subjectId: subjectId.get(subject) ?? 0,
+            value,
+            date: used[at],
+          }),
+        );
+      }
+    }
+  });
+
+  await inChunks(grades, (chunk) => prisma.grade.createMany({ data: chunk }));
   await clearCache();
 
+  const perStudentSubject = new Map<string, number[]>();
+  for (const { studentId: student, subjectId: subject, value } of grades) {
+    const key = `${student}-${subject}`;
+    perStudentSubject.set(key, [...(perStudentSubject.get(key) ?? []), value]);
+  }
+  const failingStudents = new Set(
+    [...perStudentSubject]
+      .filter(([, values]) => Math.round(average(values)) < 5)
+      .map(([key]) => key.split('-')[0]),
+  );
+
   console.log(
-    `Seeded ${teachers.length} teachers, ${CLASS_PLANS.length} classes, ` +
-      `${CLASS_PLANS.length * STUDENTS_PER_CLASS + UNASSIGNED_STUDENTS} students, ` +
-      `${subjects.length} subjects and ${grades.length} grades`,
+    `Seeded ${teacherPlans.length} teachers, ${classPlans.length} classes, ` +
+      `${studentPlans.length} students, ${subjectNames.length} subjects and ` +
+      `${grades.length} grades, ${failingStudents.size} students failing a subject`,
   );
 }
 

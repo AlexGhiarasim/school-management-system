@@ -12,6 +12,7 @@ import {
 } from '../../common/utils/pagination.util.js';
 import { PrismaService } from '../../database/prisma.service.js';
 import { Prisma, Role } from '../../generated/prisma/client.js';
+import type { AssignTeachingDto } from './dto/assign-teaching.dto.js';
 import type { CreateClassDto } from './dto/create-class.dto.js';
 import type { ListClassesQueryDto } from './dto/list-classes-query.dto.js';
 import type { UpdateClassDto } from './dto/update-class.dto.js';
@@ -22,6 +23,12 @@ const classInclude = {
   teacher: { select: { id: true, firstName: true, lastName: true } },
   _count: { select: { students: true } },
 } satisfies Prisma.ClassInclude;
+
+const teachingSelect = {
+  id: true,
+  subject: { select: { id: true, name: true } },
+  teacher: { select: { id: true, firstName: true, lastName: true } },
+} satisfies Prisma.TeachingAssignmentSelect;
 
 type ClassWithRelations = Prisma.ClassGetPayload<{
   include: typeof classInclude;
@@ -112,6 +119,52 @@ export class ClassesService {
     return toResponse(schoolClass);
   }
 
+  // Who teaches which subject in the class. A teacher can grade only the
+  // subjects that are assigned to them here.
+  async findTeaching(id: number) {
+    await this.assertClassExists(id);
+
+    return this.listTeaching(id);
+  }
+
+  async addTeaching(id: number, { teacherId, subjectId }: AssignTeachingDto) {
+    await this.assertClassExists(id);
+    await this.assertTeacherExists(teacherId);
+
+    const subjects = await this.prisma.subject.count({
+      where: { id: subjectId },
+    });
+
+    if (subjects === 0) {
+      throw new NotFoundException(`Subject ${subjectId} not found`);
+    }
+
+    const taken = await this.prisma.teachingAssignment.count({
+      where: { classId: id, subjectId },
+    });
+
+    if (taken > 0) {
+      throw new ConflictException(
+        'The subject already has a teacher in this class',
+      );
+    }
+
+    return this.prisma.teachingAssignment.create({
+      data: { classId: id, teacherId, subjectId },
+      select: teachingSelect,
+    });
+  }
+
+  async removeTeaching(id: number, assignmentId: number): Promise<void> {
+    const { count } = await this.prisma.teachingAssignment.deleteMany({
+      where: { id: assignmentId, classId: id },
+    });
+
+    if (count === 0) {
+      throw new NotFoundException(`Assignment ${assignmentId} not found`);
+    }
+  }
+
   // Everything the class teacher needs to follow the class: the statistics of
   // the class, how every student is doing and who teaches what.
   async findOverview(id: number, user: AuthenticatedUser) {
@@ -185,12 +238,17 @@ export class ClassesService {
   private listTeaching(id: number) {
     return this.prisma.teachingAssignment.findMany({
       where: { classId: id },
-      select: {
-        subject: { select: { id: true, name: true } },
-        teacher: { select: { id: true, firstName: true, lastName: true } },
-      },
+      select: teachingSelect,
       orderBy: { subject: { name: 'asc' } },
     });
+  }
+
+  private async assertClassExists(id: number): Promise<void> {
+    const count = await this.prisma.class.count({ where: { id } });
+
+    if (count === 0) {
+      throw new NotFoundException(`Class ${id} not found`);
+    }
   }
 
   private async assertCanSee(id: number, user: AuthenticatedUser) {

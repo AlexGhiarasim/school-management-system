@@ -77,19 +77,25 @@ The application is then available at `http://localhost:5173`. Set `VITE_API_URL`
 
 ## Test accounts
 
-The seed script creates one admin, 10 teachers, 6 classes, 123 students, 10
-subjects and about 4800 grades. All teachers share one password and all students
-share another.
+The seed script creates a school of 24 classes, 9A to 12F, with 26 to 32 students
+each (730 in all, and 4 without a class), 46 teachers, 16 subjects and about
+19,400 grades. Each year has 13 subjects, the same core plus one that changes
+(social education in the 9th, logic in the 10th, philosophy in the 11th and
+economics in the 12th). Every class has a class teacher who teaches in it, and
+every subject of a class has one teacher. The grades are dated on weekdays,
+from 1 September to 29 October: one to three in a subject, mostly 7 to 10, with
+two or three students in each class failing a subject and a single 2 in the
+whole school. The same data is created every time. All teachers share one
+password and all students share another.
 
 | Role | Email | Password |
 |---|---|---|
 | Admin | `admin@school.test` (a second one: `admin2@school.test`) | `Admin123!` |
-| Teacher | `laura.marin@school.test` (class teacher of 9A, teaches Mathematics in every class and Physics in 9A) | `Teacher123!` |
-| Student | `mihai.constantin@student.school.test` | `Student123!` |
+| Teacher | `laura.marin@school.test` (class teacher of 9A, teaches Mathematics in 9A to 9D) | `Teacher123!` |
+| Student | `mihai.constantin@student.school.test` (class 9A) | `Student123!` |
 
-Students and teachers also get a made-up phone number (the administrator has
-none). They use a range reserved for fiction, such as `+44 7700 900123`, and are
-not in a Romanian format.
+Everyone also gets a made-up phone number, from a range reserved for fiction, such
+as `+44 7700 900123`, not in a Romanian format.
 
 Other accounts follow the same pattern: teachers use `@school.test` and students
 use `@student.school.test`. Run `npm run prisma:seed` again at any time to reset
@@ -123,6 +129,9 @@ the API changes, `npm run postman` in `backend` builds it again from Swagger.
 | `/classes` (CRUD) | yes | no | no |
 | `PATCH /classes/:id/teacher` | yes | no | no |
 | `GET /classes/:id/students` | yes | own classes | no |
+| `GET /classes/:id/teaching` (who teaches which subject in a class) | yes | no | no |
+| `POST /classes/:id/teaching` (gives a teacher a subject in a class) | yes | no | no |
+| `DELETE /classes/:id/teaching/:assignmentId` | yes | no | no |
 | `GET /classes/:id/overview` (statistics, students and teachers of a class) | yes | class teacher | no |
 | `/students` (CRUD) | yes | no | no |
 | `PATCH /students/:id/class` | yes | no | no |
@@ -144,7 +153,10 @@ Authorization is enforced on the backend by a global JWT guard and a roles guard
 Ownership rules live in the services:
 
 - A teacher teaches subjects in classes (`TeachingAssignment`). They can grade and
-  see only those subjects, for the students of those classes.
+  see only those subjects, for the students of those classes. An administrator
+  gives them a subject from the page of the class, under "Teachers of the class",
+  and a subject has one teacher in a class. Until then a new teacher has nothing
+  to grade.
 - The class teacher (`Class.teacherId`) also sees every grade of the class, but can
   change only the grades they gave.
 - A teacher can edit only the grades they gave.

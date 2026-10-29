@@ -10,6 +10,7 @@ import { ErrorState } from '../../components/ui/ErrorState.tsx';
 import { Pagination } from '../../components/ui/Pagination.tsx';
 import { PersonCell } from '../../components/ui/PersonCell.tsx';
 import { AddStudentsModal } from '../../features/admin/components/AddStudentsModal.tsx';
+import { ClassTeachingPanel } from '../../features/admin/components/ClassTeachingPanel.tsx';
 import {
   useAdminClasses,
   useAdminClassStudents,
@@ -138,6 +139,13 @@ export default function AdminClassStudentsPage() {
               </Button>
             }
           />
+
+          {schoolClass && (
+            <ClassTeachingPanel
+              classId={classId}
+              className={schoolClass.name}
+            />
+          )}
 
           {students.isError ? (
             <div className={CARD}>

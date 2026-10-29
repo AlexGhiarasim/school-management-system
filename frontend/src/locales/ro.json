@@ -108,7 +108,13 @@
     "Istorie": "Istorie",
     "Geografie": "Geografie",
     "Informatică": "Informatică",
-    "Educație fizică": "Educație fizică"
+    "Educație fizică": "Educație fizică",
+    "Limba franceză": "Limba franceză",
+    "Religie": "Religie",
+    "Educație socială": "Educație socială",
+    "Logică și argumentare": "Logică și argumentare",
+    "Filosofie": "Filosofie",
+    "Economie": "Economie"
   },
   "nav": {
     "main": "Navigare principală",
@@ -424,6 +430,21 @@
           "title": "Niciun rezultat",
           "description": "Niciun elev fără clasă nu se potrivește căutării."
         }
+      },
+      "teaching": {
+        "title": "Profesorii clasei",
+        "description": "Un profesor poate pune note doar la materiile care îi sunt atribuite aici, elevilor din această clasă. O materie are un singur profesor în clasă.",
+        "empty": "Nicio materie nu are încă profesor în această clasă, deci nimeni nu poate pune note.",
+        "subject": "Materia",
+        "teacher": "Profesorul",
+        "chooseSubject": "Alege materia",
+        "chooseTeacher": "Alege profesorul",
+        "assign": "Atribuie",
+        "added": "Profesorul a fost atribuit materiei.",
+        "removed": "Profesorul a fost scos de la materie.",
+        "remove": "Scoate",
+        "removeTitle": "Scoți profesorul de la materie?",
+        "removeMessage": "{{teacher}} nu va mai putea pune note la {{subject}} în clasa {{class}}. Notele date de el rămân."
       }
     },
     "classes": {
@@ -673,7 +694,8 @@
     "forbidden": "Nu ai permisiunea pentru această acțiune.",
     "notFound": "Elementul nu a fost găsit.",
     "tooManyRequests": "Prea multe încercări. Încearcă din nou peste un minut.",
-    "unexpected": "A apărut o eroare. Încearcă din nou."
+    "unexpected": "A apărut o eroare. Încearcă din nou.",
+    "conflict": "Există deja o înregistrare cu aceste date."
   },
   "pages": {
     "notFound": {

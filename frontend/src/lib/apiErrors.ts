@@ -11,6 +11,8 @@ export function getApiErrorKey(error: unknown): string {
         return 'errors.forbidden';
       case 404:
         return 'errors.notFound';
+      case 409:
+        return 'errors.conflict';
       case 429:
         return 'errors.tooManyRequests';
     }
