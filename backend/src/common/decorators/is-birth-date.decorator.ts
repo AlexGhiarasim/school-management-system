@@ -1,4 +1,8 @@
-import { registerDecorator, type ValidationOptions } from 'class-validator';
+import {
+  isISO8601,
+  registerDecorator,
+  type ValidationOptions,
+} from 'class-validator';
 import { MIN_BIRTH_DATE } from '../constants/validation.constants.js';
 
 export function IsBirthDate(options?: ValidationOptions) {
@@ -14,7 +18,13 @@ export function IsBirthDate(options?: ValidationOptions) {
       },
       validator: {
         validate(value: unknown) {
-          if (typeof value !== 'string') return false;
+          // The strict check rejects days that do not exist, like 2010-02-30.
+          if (
+            typeof value !== 'string' ||
+            !isISO8601(value, { strict: true })
+          ) {
+            return false;
+          }
 
           const date = new Date(value);
           return (
