@@ -15,9 +15,12 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiProduces,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import { Roles } from '../../common/decorators/roles.decorator.js';
@@ -33,6 +36,8 @@ import { GradesService } from './grades.service.js';
 
 @ApiTags('Grades')
 @ApiBearerAuth()
+@ApiUnauthorizedResponse({ description: 'Missing or invalid token' })
+@ApiForbiddenResponse({ description: 'The role may not do this' })
 @Roles(Role.ADMIN, Role.TEACHER)
 @Controller('grades')
 export class GradesController {
@@ -43,6 +48,7 @@ export class GradesController {
 
   @Get('me')
   @Roles(Role.STUDENT)
+  @ApiOperation({ summary: 'Grades and averages of the signed-in student' })
   findOwn(@CurrentUser() user: AuthenticatedUser) {
     if (user.studentId === null) {
       throw new ForbiddenException();
@@ -82,6 +88,10 @@ export class GradesController {
   }
 
   @Get()
+  @ApiOperation({
+    summary:
+      'List grades. A teacher sees their own subjects, and the whole class if they are its class teacher',
+  })
   findAll(
     @Query() query: ListGradesQueryDto,
     @CurrentUser() user: AuthenticatedUser,
@@ -90,11 +100,20 @@ export class GradesController {
   }
 
   @Post()
+  @ApiOperation({
+    summary:
+      'Add a grade. A teacher can grade only their own subjects in their own classes',
+  })
+  @ApiNotFoundResponse({ description: 'Not found' })
   create(@Body() dto: CreateGradeDto, @CurrentUser() user: AuthenticatedUser) {
     return this.gradesService.create(dto, user);
   }
 
   @Patch(':id')
+  @ApiOperation({
+    summary: 'Change a grade. A teacher can change only the grades they gave',
+  })
+  @ApiNotFoundResponse({ description: 'Not found' })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateGradeDto,
@@ -106,6 +125,8 @@ export class GradesController {
   @Delete(':id')
   @Roles(Role.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete a grade' })
+  @ApiNotFoundResponse({ description: 'Not found' })
   remove(
     @Param('id', ParseIntPipe) id: number,
     @CurrentUser() user: AuthenticatedUser,

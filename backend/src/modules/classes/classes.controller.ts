@@ -11,7 +11,15 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConflictResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import { Roles } from '../../common/decorators/roles.decorator.js';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto.js';
@@ -26,38 +34,55 @@ import { UpdateClassDto } from './dto/update-class.dto.js';
 
 @ApiTags('Classes')
 @ApiBearerAuth()
+@ApiUnauthorizedResponse({ description: 'Missing or invalid token' })
+@ApiForbiddenResponse({ description: 'The role may not do this' })
 @Roles(Role.ADMIN)
 @Controller('classes')
 export class ClassesController {
   constructor(private readonly classesService: ClassesService) {}
 
   @Get()
+  @ApiOperation({ summary: 'List classes' })
   findAll(@Query() query: ListClassesQueryDto) {
     return this.classesService.findAll(query);
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get one class' })
+  @ApiNotFoundResponse({ description: 'Not found' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.classesService.findOne(id);
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a class' })
+  @ApiConflictResponse({ description: 'The name or email is already used' })
   create(@Body() dto: CreateClassDto) {
     return this.classesService.create(dto);
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Rename a class' })
+  @ApiNotFoundResponse({ description: 'Not found' })
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateClassDto) {
     return this.classesService.update(id, dto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Delete a class, its students stay without a class',
+  })
+  @ApiNotFoundResponse({ description: 'Not found' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.classesService.remove(id);
   }
 
   @Patch(':id/teacher')
+  @ApiOperation({
+    summary: 'Choose the class teacher, or remove them with a null teacher',
+  })
+  @ApiNotFoundResponse({ description: 'Not found' })
   assignTeacher(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: AssignTeacherDto,
@@ -109,6 +134,11 @@ export class ClassesController {
 
   @Get(':id/students')
   @Roles(Role.ADMIN, Role.TEACHER)
+  @ApiOperation({
+    summary:
+      'List the students of a class. A teacher sees only the classes where they teach',
+  })
+  @ApiNotFoundResponse({ description: 'Not found' })
   findStudents(
     @Param('id', ParseIntPipe) id: number,
     @Query() query: PaginationQueryDto,
