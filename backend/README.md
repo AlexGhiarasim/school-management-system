@@ -9,6 +9,7 @@ src/
   main.ts            Application entry point
   app.module.ts      Root module
   config/            Typed configuration and environment validation
+  cache/             Redis cache and its invalidation
   database/          Database module and ORM integration
   common/            Cross-cutting code shared by all modules
     constants/       Shared constants
@@ -38,3 +39,6 @@ internals.
 | `npm run lint` | Lint the sources |
 | `npm test` | Run unit tests |
 | `npm run test:e2e` | Run end-to-end tests |
+| `npm run prisma:deploy` | Apply the migrations |
+| `npm run prisma:seed` | Load the sample data |
+| `npm run postman` | Build the Postman collection from Swagger |

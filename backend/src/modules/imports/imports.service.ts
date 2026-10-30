@@ -111,7 +111,8 @@ export class ImportsService {
   }
 
   private async prepare(kind: ImportKind, content: string): Promise<Prepared> {
-    const { columns, validate } = KINDS[kind];
+    const importKind = KINDS[kind];
+    const { columns } = importKind;
     const { headers, rows } = parseCsv(content);
 
     if (rows.length === 0) {
@@ -167,6 +168,9 @@ export class ImportsService {
       ),
     }));
 
-    return { ignoredColumns, rows: await validate(raw, this.prisma) };
+    return {
+      ignoredColumns,
+      rows: await importKind.validate(raw, this.prisma),
+    };
   }
 }

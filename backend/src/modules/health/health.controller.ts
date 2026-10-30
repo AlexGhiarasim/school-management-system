@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   HealthCheck,
   HealthCheckService,
@@ -20,12 +20,16 @@ export class HealthController {
   @Public()
   @Get()
   @HealthCheck()
+  @ApiOperation({ summary: 'Check that the API and the database are up' })
   check() {
     return this.health.check([
       () =>
-        this.indicator
-          .check('database')
-          .attempt(async () => this.prisma.$queryRaw`SELECT 1`),
+        this.indicator.check('database').attempt(async () => {
+          // The answer is public, so it must not carry the driver's error.
+          await this.prisma.$queryRaw`SELECT 1`.catch(() => {
+            throw new Error('The database is not reachable');
+          });
+        }),
     ]);
   }
 }

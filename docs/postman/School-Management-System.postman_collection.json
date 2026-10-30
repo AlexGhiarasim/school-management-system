@@ -375,7 +375,7 @@
                 "me"
               ]
             },
-            "description": ""
+            "description": "Profile of the signed-in student"
           }
         },
         {
@@ -395,7 +395,7 @@
                 "class"
               ]
             },
-            "description": ""
+            "description": "Class, class teacher and classmates of the signed-in student"
           }
         },
         {
@@ -445,7 +445,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "List students, with search and class filter"
           }
         },
         {
@@ -477,7 +477,7 @@
                 "students"
               ]
             },
-            "description": ""
+            "description": "Create a student and their account"
           }
         },
         {
@@ -502,7 +502,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Get one student"
           }
         },
         {
@@ -541,7 +541,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Update a student"
           }
         },
         {
@@ -566,7 +566,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Delete a student and their account"
           }
         },
         {
@@ -606,7 +606,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Put a student in a class, or take them out with a null class"
           }
         }
       ]
@@ -631,7 +631,7 @@
                 "classes"
               ]
             },
-            "description": ""
+            "description": "Classes where the signed-in teacher teaches, with their subjects"
           }
         },
         {
@@ -666,7 +666,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "List teachers"
           }
         },
         {
@@ -698,7 +698,7 @@
                 "teachers"
               ]
             },
-            "description": ""
+            "description": "Create a teacher and their account"
           }
         },
         {
@@ -723,7 +723,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Get one teacher"
           }
         },
         {
@@ -762,7 +762,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Update a teacher"
           }
         },
         {
@@ -787,7 +787,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Delete a teacher and their account"
           }
         }
       ]
@@ -827,7 +827,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "List classes"
           }
         },
         {
@@ -859,7 +859,7 @@
                 "classes"
               ]
             },
-            "description": ""
+            "description": "Create a class"
           }
         },
         {
@@ -884,7 +884,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Get one class"
           }
         },
         {
@@ -923,7 +923,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Rename a class"
           }
         },
         {
@@ -948,7 +948,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Delete a class, its students stay without a class"
           }
         },
         {
@@ -988,7 +988,104 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Choose the class teacher, or remove them with a null teacher"
+          }
+        },
+        {
+          "name": "GET /classes/:id/teaching",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/classes/:id/teaching",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                ":id",
+                "teaching"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Who teaches which subject in the class"
+          }
+        },
+        {
+          "name": "POST /classes/:id/teaching",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"teacherId\": 1,\n  \"subjectId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/classes/:id/teaching",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                ":id",
+                "teaching"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Let a teacher teach a subject in the class\n\nThe teacher can then grade the students of the class in that subject. A subject has one teacher in a class."
+          }
+        },
+        {
+          "name": "DELETE /classes/:id/teaching/:assignmentId",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/classes/:id/teaching/:assignmentId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "classes",
+                ":id",
+                "teaching",
+                ":assignmentId"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                },
+                {
+                  "key": "assignmentId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Stop a teacher teaching a subject in the class"
           }
         },
         {
@@ -1052,7 +1149,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "List the students of a class. A teacher sees only the classes where they teach"
           }
         }
       ]
@@ -1092,7 +1189,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "List subjects"
           }
         },
         {
@@ -1124,7 +1221,7 @@
                 "subjects"
               ]
             },
-            "description": ""
+            "description": "Create a subject"
           }
         },
         {
@@ -1149,7 +1246,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Get one subject"
           }
         },
         {
@@ -1188,7 +1285,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Rename a subject"
           }
         },
         {
@@ -1213,7 +1310,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Delete a subject that has no grades"
           }
         }
       ]
@@ -1237,7 +1334,7 @@
                 "me"
               ]
             },
-            "description": ""
+            "description": "Grades and averages of the signed-in student"
           }
         },
         {
@@ -1385,7 +1482,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "List grades. A teacher sees their own subjects, and the whole class if they are its class teacher"
           }
         },
         {
@@ -1417,7 +1514,7 @@
                 "grades"
               ]
             },
-            "description": ""
+            "description": "Add a grade. A teacher can grade only their own subjects in their own classes"
           }
         },
         {
@@ -1456,7 +1553,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Change a grade. A teacher can change only the grades they gave"
           }
         },
         {
@@ -1481,7 +1578,7 @@
                 }
               ]
             },
-            "description": ""
+            "description": "Delete a grade"
           }
         }
       ]
@@ -1560,7 +1657,124 @@
                 "health"
               ]
             },
-            "description": ""
+            "description": "Check that the API and the database are up"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Imports",
+      "item": [
+        {
+          "name": "GET /imports/:kind/template",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/imports/:kind/template",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "imports",
+                ":kind",
+                "template"
+              ],
+              "query": [
+                {
+                  "key": "language",
+                  "value": "ro",
+                  "disabled": true
+                }
+              ],
+              "variable": [
+                {
+                  "key": "kind",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Download a CSV file to fill in"
+          }
+        },
+        {
+          "name": "POST /imports/:kind/preview",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/imports/:kind/preview",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "imports",
+                ":kind",
+                "preview"
+              ],
+              "variable": [
+                {
+                  "key": "kind",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Check a CSV file and show what would be imported\n\nSaves nothing. Every row comes back with its errors, if any."
+          }
+        },
+        {
+          "name": "POST /imports/:kind",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/imports/:kind",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "imports",
+                ":kind"
+              ],
+              "variable": [
+                {
+                  "key": "kind",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Import the valid rows of a CSV file\n\nThe rows with errors are skipped. For the accounts whose password was not in the file, the generated password is returned once."
           }
         }
       ]

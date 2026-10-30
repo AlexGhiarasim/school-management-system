@@ -12,7 +12,15 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConflictResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import { Roles } from '../../common/decorators/roles.decorator.js';
 import type { AuthenticatedUser } from '../../common/interfaces/authenticated-user.interface.js';
@@ -25,6 +33,8 @@ import { StudentsService } from './students.service.js';
 
 @ApiTags('Students')
 @ApiBearerAuth()
+@ApiUnauthorizedResponse({ description: 'Missing or invalid token' })
+@ApiForbiddenResponse({ description: 'The role may not do this' })
 @Roles(Role.ADMIN)
 @Controller('students')
 export class StudentsController {
@@ -32,6 +42,7 @@ export class StudentsController {
 
   @Get('me')
   @Roles(Role.STUDENT)
+  @ApiOperation({ summary: 'Profile of the signed-in student' })
   findProfile(@CurrentUser() user: AuthenticatedUser) {
     if (user.studentId === null) {
       throw new ForbiddenException();
@@ -42,6 +53,9 @@ export class StudentsController {
 
   @Get('me/class')
   @Roles(Role.STUDENT)
+  @ApiOperation({
+    summary: 'Class, class teacher and classmates of the signed-in student',
+  })
   findClassOverview(@CurrentUser() user: AuthenticatedUser) {
     if (user.studentId === null) {
       throw new ForbiddenException();
@@ -51,26 +65,37 @@ export class StudentsController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'List students, with search and class filter' })
   findAll(@Query() query: ListStudentsQueryDto) {
     return this.studentsService.findAll(query);
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get one student' })
+  @ApiNotFoundResponse({ description: 'Not found' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.studentsService.findOne(id);
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a student and their account' })
+  @ApiConflictResponse({ description: 'The name or email is already used' })
   create(@Body() dto: CreateStudentDto) {
     return this.studentsService.create(dto);
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a student' })
+  @ApiNotFoundResponse({ description: 'Not found' })
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateStudentDto) {
     return this.studentsService.update(id, dto);
   }
 
   @Patch(':id/class')
+  @ApiOperation({
+    summary: 'Put a student in a class, or take them out with a null class',
+  })
+  @ApiNotFoundResponse({ description: 'Not found' })
   assignClass(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: AssignClassDto,
@@ -80,6 +105,8 @@ export class StudentsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete a student and their account' })
+  @ApiNotFoundResponse({ description: 'Not found' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.studentsService.remove(id);
   }

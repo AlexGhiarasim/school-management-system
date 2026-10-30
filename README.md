@@ -379,6 +379,8 @@ npm test
 
 - Tokens last two years and are stored in local storage. For a real deployment,
   use short-lived tokens with a refresh token.
-- The Docker Compose file is meant for running the project locally. The database
-  port is published and the passwords in `.env.example` are examples.
+- The Docker Compose file is meant for running the project on your own machine.
+  Its ports are open only to `localhost`, the passwords in `.env.example` are
+  examples, and the sample accounts have public passwords. Do not put it on a
+  public server as it is.
 - There is no file or photo upload, and no school calendar or attendance.

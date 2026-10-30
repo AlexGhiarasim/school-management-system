@@ -11,10 +11,12 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiForbiddenResponse,
   ApiOperation,
   ApiParam,
   ApiProduces,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { Roles } from '../../common/decorators/roles.decorator.js';
@@ -26,6 +28,8 @@ import { ImportsService } from './imports.service.js';
 
 @ApiTags('Imports')
 @ApiBearerAuth()
+@ApiUnauthorizedResponse({ description: 'Missing or invalid token' })
+@ApiForbiddenResponse({ description: 'The role may not do this' })
 @Roles(Role.ADMIN)
 @Controller('imports')
 @ApiParam({ name: 'kind', enum: IMPORT_KINDS })
